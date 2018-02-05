@@ -26,7 +26,6 @@ namespace Framework
 
 	private:
 		friend class Graphics;
-		friend class Game;
 
 		SDL_Window* window_;
 		std::string title_ = TITLE;
@@ -34,11 +33,13 @@ namespace Framework
 		int height_ = HEIGHT;
 		bool showCursor_ = SHOW_CURSOR;
 		bool enableVSync_ = ENABLE_VSYNC;
+		bool hidden_ = true;
+		bool minimized_ = false;
 
-		bool open_();
+		int open_();
 		void close_();
 		bool pollEvents_(Input& input);
-		bool activateOpenGL_();
+		int activateOpenGL_();
 		void update_();
 	};
 }

@@ -5,49 +5,45 @@
 
 namespace Framework
 {
-	bool Game::run()
+	int Game::run()
 	{
-		if (isRunning_) {
-			return false;
-		}
-		isRunning_ = true;
-
-		if (graphics.window.open_()) {
-			std::thread thread(&Game::renderThread_, this);
-
-			while (isRunning_) {
-				if (graphics.window.pollEvents_(input)) {
-					isRunning_ = false;
-				}
-
-				std::this_thread::sleep_for(std::chrono::milliseconds(10));
-			}
-
-			thread.join();
-
-			graphics.window.close_();
-
-			return true;
+		if (graphics.isActive_) {
+			return 1;
 		}
 
-		return false;
+		if (graphics.openWindow_() != 0) {
+			return 1;
+		}
+
+		std::thread thread(&Game::gameLoop_, this);
+
+		graphics.eventLoop_(input);
+
+		thread.join();
+
+		graphics.closeWindow_();
+
+		return 0;
 	}
 
-	void Game::renderThread_()
+	void Game::gameLoop_()
 	{
-		if (graphics.initialize_()) {
+		if (graphics.initialize_() != 1) {
 			start();
 
-			while (isRunning_) {
+			while (graphics.isActive_) {
 				update();
-				draw();
-				graphics.update_();
+
+				if (!graphics.isWindowMinimized_()) {
+					draw();
+					graphics.update_();
+				}
+				else {
+					std::this_thread::sleep_for(std::chrono::milliseconds(MILLISECONDS_YIELD_));
+				}
 			}
 
 			stop();
-		}
-		else {
-			isRunning_ = false;
 		}
 	}
 }

@@ -1,6 +1,8 @@
 #include "Graphics.h"
 #include "Error.h"
 
+#include <thread>
+
 namespace Framework
 {
 	void Graphics::clearScreen(float r, float g, float b, bool depth)
@@ -24,10 +26,33 @@ namespace Framework
 		return (float)(numberOfFrameLengths_ * NANOSECONDS_PER_SECOND_ / frameLengthsTotal_);
 	}
 
-	bool Graphics::initialize_()
+	int Graphics::openWindow_()
 	{
-		if (!window.activateOpenGL_()) {
-			return false;
+		return window.open_();
+	}
+
+	void Graphics::eventLoop_(Input& input)
+	{
+		isActive_ = true;
+
+		while (isActive_) {
+			if (window.pollEvents_(input)) {
+				isActive_ = false;
+			}
+
+			std::this_thread::sleep_for(std::chrono::milliseconds(MILLISECONDS_YIELD_));
+		}
+	}
+
+	void Graphics::closeWindow_() {
+		window.close_();
+	}
+
+	int Graphics::initialize_()
+	{
+		if (window.activateOpenGL_() != 0) {
+			isActive_ = false;
+			return 1;
 		}
 
 		text.initialize_(TEXT_VS_, TEXT_FS_, window.getWidth(), window.getHeight());
@@ -38,7 +63,7 @@ namespace Framework
 
 		frameTimePoint_ = std::chrono::high_resolution_clock::now();
 
-		return true;
+		return 0;
 	}
 
 	void Graphics::update_()
@@ -59,5 +84,10 @@ namespace Framework
 		if (numberOfFrameLengths_ < FPS_BUFFER_SIZE_) {
 			numberOfFrameLengths_++;
 		}
+	}
+
+	bool Graphics::isWindowMinimized_()
+	{
+		return window.minimized_;
 	}
 }

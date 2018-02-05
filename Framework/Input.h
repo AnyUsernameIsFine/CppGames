@@ -12,7 +12,7 @@ namespace Framework
 	private:
 		friend class Window;
 
-		const Uint8* keyboardState_;
+		const Uint8* keyboardState_ = SDL_GetKeyboardState(nullptr);
 
 		void processEvent_(SDL_Event event);
 	};

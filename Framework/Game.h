@@ -11,7 +11,7 @@ namespace Framework
 		Graphics graphics;
 		Input input;
 
-		bool run();
+		int run();
 
 		virtual void start() = 0;
 		virtual void update() = 0;
@@ -19,8 +19,8 @@ namespace Framework
 		virtual void stop() = 0;
 
 	private:
-		bool isRunning_ = false;
+		static const int MILLISECONDS_YIELD_ = 10;
 
-		void renderThread_();
+		void gameLoop_();
 	};
 }
