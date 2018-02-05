@@ -30,7 +30,7 @@ namespace Framework
 {
 	namespace private_
 	{
-		inline void error_(const std::string& error, const std::string& file, unsigned int line, const std::string& expression = std::string())
+		inline void error_(const std::string& error, const std::string& file, int line, const std::string& expression = std::string())
 		{
 			std::string string(file);
 			std::cerr << "\"" << error << "\" error in " << string.substr(string.find_last_of("\\/") + 1) << ":" << line << ".";
@@ -41,13 +41,13 @@ namespace Framework
 		}
 
 		template<typename T>
-		inline T glCheckV_(T value, const std::string& file, unsigned int line, const std::string& expression)
+		inline T glCheckV_(T value, const std::string& file, int line, const std::string& expression)
 		{
 			glCheck_(file, line, expression);
 			return value;
 		}
 
-		inline void glCheck_(const std::string& file, unsigned int line, const std::string& expression)
+		inline void glCheck_(const std::string& file, int line, const std::string& expression)
 		{
 			GLenum e;
 			while ((e = glGetError()) != GL_NO_ERROR) {
@@ -56,13 +56,13 @@ namespace Framework
 		}
 
 		template<typename T>
-		inline T sdlCheckV_(T value, const std::string& file, unsigned int line, const std::string& expression)
+		inline T sdlCheckV_(T value, const std::string& file, int line, const std::string& expression)
 		{
 			sdlCheck_(file, line, expression);
 			return value;
 		}
 
-		inline void sdlCheck_(const std::string& file, unsigned int line, const std::string& expression)
+		inline void sdlCheck_(const std::string& file, int line, const std::string& expression)
 		{
 			const char* e;
 			while (strlen(e = SDL_GetError()) > 0) {

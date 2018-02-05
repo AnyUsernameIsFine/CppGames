@@ -12,7 +12,7 @@ namespace Framework
 		program_->setUniform("color", glm::vec4(r, g, b, a));
 	}
 
-	void Text::setFont(const std::string& filename, unsigned int size)
+	void Text::setFont(const std::string& filename, int size)
 	{
 		std::string identifier = filename + "@" + std::to_string(size);
 		auto result = fonts_.find(identifier);
@@ -91,7 +91,7 @@ namespace Framework
 		glBlendFunc(blendSrcAlpha, blendDstAlpha);
 	}
 
-	void Text::initialize_(const std::string& vsFilename, const std::string& fsFilename, unsigned int windowWidth, unsigned int windowHeight)
+	void Text::initialize_(const std::string& vsFilename, const std::string& fsFilename, int windowWidth, int windowHeight)
 	{
 		program_ = new GLProgram(vsFilename, fsFilename);
 		glm::mat4 projection = glm::ortho(0.0f, (float)windowWidth, -(float)windowHeight, 0.0f);

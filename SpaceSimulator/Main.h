@@ -21,10 +21,6 @@ namespace Game
 	class Game : public Framework::Game
 	{
 	public:
-		std::chrono::time_point<std::chrono::high_resolution_clock> then =
-			std::chrono::high_resolution_clock::now();
-		int framesPerSecond;
-
 		GLProgram* program;
 		GLTexture2D* texture1;
 		GLTexture2D* texture2;
@@ -48,7 +44,7 @@ namespace Game
 			graphics.window.setTitle("Space Simulator");
 			graphics.window.setSize(960, 540);
 			//graphics.window.showCursor(false);
-			//graphics.window.enableVSync(true);
+			graphics.window.enableVSync(true);
 		}
 
 		void start()
@@ -108,21 +104,13 @@ namespace Game
 
 		void draw()
 		{
-			auto now = std::chrono::high_resolution_clock::now();
-			auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now - then).count();
-			if (milliseconds >= 250) {
-				framesPerSecond = round(getFramesPerSecond());
-				std::cout << framesPerSecond << std::endl;
-				then += std::chrono::milliseconds(250);
-			}
-
 			graphics.clearScreen(1, 0, 0.5);
 
 			// OpenGL tutorial
-			float timeValue = std::chrono::time_point_cast<std::chrono::microseconds>(now).time_since_epoch().count() / 1000000.0 - 854000;
+			float seconds = graphics.getTotalSeconds();
 
 			glm::mat4 model = glm::mat4(1);
-			model = glm::rotate(model, timeValue * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+			model = glm::rotate(model, seconds * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 
 			glm::mat4 view = glm::mat4(1);
 			view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
@@ -133,7 +121,7 @@ namespace Game
 			program->use();
 			program->setUniform("view", view);
 			program->setUniform("projection", projection);
-			program->setUniform("mix", (sin(timeValue) + 1) * 0.5f);
+			program->setUniform("mix", (sin(seconds) + 1) * 0.5f);
 
 			texture1->use(0);
 			texture2->use(1);
@@ -147,7 +135,7 @@ namespace Game
 				glm::mat4 model = glm::mat4(1);
 				model = glm::translate(model, cubePositions[i]);
 				float angle = 20.0f * i;
-				model = glm::rotate(model, glm::radians(angle + timeValue * 50.0f), glm::vec3(1.0f, 0.3f, 0.5f));
+				model = glm::rotate(model, glm::radians(angle + seconds * 50.0f), glm::vec3(1.0f, 0.3f, 0.5f));
 				program->setUniform("model", model);
 
 				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
@@ -155,8 +143,9 @@ namespace Game
 			//glBindVertexArray(0);
 			// end of tutorial
 
-			graphics.text.draw(0, 0, std::to_string(framesPerSecond) + "fps");
-			//graphics.text.draw(0, 0, std::to_wstring(framesPerSecond) + L"fps\nZażółć gęślą jaźń\nEl veloz murciélago hindú comía feliz cardillo y kiwi.\nLa cigüeña tocaba el saxofón detrás del palenque de paja.");
+			int fps = (int)round(graphics.getFps());
+			graphics.text.draw(0, 0, (std::to_string(fps) + "fps"));
+			//graphics.text.draw(0, 0, std::to_wstring(fps) + L"fps\nZażółć gęślą jaźń\nEl veloz murciélago hindú comía feliz cardillo y kiwi.\nLa cigüeña tocaba el saxofón detrás del palenque de paja.");
 		}
 
 		void stop()

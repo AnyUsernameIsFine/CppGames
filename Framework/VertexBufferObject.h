@@ -9,6 +9,6 @@ namespace Framework
 	class VertexBufferObject : public GLObject
 	{
 	public:
-		VertexBufferObject(const std::vector<unsigned int>& attributes, unsigned int numberOfVertices, const void* vertices = nullptr);
+		VertexBufferObject(const std::vector<int>& attributes, int numberOfVertices, const void* vertices = nullptr);
 	};
 }

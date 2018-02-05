@@ -3,7 +3,7 @@
 
 namespace Framework
 {
-	Font::Font(const std::string& filename, unsigned int size)
+	Font::Font(const std::string& filename, int size)
 	{
 		// FreeType
 		FT_Library ft;

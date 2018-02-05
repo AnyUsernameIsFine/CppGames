@@ -14,7 +14,7 @@ namespace Framework
 		}
 	}
 
-	void Window::setSize(unsigned int width, unsigned int height)
+	void Window::setSize(int width, int height)
 	{
 		width_ = width;
 		height_ = height;
@@ -39,14 +39,14 @@ namespace Framework
 		}
 	}
 
-	const unsigned int Window::getWidth() const
+	const int Window::getWidth() const
 	{
 		int width;
 		sdlCheck(SDL_GL_GetDrawableSize(window_, &width, nullptr));
 		return width;
 	}
 
-	const unsigned int Window::getHeight() const
+	const int Window::getHeight() const
 	{
 		int height;
 		sdlCheck(SDL_GL_GetDrawableSize(window_, nullptr, &height));

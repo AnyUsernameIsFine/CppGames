@@ -5,18 +5,6 @@
 
 namespace Framework
 {
-	float Game::getFramesPerSecond()
-	{
-		auto now = std::chrono::high_resolution_clock::now();
-		auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(now - now_).count();
-		float framesPerSecond = frames_ * 1000000000.0f / nanoseconds;
-
-		frames_ = 0;
-		now_ = now;
-
-		return framesPerSecond;
-	}
-
 	bool Game::run()
 	{
 		if (isRunning_) {
@@ -53,10 +41,7 @@ namespace Framework
 			while (isRunning_) {
 				update();
 				draw();
-
-				graphics.window.update_();
-
-				frames_++;
+				graphics.update_();
 			}
 
 			stop();

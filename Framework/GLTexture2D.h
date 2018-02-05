@@ -12,6 +12,6 @@ namespace Framework
 		GLTexture2D(const std::string& filename);
 		~GLTexture2D();
 
-		void use(unsigned int unit = 0) const;
+		void use(int unit = 0) const;
 	};
 }

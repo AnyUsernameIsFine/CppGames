@@ -12,7 +12,7 @@ namespace Framework
 	class Font
 	{
 	public:
-		Font(const std::string& filename, unsigned int size);
+		Font(const std::string& filename, int size);
 
 	private:
 		friend class Text;

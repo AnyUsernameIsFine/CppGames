@@ -33,7 +33,7 @@ namespace Framework
 	{
 	}
 
-	void GLTexture2D::use(unsigned int unit) const
+	void GLTexture2D::use(int unit) const
 	{
 		glCheck(glActiveTexture(GL_TEXTURE0 + unit));
 		glCheck(glBindTexture(GL_TEXTURE_2D, id_));

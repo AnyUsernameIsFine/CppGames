@@ -92,7 +92,7 @@ namespace Framework
 		glCheck(glUniform4i(getUniformLocation_(name), value.x, value.y, value.z, value.w));
 	}
 
-	void GLProgram::setUniform(const std::string& name, const unsigned int value) const
+	void GLProgram::setUniform(const std::string& name, unsigned int value) const
 	{
 		glCheck(glUniform1ui(getUniformLocation_(name), value));
 	}
