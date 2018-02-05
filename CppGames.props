@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="CppGames" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_PropertySheetDisplayName>CppGames</_PropertySheetDisplayName>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Pelle\source\repos\CppGames\Framework;C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\freetype-2.8\include;C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\glew-2.1.0\include;C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\glm-0.9.9-a2;C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\SDL2-2.0.7\include;C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\stb-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>framework.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup />
+</Project>
