@@ -2,6 +2,7 @@
 
 #include "Font.h"
 #include "GLProgram.h"
+#include "VertexBufferObject.h"
 
 #include <GL\glew.h>
 
@@ -25,7 +26,7 @@ namespace Framework
 		unsigned int windowWidth_;
 		unsigned int windowHeight_;
 		GLuint vao_;
-		GLuint vbo_;
+		VertexBufferObject* vbo_;
 
 		std::map<std::string, Font> fonts_;
 		Font* font_;

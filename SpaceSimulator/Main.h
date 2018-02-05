@@ -3,6 +3,7 @@
 #include <Game.h>
 #include <GLTexture2D.h>
 #include <GLProgram.h>
+#include <VertexBufferObject.h>
 #include <Error.h>
 
 #include <GL\glew.h>
@@ -90,22 +91,11 @@ namespace Game
 			glGenVertexArrays(1, &VAO);
 			glBindVertexArray(VAO);
 
-			GLuint VBO;
-			glGenBuffers(1, &VBO);
-			glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), nullptr);
-			glEnableVertexAttribArray(0);
-
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-			glEnableVertexAttribArray(1);
+			VertexBufferObject vbo({ 3, 2 }, 8, vertices);
 
 			GLuint EBO;
 			glGenBuffers(1, &EBO);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 		}
 

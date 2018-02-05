@@ -3,7 +3,7 @@
 
 namespace Framework
 {
-	bool Input::isKeyDown(SDL_Keycode key)
+	const bool Input::isKeyDown(SDL_Keycode key) const
 	{
 		return keyboardState_[SDL_GetScancodeFromKey(key)];
 	}

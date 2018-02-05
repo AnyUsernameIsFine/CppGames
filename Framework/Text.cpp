@@ -49,7 +49,7 @@ namespace Framework
 		glActiveTexture(GL_TEXTURE0);
 
 		glBindVertexArray(vao_);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo_);
+		glBindBuffer(GL_ARRAY_BUFFER, vbo_->getId());
 
 		float lineX = x;
 		float lineY = y + font_->height_;
@@ -102,10 +102,7 @@ namespace Framework
 
 		glGenVertexArrays(1, &vao_);
 		glBindVertexArray(vao_);
-		glGenBuffers(1, &vbo_);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo_);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+		vbo_ = new VertexBufferObject({ 4 }, 6);
+		glBindVertexArray(0);
 	}
 }

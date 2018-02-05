@@ -7,7 +7,7 @@ namespace Framework
 	class Input
 	{
 	public:
-		bool isKeyDown(SDL_Keycode key);
+		const bool isKeyDown(SDL_Keycode key) const;
 
 	private:
 		friend class Window;
