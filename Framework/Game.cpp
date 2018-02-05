@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Error.h"
 
 #include <thread>
 
@@ -27,7 +28,7 @@ namespace Framework
 			std::thread thread(&Game::renderThread_, this);
 
 			while (isRunning_) {
-				if (graphics.window.pollEvents_()) {
+				if (graphics.window.pollEvents_(input)) {
 					isRunning_ = false;
 				}
 
@@ -50,6 +51,7 @@ namespace Framework
 			start();
 
 			while (isRunning_) {
+				update();
 				draw();
 
 				graphics.window.update_();

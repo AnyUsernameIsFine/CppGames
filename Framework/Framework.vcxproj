@@ -152,6 +152,7 @@
     <ClInclude Include="GLShader.h" />
     <ClInclude Include="GLTexture2D.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="Window.h" />
@@ -165,6 +166,7 @@
     <ClCompile Include="GLShader.cpp" />
     <ClCompile Include="GLTexture2D.cpp" />
     <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="Window.cpp" />

@@ -1,4 +1,5 @@
 #include "FragmentShader.h"
+#include "Error.h"
 
 namespace Framework
 {

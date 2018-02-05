@@ -77,12 +77,14 @@ namespace Framework
 		sdlCheck(SDL_Quit());
 	}
 
-	bool Window::pollEvents_()
+	bool Window::pollEvents_(Input& input)
 	{
 		bool close = false;
 
 		SDL_Event event;
 		while (sdlCheckV(SDL_PollEvent(&event))) {
+			input.processEvent_(event);
+				
 			if (event.type == SDL_QUIT) {
 				close = true;
 			}

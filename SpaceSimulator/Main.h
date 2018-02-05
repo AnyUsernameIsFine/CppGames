@@ -3,6 +3,7 @@
 #include <Game.h>
 #include <GLTexture2D.h>
 #include <GLProgram.h>
+#include <Error.h>
 
 #include <GL\glew.h>
 #include <glm\gtc\matrix_transform.hpp>
@@ -106,6 +107,13 @@ namespace Game
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		}
+
+		void update()
+		{
+			if (input.isKeyDown(SDLK_k)) {
+				output("k pressed");
+			}
 		}
 
 		void draw()

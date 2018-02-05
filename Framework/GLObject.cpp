@@ -1,4 +1,5 @@
 #include "GLObject.h"
+#include "Error.h"
 
 namespace Framework
 {

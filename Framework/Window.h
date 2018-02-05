@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Input.h"
+
 #include <SDL.h>
 
 #include <string>
@@ -35,7 +37,7 @@ namespace Framework
 
 		bool open_();
 		void close_();
-		bool pollEvents_();
+		bool pollEvents_(Input& input);
 		bool activateOpenGL_();
 		void update_();
 	};

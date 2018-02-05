@@ -1,4 +1,5 @@
 #include "VertexShader.h"
+#include "Error.h"
 
 namespace Framework
 {

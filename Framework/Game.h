@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics.h"
+#include "Input.h"
 
 #include <chrono>
 
@@ -10,11 +11,13 @@ namespace Framework
 	{
 	public:
 		Graphics graphics;
+		Input input;
 
 		float getFramesPerSecond();
 		bool run();
 
 		virtual void start() = 0;
+		virtual void update() = 0;
 		virtual void draw() = 0;
 		virtual void stop() = 0;
 
