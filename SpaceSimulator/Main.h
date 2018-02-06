@@ -21,10 +21,15 @@ namespace Game
 	class Game : public Framework::Game
 	{
 	public:
-		GLProgram* program;
+		GLProgram * program;
 		GLTexture2D* texture1;
 		GLTexture2D* texture2;
 		GLuint VAO;
+
+		glm::vec3 cameraPos, cameraFront, cameraUp;
+		float yaw, pitch;
+		int mouseX, mouseY;
+		float fov;
 
 		glm::vec3 cubePositions[10]{
 			glm::vec3(0.0f,  0.0f,  0.0f),
@@ -43,8 +48,8 @@ namespace Game
 		{
 			graphics.window.setTitle("Space Simulator");
 			graphics.window.setSize(960, 540);
-			//graphics.window.showCursor(false);
-			//graphics.window.enableVSync(true);
+			graphics.window.hideCursor();
+			graphics.window.enableVSync();
 		}
 
 		void start()
@@ -54,6 +59,14 @@ namespace Game
 
 
 
+
+			cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+			cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+			cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+			yaw = -90;
+			pitch = 0;
+			fov = 60;
 
 			texture1 = new GLTexture2D("Resources/journey.jpg");
 			texture2 = new GLTexture2D("Resources/flow.jpg");
@@ -97,9 +110,38 @@ namespace Game
 
 		void update()
 		{
-			if (input.isKeyDown(SDLK_k)) {
-				output("k pressed");
+			float cameraSpeed = 5 * graphics.getDeltaSeconds();
+			if (input.isKeyDown(SDLK_w)) {
+				cameraPos += cameraSpeed * cameraFront;
 			}
+			if (input.isKeyDown(SDLK_s)) {
+				cameraPos -= cameraSpeed * cameraFront;
+			}
+			if (input.isKeyDown(SDLK_a)) {
+				cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+			}
+			if (input.isKeyDown(SDLK_d)) {
+				cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+			}
+		}
+
+		void onMouseMove(int x, int y)
+		{
+			float sensitivity = 10 * graphics.getDeltaSeconds();
+
+			yaw += x * sensitivity;
+			pitch = fmin(fmax(-90, pitch - y * sensitivity), 90);
+
+			glm::vec3 front;
+			front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+			front.y = sin(glm::radians(pitch));
+			front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+			cameraFront = glm::normalize(front);
+		}
+
+		void onMouseWheel(int y)
+		{
+			fov = fmin(fmax(10, fov - y * 10), 170);
 		}
 
 		void draw()
@@ -109,14 +151,14 @@ namespace Game
 			// OpenGL tutorial
 			float seconds = graphics.getTotalSeconds();
 
-			glm::mat4 model = glm::mat4(1);
+			glm::mat4 model;
 			model = glm::rotate(model, seconds * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 
-			glm::mat4 view = glm::mat4(1);
-			view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+			glm::mat4 view;
+			view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
-			glm::mat4 projection = glm::mat4(1);
-			projection = glm::perspective(glm::radians(45.0f), (float)graphics.window.getWidth() / graphics.window.getHeight(), 0.1f, 100.0f);
+			glm::mat4 projection;
+			projection = glm::perspective(glm::radians(fov), (float)graphics.window.getWidth() / graphics.window.getHeight(), 0.1f, 100.0f);
 
 			program->use();
 			program->setUniform("view", view);
@@ -146,11 +188,6 @@ namespace Game
 			int fps = (int)round(graphics.getFps());
 			graphics.text.draw(0, 0, (std::to_string(fps) + "fps"));
 			//graphics.text.draw(0, 0, std::to_wstring(fps) + L"fps\nZażółć gęślą jaźń\nEl veloz murciélago hindú comía feliz cardillo y kiwi.\nLa cigüeña tocaba el saxofón detrás del palenque de paja.");
-		}
-
-		void stop()
-		{
-
 		}
 	};
 }

@@ -7,12 +7,13 @@ namespace Framework
 	class Input
 	{
 	public:
+		Input();
 		const bool isKeyDown(SDL_Keycode key) const;
 
 	private:
-		friend class Window;
+		friend class Game;
 
-		const Uint8* keyboardState_ = SDL_GetKeyboardState(nullptr);
+		const Uint8* keyboardState_;
 
 		void processEvent_(SDL_Event event);
 	};

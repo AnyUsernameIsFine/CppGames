@@ -31,19 +31,6 @@ namespace Framework
 		return window.open_();
 	}
 
-	void Graphics::eventLoop_(Input& input)
-	{
-		isActive_ = true;
-
-		while (isActive_) {
-			if (window.pollEvents_(input)) {
-				isActive_ = false;
-			}
-
-			std::this_thread::sleep_for(std::chrono::milliseconds(MILLISECONDS_YIELD_));
-		}
-	}
-
 	void Graphics::closeWindow_() {
 		window.close_();
 	}
@@ -51,7 +38,6 @@ namespace Framework
 	int Graphics::initialize_()
 	{
 		if (window.activateOpenGL_() != 0) {
-			isActive_ = false;
 			return 1;
 		}
 
@@ -84,10 +70,5 @@ namespace Framework
 		if (numberOfFrameLengths_ < FPS_BUFFER_SIZE_) {
 			numberOfFrameLengths_++;
 		}
-	}
-
-	bool Graphics::isWindowMinimized_()
-	{
-		return window.minimized_;
 	}
 }

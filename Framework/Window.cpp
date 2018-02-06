@@ -27,11 +27,11 @@ namespace Framework
 		}
 	}
 
-	void Window::showCursor(bool show)
+	void Window::hideCursor(bool hide)
 	{
-		showCursor_ = show;
+		hideCursor_ = hide;
 
-		sdlCheck(SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE));
+		sdlCheck(SDL_SetRelativeMouseMode(hide ? SDL_TRUE : SDL_FALSE));
 	}
 
 	void Window::enableVSync(bool enable)
@@ -78,7 +78,7 @@ namespace Framework
 			return 1;
 		}
 
-		if (!showCursor_ && sdlCheckV(SDL_ShowCursor(SDL_DISABLE)) < 0) {
+		if (hideCursor_ && sdlCheckV(SDL_SetRelativeMouseMode(SDL_TRUE)) < 0) {
 			return 1;
 		}
 
@@ -89,30 +89,6 @@ namespace Framework
 	{
 		sdlCheck(SDL_DestroyWindow(window_));
 		sdlCheck(SDL_Quit());
-	}
-
-	bool Window::pollEvents_(Input& input)
-	{
-		bool quit = false;
-
-		SDL_Event event;
-		while (sdlCheckV(SDL_PollEvent(&event)) != 0) {
-			if (event.type == SDL_WINDOWEVENT) {
-				if (event.window.event == SDL_WINDOWEVENT_MINIMIZED) {
-					minimized_ = true;
-				}
-				else if (event.window.event == SDL_WINDOWEVENT_RESTORED) {
-					minimized_ = false;
-				}
-			} else if (event.type == SDL_QUIT) {
-				quit = true;
-			}
-			else {
-				input.processEvent_(event);
-			}
-		}
-
-		return quit;
 	}
 
 	int Window::activateOpenGL_()
@@ -139,6 +115,7 @@ namespace Framework
 		if (hidden_) {
 			sdlCheck(SDL_ShowWindow(window_));
 			sdlCheck(SDL_RaiseWindow(window_));
+
 			hidden_ = false;
 		}
 

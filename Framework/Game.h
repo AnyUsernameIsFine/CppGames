@@ -13,13 +13,18 @@ namespace Framework
 
 		int run();
 
-		virtual void start() = 0;
-		virtual void update() = 0;
-		virtual void draw() = 0;
-		virtual void stop() = 0;
+		virtual void start() {};
+		virtual void update() {};
+		virtual void draw() {};
+		virtual void stop() {};
+		virtual void onMouseMove(int, int) {};
+		virtual void onMouseWheel(int) {};
 
 	private:
 		static const int MILLISECONDS_YIELD_ = 10;
+
+		bool isRunning_ = false;
+		bool isActive_ = true;
 
 		void gameLoop_();
 	};
