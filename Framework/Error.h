@@ -5,7 +5,7 @@
 
 #include <string>
 #include <iostream>
- 
+
 #define output(output) std::cout << output << std::endl
 #define error(error) Framework::private_::error_(error, __FILE__, __LINE__)
 #define glCheckV(expr) Framework::private_::glCheckV_(expr, __FILE__, __LINE__, #expr)

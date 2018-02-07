@@ -1,13 +1,13 @@
 ﻿#pragma once
 
+#include "Camera.h"
+#include "Transform.h"
+
 #include <Game.h>
 #include <GLTexture2D.h>
 #include <GLProgram.h>
 #include <VertexBufferObject.h>
 #include <Error.h>
-
-#include <GL\glew.h>
-#include <glm\gtc\matrix_transform.hpp>
 
 #include <string>
 #include <sstream>
@@ -26,12 +26,9 @@ namespace Game
 		GLTexture2D* texture2;
 		GLuint VAO;
 
-		glm::vec3 cameraPos, cameraFront, cameraUp;
-		float yaw, pitch;
-		int mouseX, mouseY;
-		float fov;
+		Camera camera;
 
-		glm::vec3 cubePositions[10]{
+		Transform cubePositions[10]{
 			glm::vec3(0.0f,  0.0f,  0.0f),
 			glm::vec3(2.0f,  5.0f, -15.0f),
 			glm::vec3(-1.5f, -2.2f, -2.5f),
@@ -57,16 +54,9 @@ namespace Game
 			graphics.text.setFont("Resources/lucon.ttf", 20);
 			graphics.text.setColor(1, 1, 1);
 
-
-
-
-			cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-			cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-			cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-			yaw = -90;
-			pitch = 0;
-			fov = 60;
+			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
+			//camera.usePerspective(false);
+			camera.transform.moveZ(3);
 
 			texture1 = new GLTexture2D("Resources/journey.jpg");
 			texture2 = new GLTexture2D("Resources/flow.jpg");
@@ -88,7 +78,7 @@ namespace Game
 				 0.5,  0.5,  0.5,	1, 1,
 			};
 
-			unsigned int indices[] = {
+			int indices[] = {
 				0, 2, 1, 1, 2, 3,
 				0, 1, 4, 4, 1, 5,
 				0, 4, 2, 2, 4, 6,
@@ -96,6 +86,10 @@ namespace Game
 				2, 6, 3, 3, 6, 7,
 				4, 5, 6, 6, 5, 7,
 			};
+
+			for (int i = 0; i < 10; i++) {
+				cubePositions[i].rotate(i * 20.0f, { -1.0f, 0.3f, 0.5f });
+			}
 
 			glGenVertexArrays(1, &VAO);
 			glBindVertexArray(VAO);
@@ -108,20 +102,10 @@ namespace Game
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 		}
 
-		void update()
+		void onKeyDown(SDL_Keycode key)
 		{
-			float cameraSpeed = 5 * graphics.getDeltaSeconds();
-			if (input.isKeyDown(SDLK_w)) {
-				cameraPos += cameraSpeed * cameraFront;
-			}
-			if (input.isKeyDown(SDLK_s)) {
-				cameraPos -= cameraSpeed * cameraFront;
-			}
-			if (input.isKeyDown(SDLK_a)) {
-				cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-			}
-			if (input.isKeyDown(SDLK_d)) {
-				cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+			if (key == SDLK_p) {
+				camera.setPerspective(!camera.isPerspective());
 			}
 		}
 
@@ -129,19 +113,21 @@ namespace Game
 		{
 			float sensitivity = 10 * graphics.getDeltaSeconds();
 
-			yaw += x * sensitivity;
-			pitch = fmin(fmax(-90, pitch - y * sensitivity), 90);
-
-			glm::vec3 front;
-			front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-			front.y = sin(glm::radians(pitch));
-			front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-			cameraFront = glm::normalize(front);
+			camera.transform.yaw(sensitivity * x);
+			camera.transform.pitch(sensitivity * y);
 		}
 
 		void onMouseWheel(int y)
 		{
-			fov = fmin(fmax(10, fov - y * 10), 170);
+			camera.setFieldOfView(camera.getFieldOfView() - y * 10);
+		}
+
+		void update()
+		{
+			float cameraSpeed = 5 * graphics.getDeltaSeconds();
+
+			camera.transform.moveX(cameraSpeed * (input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)));
+			camera.transform.moveZ(cameraSpeed * (input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w)));
 		}
 
 		void draw()
@@ -149,21 +135,13 @@ namespace Game
 			graphics.clearScreen(1, 0, 0.5);
 
 			// OpenGL tutorial
-			float seconds = graphics.getTotalSeconds();
-
-			glm::mat4 model;
-			model = glm::rotate(model, seconds * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-
-			glm::mat4 view;
-			view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
-			glm::mat4 projection;
-			projection = glm::perspective(glm::radians(fov), (float)graphics.window.getWidth() / graphics.window.getHeight(), 0.1f, 100.0f);
+			glm::mat4 view = camera.getViewMatrix();
+			glm::mat4 projection = camera.getProjectionMatrix();
 
 			program->use();
 			program->setUniform("view", view);
 			program->setUniform("projection", projection);
-			program->setUniform("mix", (sin(seconds) + 1) * 0.5f);
+			program->setUniform("mix", (sin(graphics.getTotalSeconds()) + 1) * 0.5f);
 
 			texture1->use(0);
 			texture2->use(1);
@@ -173,11 +151,9 @@ namespace Game
 
 			glBindVertexArray(VAO);
 
-			for (unsigned int i = 0; i < 10; i++) {
-				glm::mat4 model = glm::mat4(1);
-				model = glm::translate(model, cubePositions[i]);
-				float angle = 20.0f * i;
-				model = glm::rotate(model, glm::radians(angle + seconds * 50.0f), glm::vec3(1.0f, 0.3f, 0.5f));
+			for (int i = 0; i < 10; i++) {
+				cubePositions[i].rotate(graphics.getDeltaSeconds() * 50.0f, { 1.0f, 0.3f, 0.5f });
+				glm::mat4 model = cubePositions[i].getModelMatrix();
 				program->setUniform("model", model);
 
 				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);

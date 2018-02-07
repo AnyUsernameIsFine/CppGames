@@ -31,7 +31,8 @@ namespace Framework
 		return window.open_();
 	}
 
-	void Graphics::closeWindow_() {
+	void Graphics::closeWindow_()
+	{
 		window.close_();
 	}
 

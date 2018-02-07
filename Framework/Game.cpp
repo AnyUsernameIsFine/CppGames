@@ -21,6 +21,7 @@ namespace Framework
 
 		while (isRunning_) {
 			SDL_Event event;
+
 			while (sdlCheckV(SDL_PollEvent(&event)) != 0) {
 				input.processEvent_(event);
 
@@ -33,6 +34,9 @@ namespace Framework
 						isActive_ = true;
 					}
 					break;
+				case SDL_KEYDOWN:
+					onKeyDown(event.key.keysym.sym);
+					break;
 				case SDL_MOUSEMOTION:
 					onMouseMove(event.motion.xrel, event.motion.yrel);
 					break;
@@ -43,6 +47,7 @@ namespace Framework
 					isRunning_ = false;
 				}
 			}
+
 			std::this_thread::sleep_for(std::chrono::milliseconds(MILLISECONDS_YIELD_));
 		}
 

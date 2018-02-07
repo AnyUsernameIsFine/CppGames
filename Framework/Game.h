@@ -15,10 +15,11 @@ namespace Framework
 
 		virtual void start() {};
 		virtual void update() {};
-		virtual void draw() {};
-		virtual void stop() {};
+		virtual void onKeyDown(SDL_Keycode) {};
 		virtual void onMouseMove(int, int) {};
 		virtual void onMouseWheel(int) {};
+		virtual void draw() {};
+		virtual void stop() {};
 
 	private:
 		static const int MILLISECONDS_YIELD_ = 10;

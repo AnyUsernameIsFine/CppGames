@@ -11,7 +11,7 @@ namespace Framework
 		GLProgram({
 			&Framework::VertexShader(vsFilename),
 			&Framework::FragmentShader(fsFilename),
-		})
+			})
 	{
 		//
 	}
@@ -47,7 +47,7 @@ namespace Framework
 		glCheck(glDeleteProgram(id_));
 	}
 
-	void GLProgram::use() const 
+	void GLProgram::use() const
 	{
 		glCheck(glUseProgram(id_));
 	}

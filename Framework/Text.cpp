@@ -32,6 +32,10 @@ namespace Framework
 
 	void Text::draw(float x, float y, const std::wstring& text)
 	{
+		GLboolean depthTest;
+		glGetBooleanv(GL_DEPTH_TEST, &depthTest);
+		glDisable(GL_DEPTH_TEST);
+
 		GLboolean depthMask;
 		glGetBooleanv(GL_DEPTH_WRITEMASK, &depthMask);
 		glDepthMask(false);
@@ -80,6 +84,10 @@ namespace Framework
 				lineX = x;
 				lineY += font_->height_;
 			}
+		}
+
+		if (depthTest == GL_TRUE) {
+			glEnable(GL_DEPTH_TEST);
 		}
 
 		glDepthMask(depthMask);
