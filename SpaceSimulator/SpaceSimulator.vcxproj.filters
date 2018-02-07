@@ -38,30 +38,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="SDL2.dll" />
-    <None Include="Resources\simple.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\simple.vert">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Resources\arial.ttf">
-      <Filter>Resource Files</Filter>
-    </Font>
     <Font Include="Resources\consola.ttf">
       <Filter>Resource Files</Filter>
     </Font>
-    <Font Include="Resources\lucon.ttf">
-      <Filter>Resource Files</Filter>
-    </Font>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resources\flow.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Resources\journey.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
   </ItemGroup>
 </Project>

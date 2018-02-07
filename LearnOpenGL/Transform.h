@@ -7,12 +7,13 @@ namespace Framework
 	class Transform
 	{
 	public:
-		Transform(glm::vec3 position = { 0, 0, 0 }, glm::quat orientation = { 1, 0, 0, 0 }, glm::vec3 scale = { 1, 1, 1 });
+		Transform(const glm::vec3& position = { 0, 0, 0 }, const glm::vec3& orientation = { 0, 0, 0 }, const glm::vec3& scale = { 1, 1, 1 });
 		void setPosition(const glm::vec3& position);
-		void setOrientation(const glm::quat& orientation);
+		void setOrientation(const glm::vec3& orientation);
 		void setScale(const glm::vec3& scale);
 		const glm::vec3 getPosition() const;
-		const glm::quat getOrientation() const;
+		const glm::vec3 getOrientation() const;
+		const glm::quat getOrientationQuaternion() const;
 		const glm::vec3 getScale() const;
 		void useModelAxes(bool use = true);
 		void moveX(float distance);

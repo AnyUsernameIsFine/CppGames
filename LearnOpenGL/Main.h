@@ -5,11 +5,6 @@
 #include "Camera.h"
 #include "Transform.h"
 
-#include <string>
-#include <sstream>
-#include <chrono>
-#include <iostream>
-
 namespace Game
 {
 	using namespace Framework;
@@ -34,7 +29,7 @@ namespace Game
 			glm::vec3(1.3f, -2.0f, -2.5f),
 			glm::vec3(1.5f,  2.0f, -2.5f),
 			glm::vec3(1.5f,  0.2f, -1.5f),
-			glm::vec3(-1.3f,  1.0f, -1.5f)
+			glm::vec3(-1.3f,  1.0f, -1.5f),
 		};
 
 		Game()
@@ -47,7 +42,7 @@ namespace Game
 
 		void start()
 		{
-			graphics.text.setFont("Resources/lucon.ttf", 20);
+			graphics.text.setFont("Resources/consola.ttf", 16);
 			graphics.text.setColor(1, 1, 1);
 
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
@@ -90,13 +85,9 @@ namespace Game
 
 			glGenVertexArrays(1, &VAO);
 			glBindVertexArray(VAO);
-
 			VertexBufferObject vbo({ 3, 2 }, 8, vertices);
-
-			GLuint EBO;
-			glGenBuffers(1, &EBO);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+			IndexBufferObject ibo(36, indices);
+			glBindVertexArray(0);
 		}
 
 		void onKeyDown(SDL_Keycode key)
@@ -125,13 +116,15 @@ namespace Game
 
 			camera.transform.moveX(cameraSpeed * (input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)));
 			camera.transform.moveZ(cameraSpeed * (input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w)));
+
+			float rollSensitivity = 90 * graphics.getDeltaSeconds();
+			camera.transform.roll(rollSensitivity * (input.isKeyDown(SDLK_e) - input.isKeyDown(SDLK_q)));
 		}
 
 		void draw()
 		{
 			graphics.clearScreen(1, 0, 0.5);
 
-			// OpenGL tutorial
 			glm::mat4 view = camera.getViewMatrix();
 			glm::mat4 projection = camera.getProjectionMatrix();
 
@@ -155,11 +148,16 @@ namespace Game
 
 				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 			}
-			//glBindVertexArray(0);
-			// end of tutorial
 
 			int fps = (int)round(graphics.getFps());
-			graphics.text.draw(0, 0, std::to_string(fps) + "fps");
+			glm::vec3 p = camera.transform.getPosition();
+			glm::ivec3 o = camera.transform.getOrientation();
+
+			std::wstring fpsString = std::to_wstring(fps) + L"fps";
+			std::wstring positionString = L"x: " + std::to_wstring(p.x) + L" y: " + std::to_wstring(p.y) + L" z: " + std::to_wstring(p.z);
+			std::wstring orientatonString = L"yaw: " + std::to_wstring(o.y) + L"° pitch: " + std::to_wstring(o.x) + L"° roll: " + std::to_wstring(o.z) + L"°";
+
+			graphics.text.draw(0, 0, fpsString + L"\n" + positionString + L"\n" + orientatonString);
 		}
 	};
 }

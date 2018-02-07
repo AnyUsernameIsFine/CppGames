@@ -137,18 +137,10 @@
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\simple.frag" />
-    <None Include="Resources\simple.vert" />
     <None Include="SDL2.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Resources\arial.ttf" />
     <Font Include="Resources\consola.ttf" />
-    <Font Include="Resources\lucon.ttf" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resources\flow.jpg" />
-    <Image Include="Resources\journey.jpg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Framework\Framework.vcxproj">

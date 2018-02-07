@@ -19,9 +19,6 @@ namespace Framework
 		// Set size to load glyphs as
 		FT_Set_Pixel_Sizes(face, 0, size);
 
-		output("# of glyphs: " << face->num_glyphs);
-		output("available size: " << (sizeof(face->available_sizes)));
-
 		height_ = face->size->metrics.height >> 6;
 
 		glActiveTexture(GL_TEXTURE0);
@@ -30,7 +27,7 @@ namespace Framework
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 		// Load first 128 characters of ASCII set
-		for (FT_ULong c = 0; c < 256; c++) {
+		for (FT_ULong c = 0; c < face->num_glyphs; c++) {
 			// Load character glyph 
 			if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
 				error("ERROR::FREETYTPE: Failed to load Glyph");

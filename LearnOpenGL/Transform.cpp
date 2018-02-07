@@ -4,11 +4,11 @@
 
 namespace Framework
 {
-	Transform::Transform(glm::vec3 position, glm::quat orientation, glm::vec3 scale)
+	Transform::Transform(const glm::vec3& position, const glm::vec3& orientation, const glm::vec3& scale)
 	{
-		position_ = position;
-		orientation_ = orientation;
-		scale_ = scale;
+		setPosition(position);
+		setOrientation(orientation);
+		setScale(scale);
 	}
 
 	void Transform::setPosition(const glm::vec3& position)
@@ -16,9 +16,9 @@ namespace Framework
 		position_ = position;
 	}
 
-	void Transform::setOrientation(const glm::quat& orientation)
+	void Transform::setOrientation(const glm::vec3& orientation)
 	{
-		orientation_ = orientation;
+		orientation_ = glm::quat(glm::radians(orientation));
 	}
 
 	void Transform::setScale(const glm::vec3& scale)
@@ -31,7 +31,12 @@ namespace Framework
 		return position_;
 	}
 
-	const glm::quat Transform::getOrientation() const
+	const glm::vec3 Transform::getOrientation() const
+	{
+		return glm::degrees(glm::eulerAngles(orientation_));
+	}
+
+	const glm::quat Transform::getOrientationQuaternion() const
 	{
 		return orientation_;
 	}

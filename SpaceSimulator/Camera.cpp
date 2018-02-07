@@ -36,7 +36,7 @@ namespace Framework
 
 	const glm::mat4 Camera::getViewMatrix() const
 	{
-		return glm::translate(glm::mat4_cast(transform.getOrientation()), -transform.getPosition());
+		return glm::translate(glm::mat4_cast(transform.getOrientationQuaternion()), -transform.getPosition());
 	}
 
 	const glm::mat4 Camera::getProjectionMatrix() const
