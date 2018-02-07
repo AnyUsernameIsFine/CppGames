@@ -2,7 +2,7 @@
 
 #include <glm\gtc\matrix_transform.hpp>
 
-namespace Framework
+namespace Game
 {
 	Transform::Transform(const glm::vec3& position, const glm::vec3& orientation, const glm::vec3& scale)
 	{

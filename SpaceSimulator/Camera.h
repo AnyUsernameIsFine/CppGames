@@ -2,7 +2,7 @@
 
 #include "Transform.h"
 
-namespace Framework
+namespace Game
 {
 	class Camera
 	{
@@ -14,8 +14,9 @@ namespace Framework
 		void setPerspective(bool perspective = true);
 		void setAspectRatio(float ratio);
 		void setFieldOfView(float fov);
+		void setClippingPlanes(float near, float far);
 		void setSize(int size);
-		const glm::mat4 getViewMatrix() const;
+		const glm::mat4 getViewMatrix(bool rotationOnly = false) const;
 		const glm::mat4 getProjectionMatrix() const;
 
 	private:

@@ -2,7 +2,7 @@
 
 #include <glm\gtc\matrix_transform.hpp>
 
-namespace Framework
+namespace Game
 {
 	const bool Camera::isPerspective() const
 	{

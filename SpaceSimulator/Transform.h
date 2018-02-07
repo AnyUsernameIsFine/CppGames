@@ -1,17 +1,20 @@
 #pragma once
 
+#include "Position.h"
+
 #include <glm\gtc\quaternion.hpp>
 
-namespace Framework
+namespace Game
 {
 	class Transform
 	{
 	public:
-		Transform(const glm::vec3& position = { 0, 0, 0 }, const glm::vec3& orientation = { 0, 0, 0 }, const glm::vec3& scale = { 1, 1, 1 });
-		void setPosition(const glm::vec3& position);
+		Transform(const Position& position = { 0, 0, 0 }, const glm::vec3& orientation = { 0, 0, 0 }, const glm::vec3& scale = { 1, 1, 1 });
+		void setPosition(const Position& position);
 		void setOrientation(const glm::vec3& orientation);
+		void setScale(float scale);
 		void setScale(const glm::vec3& scale);
-		const glm::vec3 getPosition() const;
+		const Position getPosition() const;
 		const glm::vec3 getOrientation() const;
 		const glm::quat getOrientationQuaternion() const;
 		const glm::vec3 getScale() const;
@@ -28,14 +31,17 @@ namespace Framework
 		void scaleX(float factor);
 		void scaleY(float factor);
 		void scaleZ(float factor);
+		void scale(float factor);
 		void scale(const glm::vec3& factor);
 		const glm::mat4 getModelMatrix() const;
+		const glm::mat4 getModelMatrix(const Position& cameraPosition) const;
 
 	private:
-		bool useModelAxes_ = true;
-
-		glm::vec3 position_;
+		Position position_;
 		glm::quat orientation_;
 		glm::vec3 scale_;
+		bool useModelAxes_ = true;
+
+		const glm::mat4 getModelMatrix_(const glm::vec3& position) const;
 	};
 }

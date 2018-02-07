@@ -129,14 +129,18 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Position.cpp" />
     <ClCompile Include="Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Main.h" />
+    <ClInclude Include="Position.h" />
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\LearnOpenGL\Resources\simple.frag" />
+    <None Include="..\LearnOpenGL\Resources\simple.vert" />
     <None Include="SDL2.dll" />
   </ItemGroup>
   <ItemGroup>
@@ -146,6 +150,10 @@
     <ProjectReference Include="..\Framework\Framework.vcxproj">
       <Project>{833d7df2-0746-4da6-87d3-8a5c6953103a}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\LearnOpenGL\Resources\flow.jpg" />
+    <Image Include="..\LearnOpenGL\Resources\journey.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,7 +2,7 @@
 
 #include <glm\gtc\quaternion.hpp>
 
-namespace Framework
+namespace Game
 {
 	class Transform
 	{

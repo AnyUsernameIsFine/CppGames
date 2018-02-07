@@ -2,16 +2,16 @@
 
 #include <glm\gtc\matrix_transform.hpp>
 
-namespace Framework
+namespace Game
 {
-	Transform::Transform(const glm::vec3& position, const glm::vec3& orientation, const glm::vec3& scale)
+	Transform::Transform(const Position& position, const glm::vec3& orientation, const glm::vec3& scale)
 	{
 		setPosition(position);
 		setOrientation(orientation);
 		setScale(scale);
 	}
 
-	void Transform::setPosition(const glm::vec3& position)
+	void Transform::setPosition(const Position& position)
 	{
 		position_ = position;
 	}
@@ -21,12 +21,17 @@ namespace Framework
 		orientation_ = glm::quat(glm::radians(orientation));
 	}
 
+	void Transform::setScale(float scale)
+	{
+		scale_ = { scale, scale, scale };
+	}
+
 	void Transform::setScale(const glm::vec3& scale)
 	{
 		scale_ = scale;
 	}
 
-	const glm::vec3 Transform::getPosition() const
+	const Position Transform::getPosition() const
 	{
 		return position_;
 	}
@@ -126,6 +131,11 @@ namespace Framework
 		scale({ 0, 0, factor });
 	}
 
+	void Transform::scale(float factor)
+	{
+		scale_ *= factor;
+	}
+
 	void Transform::scale(const glm::vec3& factor)
 	{
 		scale_ *= factor;
@@ -133,9 +143,21 @@ namespace Framework
 
 	const glm::mat4 Transform::getModelMatrix() const
 	{
+		return getModelMatrix_({ position_.x, position_.y, position_.z });
+	}
+
+	const glm::mat4 Transform::getModelMatrix(const Position& cameraPosition) const
+	{
+		Position distance = position_ - cameraPosition;
+
+		return getModelMatrix_({ distance.x, distance.y, distance.z });
+	}
+
+	const glm::mat4 Transform::getModelMatrix_(const glm::vec3& position) const
+	{
 		glm::mat4 scale = glm::scale(glm::mat4(1), scale_);
 		glm::mat4 rotate = glm::inverse(glm::mat4_cast(orientation_));
-		glm::mat4 translate = glm::translate(glm::mat4(1), position_);
+		glm::mat4 translate = glm::translate(glm::mat4(1), position);
 
 		return translate * rotate * scale;
 	}
