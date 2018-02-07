@@ -39,8 +39,8 @@ namespace Game
 
 		Game()
 		{
-			graphics.window.setTitle("Space Simulator");
-			graphics.window.setSize(960, 540);
+			graphics.window.setTitle("Learn OpenGL");
+			graphics.window.setSize(800, 600);
 			graphics.window.hideCursor();
 			graphics.window.enableVSync();
 		}
@@ -51,7 +51,6 @@ namespace Game
 			graphics.text.setColor(1, 1, 1);
 
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
-			//camera.usePerspective(false);
 			camera.transform.moveZ(3);
 
 			texture1 = new Texture2D("Resources/journey.jpg");
@@ -84,6 +83,7 @@ namespace Game
 			};
 
 			for (int i = 0; i < 10; i++) {
+				cubePositions[i].scale({ 2, 1, 0.5f });
 				//cubePositions[i].useModelAxes(false);
 				cubePositions[i].rotate(i * 20.0f, { -1.0f, 0.3f, 0.5f });
 			}
@@ -159,8 +159,7 @@ namespace Game
 			// end of tutorial
 
 			int fps = (int)round(graphics.getFps());
-			//graphics.text.draw(0, 0, "fps");
-			//graphics.text.draw(0, 0, std::to_wstring(fps) + L"fps\nZażółć gęślą jaźń\nEl veloz murciélago hindú comía feliz cardillo y kiwi.\nLa cigüeña tocaba el saxofón detrás del palenque de paja.");
+			graphics.text.draw(0, 0, std::to_string(fps) + "fps");
 		}
 	};
 }

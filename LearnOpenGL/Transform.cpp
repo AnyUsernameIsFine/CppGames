@@ -4,9 +4,26 @@
 
 namespace Framework
 {
-	Transform::Transform(glm::vec3 position)
+	Transform::Transform(glm::vec3 position, glm::quat orientation, glm::vec3 scale)
 	{
 		position_ = position;
+		orientation_ = orientation;
+		scale_ = scale;
+	}
+
+	void Transform::setPosition(const glm::vec3& position)
+	{
+		position_ = position;
+	}
+
+	void Transform::setOrientation(const glm::quat& orientation)
+	{
+		orientation_ = orientation;
+	}
+
+	void Transform::setScale(const glm::vec3& scale)
+	{
+		scale_ = scale;
 	}
 
 	const glm::vec3 Transform::getPosition() const
@@ -17,6 +34,11 @@ namespace Framework
 	const glm::quat Transform::getOrientation() const
 	{
 		return orientation_;
+	}
+
+	const glm::vec3 Transform::getScale() const
+	{
+		return scale_;
 	}
 
 	void Transform::useModelAxes(bool use)
@@ -84,9 +106,29 @@ namespace Framework
 		orientation_ = glm::normalize(orientation_);
 	}
 
+	void Transform::scaleX(float factor)
+	{
+		scale({ factor, 0, 0 });
+	}
+
+	void Transform::scaleY(float factor)
+	{
+		scale({ 0, factor, 0 });
+	}
+
+	void Transform::scaleZ(float factor)
+	{
+		scale({ 0, 0, factor });
+	}
+
+	void Transform::scale(const glm::vec3& factor)
+	{
+		scale_ *= factor;
+	}
+
 	const glm::mat4 Transform::getModelMatrix() const
 	{
-		glm::mat4 scale = glm::scale(glm::mat4(1), { 2.0f, 1.0f, 0.5f });
+		glm::mat4 scale = glm::scale(glm::mat4(1), scale_);
 		glm::mat4 rotate = glm::inverse(glm::mat4_cast(orientation_));
 		glm::mat4 translate = glm::translate(glm::mat4(1), position_);
 

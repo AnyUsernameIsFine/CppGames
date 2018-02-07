@@ -18,6 +18,37 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Error.hpp" />
+    <ClInclude Include="Source\Font.hpp" />
+    <ClInclude Include="Source\FragmentShader.hpp" />
+    <ClInclude Include="Source\Game.hpp" />
+    <ClInclude Include="Source\Graphics.hpp" />
+    <ClInclude Include="Source\Input.hpp" />
+    <ClInclude Include="Source\OpenGLObject.hpp" />
+    <ClInclude Include="Source\Shader.hpp" />
+    <ClInclude Include="Source\ShaderProgram.hpp" />
+    <ClInclude Include="Source\Text.hpp" />
+    <ClInclude Include="Source\Texture2D.hpp" />
+    <ClInclude Include="Source\VertexBufferObject.hpp" />
+    <ClInclude Include="Source\VertexShader.hpp" />
+    <ClInclude Include="Source\Window.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Font.cpp" />
+    <ClCompile Include="Source\FragmentShader.cpp" />
+    <ClCompile Include="Source\Game.cpp" />
+    <ClCompile Include="Source\Graphics.cpp" />
+    <ClCompile Include="Source\Input.cpp" />
+    <ClCompile Include="Source\OpenGLObject.cpp" />
+    <ClCompile Include="Source\Shader.cpp" />
+    <ClCompile Include="Source\ShaderProgram.cpp" />
+    <ClCompile Include="Source\Text.cpp" />
+    <ClCompile Include="Source\Texture2D.cpp" />
+    <ClCompile Include="Source\VertexBufferObject.cpp" />
+    <ClCompile Include="Source\VertexShader.cpp" />
+    <ClCompile Include="Source\Window.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{833D7DF2-0746-4DA6-87D3-8A5C6953103A}</ProjectGuid>
@@ -142,37 +173,6 @@
       <AdditionalDependencies>freetype.lib;opengl32.lib;glew32s.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="Error.h" />
-    <ClInclude Include="Font.h" />
-    <ClInclude Include="FragmentShader.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="GLObject.h" />
-    <ClInclude Include="GLProgram.h" />
-    <ClInclude Include="GLShader.h" />
-    <ClInclude Include="GLTexture2D.h" />
-    <ClInclude Include="Graphics.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="Text.h" />
-    <ClInclude Include="VertexBufferObject.h" />
-    <ClInclude Include="VertexShader.h" />
-    <ClInclude Include="Window.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Font.cpp" />
-    <ClCompile Include="FragmentShader.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GLObject.cpp" />
-    <ClCompile Include="GLProgram.cpp" />
-    <ClCompile Include="GLShader.cpp" />
-    <ClCompile Include="GLTexture2D.cpp" />
-    <ClCompile Include="Graphics.cpp" />
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="Text.cpp" />
-    <ClCompile Include="VertexBufferObject.cpp" />
-    <ClCompile Include="VertexShader.cpp" />
-    <ClCompile Include="Window.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
