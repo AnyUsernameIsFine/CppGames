@@ -4,7 +4,7 @@
 
 #include <glm\gtc\quaternion.hpp>
 
-namespace Game
+namespace Framework
 {
 	template<typename T = float>
 	class Transform
@@ -51,7 +51,7 @@ namespace Game
 
 #include <glm\gtc\matrix_transform.hpp>
 
-namespace Game
+namespace Framework
 {
 	template<typename T>
 	Transform<T>::Transform(const Position<T>& position, const glm::vec3& orientation, const glm::vec3& scale)

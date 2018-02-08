@@ -2,7 +2,7 @@
 
 #include "Transform.hpp"
 
-namespace Game
+namespace Framework
 {
 	template<typename T = float>
 	class Camera
@@ -34,7 +34,7 @@ namespace Game
 
 #include <glm\gtc\matrix_transform.hpp>
 
-namespace Game
+namespace Framework
 {
 	template<typename T>
 	const bool Camera<T>::isPerspective() const

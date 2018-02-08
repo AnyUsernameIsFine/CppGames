@@ -2,7 +2,7 @@
 
 #include <glm\vec3.hpp>
 
-namespace Game
+namespace Framework
 {
 	template<typename T = float>
 	class Position
@@ -19,7 +19,7 @@ namespace Game
 
 //#include "Position.h"
 
-namespace Game
+namespace Framework
 {
 	template<typename T>
 	Position<T>::Position(T x, T y, T z)
