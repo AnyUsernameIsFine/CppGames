@@ -2,11 +2,9 @@
 
 #include <glm\vec3.hpp>
 
-typedef int_least64_t T;
-
 namespace Game
 {
-	template<typename T>
+	template<typename T = float>
 	class Position
 	{
 	public:

@@ -4,7 +4,7 @@
 
 namespace Game
 {
-	template<typename T>
+	template<typename T = float>
 	class Camera
 	{
 	public:

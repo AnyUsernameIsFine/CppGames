@@ -46,6 +46,7 @@ namespace Game
 
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
 			camera.setClippingPlanes(0.1f * SCALE, 100.0f * SCALE);
+			camera.setSize(10 * SCALE);
 			camera.transform.moveZ(6 * SCALE);
 
 			texture1 = new Texture2D("Resources/journey.jpg");
@@ -128,7 +129,7 @@ namespace Game
 
 		void draw()
 		{
-			graphics.clearScreen(1, 0, 0.5);
+			graphics.clearScreen(0, 0, 0);
 
 			Position<Coordinate> position = camera.transform.getPosition();
 			glm::mat4 view = camera.getViewMatrix(true);

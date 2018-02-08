@@ -4,21 +4,17 @@
 
 namespace Game
 {
-	typedef float Coordinate;
-
 	using namespace Framework;
 
 	class Game : public Framework::Game
 	{
-		float SCALE = 1;
-
 	public:
 		ShaderProgram * program;
 		Texture2D* texture1;
 		Texture2D* texture2;
 		GLuint VAO;
-		Camera<Coordinate> camera;
-		std::vector<Transform<Coordinate>> cubes;
+		Camera<> camera;
+		std::vector<Transform<>> cubes;
 
 		Game()
 		{
@@ -34,19 +30,14 @@ namespace Game
 				float x = 6 * (float)rand() / RAND_MAX - 3;
 				float y = 6 * (float)rand() / RAND_MAX - 3;
 				float z = 6 * (float)rand() / RAND_MAX - 3;
-				glm::vec3 position(x, y, z);
-				position *= SCALE;
-				Transform<Coordinate> cube = Transform<Coordinate>(position);
-				cube.setScale(SCALE);
-				cubes.push_back(cube);
+				cubes.push_back(Transform<>({ x, y, z }));
 			}
 
 			graphics.text.setFont("Resources/consola.ttf", 16);
 			graphics.text.setColor(1, 1, 1);
 
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
-			camera.setClippingPlanes(0.1f * SCALE, 100.0f * SCALE);
-			camera.transform.moveZ(6 * SCALE);
+			camera.transform.moveZ(6);
 
 			texture1 = new Texture2D("Resources/journey.jpg");
 			texture2 = new Texture2D("Resources/flow.jpg");
@@ -112,7 +103,7 @@ namespace Game
 
 		void update()
 		{
-			float cameraSpeed = 5 * SCALE * graphics.getDeltaSeconds();
+			float cameraSpeed = 5 * graphics.getDeltaSeconds();
 
 			camera.transform.moveX(cameraSpeed * (input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)));
 			camera.transform.moveZ(cameraSpeed * (input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w)));
@@ -152,7 +143,7 @@ namespace Game
 			}
 
 			int fps = (int)round(graphics.getFps());
-			Position<Coordinate> position = camera.transform.getPosition();
+			Position<> position = camera.transform.getPosition();
 			glm::ivec3 o = camera.transform.getOrientation();
 
 			std::wstring fpsString = std::to_wstring(fps) + L"fps";
