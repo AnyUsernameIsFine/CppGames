@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Camera.hpp" />
     <ClInclude Include="Source\Error.hpp" />
     <ClInclude Include="Source\Font.hpp" />
     <ClInclude Include="Source\FragmentShader.hpp" />
@@ -28,10 +29,12 @@
     <ClInclude Include="Source\IndexBufferObject.hpp" />
     <ClInclude Include="Source\Input.hpp" />
     <ClInclude Include="Source\OpenGLObject.hpp" />
+    <ClInclude Include="Source\Position.hpp" />
     <ClInclude Include="Source\Shader.hpp" />
     <ClInclude Include="Source\ShaderProgram.hpp" />
     <ClInclude Include="Source\Text.hpp" />
     <ClInclude Include="Source\Texture2D.hpp" />
+    <ClInclude Include="Source\Transform.hpp" />
     <ClInclude Include="Source\VertexBufferObject.hpp" />
     <ClInclude Include="Source\VertexShader.hpp" />
     <ClInclude Include="Source\Window.hpp" />

@@ -1,15 +1,11 @@
 ﻿#pragma once
 
-//#define Coordinate int_least64_t
-typedef float Coordinate;
-
 #include <Framework.hpp>
-
-#include "Camera.h"
-#include "Transform.h"
 
 namespace Game
 {
+	typedef int_least64_t Coordinate;
+
 	using namespace Framework;
 
 	class Game : public Framework::Game
@@ -21,8 +17,8 @@ namespace Game
 		Texture2D* texture1;
 		Texture2D* texture2;
 		GLuint VAO;
-		Camera camera;
-		std::vector<Transform> cubes;
+		Camera<Coordinate> camera;
+		std::vector<Transform<Coordinate>> cubes;
 
 		Game()
 		{
@@ -38,9 +34,9 @@ namespace Game
 				float x = 6 * (float)rand() / RAND_MAX - 3;
 				float y = 6 * (float)rand() / RAND_MAX - 3;
 				float z = 6 * (float)rand() / RAND_MAX - 3;
-				glm::vec3 position(z, y, z);
+				glm::vec3 position(x, y, z);
 				position *= SCALE;
-				Transform cube = Transform(position);
+				Transform<Coordinate> cube = Transform<Coordinate>(position);
 				cube.setScale(SCALE);
 				cubes.push_back(cube);
 			}
@@ -134,7 +130,7 @@ namespace Game
 		{
 			graphics.clearScreen(1, 0, 0.5);
 
-			Position position = camera.transform.getPosition();
+			Position<Coordinate> position = camera.transform.getPosition();
 			glm::mat4 view = camera.getViewMatrix(true);
 			glm::mat4 projection = camera.getProjectionMatrix();
 

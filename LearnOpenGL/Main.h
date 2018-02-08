@@ -2,35 +2,23 @@
 
 #include <Framework.hpp>
 
-#include "Camera.h"
-#include "Transform.h"
-
 namespace Game
 {
+	typedef float Coordinate;
+
 	using namespace Framework;
 
 	class Game : public Framework::Game
 	{
+		float SCALE = 1;
+
 	public:
 		ShaderProgram * program;
 		Texture2D* texture1;
 		Texture2D* texture2;
 		GLuint VAO;
-
-		Camera camera;
-
-		Transform cubePositions[10]{
-			glm::vec3(0.0f,  0.0f,  0.0f),
-			glm::vec3(2.0f,  5.0f, -15.0f),
-			glm::vec3(-1.5f, -2.2f, -2.5f),
-			glm::vec3(-3.8f, -2.0f, -12.3f),
-			glm::vec3(2.4f, -0.4f, -3.5f),
-			glm::vec3(-1.7f,  3.0f, -7.5f),
-			glm::vec3(1.3f, -2.0f, -2.5f),
-			glm::vec3(1.5f,  2.0f, -2.5f),
-			glm::vec3(1.5f,  0.2f, -1.5f),
-			glm::vec3(-1.3f,  1.0f, -1.5f),
-		};
+		Camera<Coordinate> camera;
+		std::vector<Transform<Coordinate>> cubes;
 
 		Game()
 		{
@@ -42,11 +30,23 @@ namespace Game
 
 		void start()
 		{
+			for (int i = 0; i < 10; i++) {
+				float x = 6 * (float)rand() / RAND_MAX - 3;
+				float y = 6 * (float)rand() / RAND_MAX - 3;
+				float z = 6 * (float)rand() / RAND_MAX - 3;
+				glm::vec3 position(x, y, z);
+				position *= SCALE;
+				Transform<Coordinate> cube = Transform<Coordinate>(position);
+				cube.setScale(SCALE);
+				cubes.push_back(cube);
+			}
+
 			graphics.text.setFont("Resources/consola.ttf", 16);
 			graphics.text.setColor(1, 1, 1);
 
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
-			camera.transform.moveZ(3);
+			camera.setClippingPlanes(0.1f * SCALE, 100.0f * SCALE);
+			camera.transform.moveZ(6 * SCALE);
 
 			texture1 = new Texture2D("Resources/journey.jpg");
 			texture2 = new Texture2D("Resources/flow.jpg");
@@ -59,13 +59,13 @@ namespace Game
 
 			float vertices[] = {
 				-0.5, -0.5, -0.5,	0, 0,
-				 0.5, -0.5, -0.5,	1, 0,
+				0.5, -0.5, -0.5,	1, 0,
 				-0.5,  0.5, -0.5,	0, 1,
-				 0.5,  0.5, -0.5,	1, 1,
+				0.5,  0.5, -0.5,	1, 1,
 				-0.5, -0.5,  0.5,	0, 0,
-				 0.5, -0.5,  0.5,	1, 0,
+				0.5, -0.5,  0.5,	1, 0,
 				-0.5,  0.5,  0.5,	0, 1,
-				 0.5,  0.5,  0.5,	1, 1,
+				0.5,  0.5,  0.5,	1, 1,
 			};
 
 			int indices[] = {
@@ -77,10 +77,10 @@ namespace Game
 				4, 5, 6, 6, 5, 7,
 			};
 
-			for (int i = 0; i < 10; i++) {
-				cubePositions[i].scale({ 2, 1, 0.5f });
-				//cubePositions[i].useModelAxes(false);
-				cubePositions[i].rotate(i * 20.0f, { -1.0f, 0.3f, 0.5f });
+			for (int i = 0; i < (int)cubes.size(); i++) {
+				cubes[i].scale({ 2, 1, 0.5f });
+				cubes[i].rotate(i * 20.0f, { -1.0f, 0.3f, 0.5f });
+
 			}
 
 			glGenVertexArrays(1, &VAO);
@@ -112,7 +112,7 @@ namespace Game
 
 		void update()
 		{
-			float cameraSpeed = 5 * graphics.getDeltaSeconds();
+			float cameraSpeed = 5 * SCALE * graphics.getDeltaSeconds();
 
 			camera.transform.moveX(cameraSpeed * (input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)));
 			camera.transform.moveZ(cameraSpeed * (input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w)));
@@ -141,20 +141,22 @@ namespace Game
 
 			glBindVertexArray(VAO);
 
-			for (int i = 0; i < 10; i++) {
-				cubePositions[i].rotate(graphics.getDeltaSeconds() * 50.0f, { 1.0f, 0.3f, 0.5f });
-				glm::mat4 model = cubePositions[i].getModelMatrix();
+			for (int i = 0; i < (int)cubes.size(); i++) {
+				cubes[i].rotate(graphics.getDeltaSeconds() * 50.0f, { 1.0f, 0.3f, 0.5f });
+
+				glm::mat4 model = cubes[i].getModelMatrix();
+
 				program->setUniform("model", model);
 
 				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
 			}
 
 			int fps = (int)round(graphics.getFps());
-			glm::vec3 p = camera.transform.getPosition();
+			Position<Coordinate> position = camera.transform.getPosition();
 			glm::ivec3 o = camera.transform.getOrientation();
 
 			std::wstring fpsString = std::to_wstring(fps) + L"fps";
-			std::wstring positionString = L"x: " + std::to_wstring(p.x) + L" y: " + std::to_wstring(p.y) + L" z: " + std::to_wstring(p.z);
+			std::wstring positionString = L"x: " + std::to_wstring(position.x) + L" y: " + std::to_wstring(position.y) + L" z: " + std::to_wstring(position.z);
 			std::wstring orientatonString = L"yaw: " + std::to_wstring(o.y) + L"° pitch: " + std::to_wstring(o.x) + L"° roll: " + std::to_wstring(o.z) + L"°";
 
 			graphics.text.draw(0, 0, fpsString + L"\n" + positionString + L"\n" + orientatonString);
