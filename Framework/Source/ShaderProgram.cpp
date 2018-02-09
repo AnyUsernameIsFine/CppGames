@@ -18,6 +18,16 @@ namespace Framework
 
 	ShaderProgram::ShaderProgram(std::initializer_list<GLShader*> shaders)
 	{
+		bool error = false;
+
+		for (GLShader* shader : shaders) {
+			error |= !shader->getId();
+		}
+
+		if (error) {
+			return;
+		}
+
 		id_ = glCheckV(glCreateProgram());
 
 		for (GLShader* shader : shaders) {
@@ -129,6 +139,6 @@ namespace Framework
 
 	const GLint ShaderProgram::getUniformLocation_(const std::string& name) const
 	{
-		glCheck(return glGetUniformLocation(id_, name.c_str()));
+		return glGetUniformLocation(id_, name.c_str());
 	}
 }

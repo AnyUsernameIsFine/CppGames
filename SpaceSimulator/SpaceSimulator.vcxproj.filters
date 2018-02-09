@@ -18,18 +18,48 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CoordinateSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Universe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CoordinateSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Universe.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SDL2.dll" />
-    <None Include="..\LearnOpenGL\Resources\simple.vert">
+    <None Include="Resources\simpleColor.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\LearnOpenGL\Resources\simple.frag">
+    <None Include="Resources\simpleColor.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -43,6 +73,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="..\LearnOpenGL\Resources\journey.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\flow.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\journey.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -16,7 +16,7 @@ namespace Framework
 		void setAspectRatio(float ratio);
 		void setFieldOfView(float fov);
 		void setClippingPlanes(float near, float far);
-		void setSize(int size);
+		void setSize(float size);
 		const glm::mat4 getViewMatrix(bool rotationOnly = false) const;
 		const glm::mat4 getProjectionMatrix() const;
 
@@ -26,7 +26,7 @@ namespace Framework
 		float fov_ = 60.0f;
 		float near_ = 0.1f;
 		float far_ = 100.0f;
-		int size_ = 10;
+		float size_ = 10.0f;
 	};
 }
 
@@ -74,7 +74,7 @@ namespace Framework
 	}
 
 	template<typename T>
-	void Camera<T>::setSize(int size)
+	void Camera<T>::setSize(float size)
 	{
 		size_ = size;
 	}

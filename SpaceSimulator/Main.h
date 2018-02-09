@@ -2,23 +2,18 @@
 
 #include <Framework.hpp>
 
+#include "Universe.h"
+#include "Camera.h"
+
 namespace Game
 {
-	typedef int_least64_t Coordinate;
-
 	using namespace Framework;
 
 	class Game : public Framework::Game
 	{
-		float SCALE = 1000;
-
 	public:
-		ShaderProgram * program;
-		Texture2D* texture1;
-		Texture2D* texture2;
-		GLuint VAO;
-		Camera<Coordinate> camera;
-		std::vector<Transform<Coordinate>> cubes;
+		Universe universe;
+		Camera camera;
 
 		Game()
 		{
@@ -30,70 +25,21 @@ namespace Game
 
 		void start()
 		{
-			for (int i = 0; i < 10; i++) {
-				float x = 6 * (float)rand() / RAND_MAX - 3;
-				float y = 6 * (float)rand() / RAND_MAX - 3;
-				float z = 6 * (float)rand() / RAND_MAX - 3;
-				glm::vec3 position(x, y, z);
-				position *= SCALE;
-				Transform<Coordinate> cube = Transform<Coordinate>(position);
-				cube.setScale(SCALE);
-				cubes.push_back(cube);
-			}
+			CoordinateSystem::createMesh();
+
+			universe.create(L"Universe", 10000);
+
+			//camera.coordinateSystem = &universe;
+			//camera.coordinateSystem = &universe.coordinateSystems[1];
+			camera.coordinateSystem = &universe.coordinateSystems[0].coordinateSystems[0];
+			//camera.coordinateSystem = &universe.coordinateSystems[1].coordinateSystems[1].coordinateSystems[1];
+
+			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
+			camera.setClippingPlanes(0.001f, 10000000.0f);
+			camera.setSize(10.0f);
 
 			graphics.text.setFont("Resources/consola.ttf", 16);
 			graphics.text.setColor(1, 1, 1);
-
-			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
-			camera.setClippingPlanes(0.1f * SCALE, 100.0f * SCALE);
-			camera.setSize(10 * SCALE);
-			camera.transform.moveZ(6 * SCALE);
-
-			texture1 = new Texture2D("Resources/journey.jpg");
-			texture2 = new Texture2D("Resources/flow.jpg");
-
-			program = new ShaderProgram("Resources/simple.vert", "Resources/simple.frag");
-
-			program->use();
-			program->setUniform("texture1", 0);
-			program->setUniform("texture2", 1);
-
-			float vertices[] = {
-				-0.5, -0.5, -0.5,	0, 0,
-				0.5, -0.5, -0.5,	1, 0,
-				-0.5,  0.5, -0.5,	0, 1,
-				0.5,  0.5, -0.5,	1, 1,
-				-0.5, -0.5,  0.5,	0, 0,
-				0.5, -0.5,  0.5,	1, 0,
-				-0.5,  0.5,  0.5,	0, 1,
-				0.5,  0.5,  0.5,	1, 1,
-			};
-
-			int indices[] = {
-				0, 2, 1, 1, 2, 3,
-				0, 1, 4, 4, 1, 5,
-				0, 4, 2, 2, 4, 6,
-				1, 3, 5, 5, 3, 7,
-				2, 6, 3, 3, 6, 7,
-				4, 5, 6, 6, 5, 7,
-			};
-
-			for (int i = 0; i < (int)cubes.size(); i++) {
-				cubes[i].useModelAxes(false);
-				cubes[i].moveX(100000000 * SCALE);
-
-				cubes[i].useModelAxes(true);
-				cubes[i].scale({ 2, 1, 0.5f });
-				cubes[i].rotate(i * 20.0f, { -1.0f, 0.3f, 0.5f });
-
-			}
-			camera.transform.moveX(100000000 * SCALE);
-
-			glGenVertexArrays(1, &VAO);
-			glBindVertexArray(VAO);
-			VertexBufferObject vbo({ 3, 2 }, 8, vertices);
-			IndexBufferObject ibo(36, indices);
-			glBindVertexArray(0);
 		}
 
 		void onKeyDown(SDL_Keycode key)
@@ -118,9 +64,10 @@ namespace Game
 
 		void update()
 		{
-			float cameraSpeed = 5 * SCALE * graphics.getDeltaSeconds();
+			float cameraSpeed = 5 * graphics.getDeltaSeconds();
 
 			camera.transform.moveX(cameraSpeed * (input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)));
+			camera.transform.moveY(cameraSpeed * (input.isKeyDown(SDLK_r) - input.isKeyDown(SDLK_f)));
 			camera.transform.moveZ(cameraSpeed * (input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w)));
 
 			float rollSensitivity = 90 * graphics.getDeltaSeconds();
@@ -131,41 +78,21 @@ namespace Game
 		{
 			graphics.clearScreen(0, 0, 0);
 
-			Position<Coordinate> position = camera.transform.getPosition();
-			glm::mat4 view = camera.getViewMatrix(true);
-			glm::mat4 projection = camera.getProjectionMatrix();
-
-			program->use();
-			program->setUniform("view", view);
-			program->setUniform("projection", projection);
-			program->setUniform("mix", (sin(graphics.getTotalSeconds()) + 1) * 0.5f);
-
-			texture1->use(0);
-			texture2->use(1);
-
-			glEnable(GL_DEPTH_TEST);
-			glEnable(GL_CULL_FACE);
-
-			glBindVertexArray(VAO);
-
-			for (int i = 0; i < (int)cubes.size(); i++) {
-				cubes[i].rotate(graphics.getDeltaSeconds() * 50.0f, { 1.0f, 0.3f, 0.5f });
-
-				glm::mat4 model = cubes[i].getModelMatrix(position);
-
-				program->setUniform("model", model);
-
-				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
-			}
+			//universe.coordinateSystems.back().coordinateSystems.back().transform.yaw(45 * graphics.getDeltaSeconds());
+			//universe.coordinateSystems[0].transform.pitch(45 * graphics.getDeltaSeconds());
+			//output(camera.coordinateSystem);
+			universe.draw(camera);
 
 			int fps = (int)round(graphics.getFps());
+			Position<Coordinate> position = camera.transform.getPosition();
 			glm::ivec3 o = camera.transform.getOrientation();
 
 			std::wstring fpsString = std::to_wstring(fps) + L"fps";
+			std::wstring csString = camera.coordinateSystem->name;
 			std::wstring positionString = L"x: " + std::to_wstring(position.x) + L" y: " + std::to_wstring(position.y) + L" z: " + std::to_wstring(position.z);
 			std::wstring orientatonString = L"yaw: " + std::to_wstring(o.y) + L"° pitch: " + std::to_wstring(o.x) + L"° roll: " + std::to_wstring(o.z) + L"°";
 
-			graphics.text.draw(0, 0, fpsString + L"\n" + positionString + L"\n" + orientatonString);
+			graphics.text.draw(0, 0, fpsString + L"\n" + csString + L"\n" + positionString + L"\n" + orientatonString);
 		}
 	};
 }

@@ -14,6 +14,7 @@ namespace Framework
 		Position<T>(const glm::vec3& vec3);
 		Position<T>& operator+=(const glm::vec3& vec3);
 		const Position<T> operator-(const Position<T>& position) const;
+		const Position<T> operator*(float f) const;
 	};
 }
 
@@ -50,5 +51,11 @@ namespace Framework
 	const Position<T> Position<T>::operator-(const Position& position) const
 	{
 		return Position<T>(x - position.x, y - position.y, z - position.z);
+	}
+
+	template<typename T>
+	const Position<T> Position<T>::operator*(float f) const
+	{
+		return Position<T>(x * f, y * f, z * f);
 	}
 }

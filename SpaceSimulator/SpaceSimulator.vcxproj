@@ -127,14 +127,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CoordinateSystem.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Universe.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="CoordinateSystem.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Main.h" />
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="Universe.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\LearnOpenGL\Resources\simple.frag" />
-    <None Include="..\LearnOpenGL\Resources\simple.vert" />
+    <None Include="Resources\simpleColor.frag" />
+    <None Include="Resources\simpleColor.vert" />
     <None Include="SDL2.dll" />
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +158,8 @@
   <ItemGroup>
     <Image Include="..\LearnOpenGL\Resources\flow.jpg" />
     <Image Include="..\LearnOpenGL\Resources\journey.jpg" />
+    <Image Include="Resources\flow.jpg" />
+    <Image Include="Resources\journey.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
