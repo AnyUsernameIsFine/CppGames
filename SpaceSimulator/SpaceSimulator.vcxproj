@@ -143,6 +143,8 @@
     <ClInclude Include="Universe.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\simple.frag" />
+    <None Include="Resources\simple.vert" />
     <None Include="Resources\simpleColor.frag" />
     <None Include="Resources\simpleColor.vert" />
     <None Include="SDL2.dll" />

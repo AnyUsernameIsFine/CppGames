@@ -34,12 +34,12 @@ namespace Game
 
 
 			float ratio;
-				if (camera.coordinateSystem->parent) {
-					ratio = ((CoordinateSystem*)camera.coordinateSystem->parent)->scale / ((CoordinateSystem*)camera.coordinateSystem)->scale;
-				}
-				else {
-					ratio = 1.0f;
-				}
+			if (camera.coordinateSystem->parent) {
+				ratio = ((CoordinateSystem*)camera.coordinateSystem->parent)->scale / ((CoordinateSystem*)camera.coordinateSystem)->scale;
+			}
+			else {
+				ratio = 1.0f;
+			}
 			glm::mat4 s = glm::scale(glm::mat4(1), { ratio, ratio, ratio });
 
 			v *= s;

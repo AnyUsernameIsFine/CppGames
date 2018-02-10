@@ -5,21 +5,26 @@ namespace Game
 {
 	void Camera::checkForCoordinateSystemSwap()
 	{
-		CoordinateSystem* parentCS = (CoordinateSystem*)coordinateSystem->parent;
+		CoordinateSystem* currCs = coordinateSystem;
+		CoordinateSystem* parentCs = (CoordinateSystem*)currCs->parent;
+		Position<Coordinate> camPos = transform.getPosition();
 
 		// go to parent
-		if (parentCS && transform.getPosition().length() > coordinateSystem->radius * (parentCS->scale / coordinateSystem->scale)) {
+		if (parentCs && camPos.length() > currCs->radius * (parentCs->scale / currCs->scale)) {
+			glm::quat currCsQuat = currCs->transform.getOrientationQuaternion();
 
-			glm::vec3 newPosition = { transform.getPosition().x, transform.getPosition().y, transform.getPosition().z };
-			newPosition = newPosition * coordinateSystem->transform.getOrientationQuaternion();
-			newPosition *= glm::vec3(coordinateSystem->scale / parentCS->scale, coordinateSystem->scale / parentCS->scale, coordinateSystem->scale / parentCS->scale);
-			newPosition += glm::vec3(coordinateSystem->transform.getPosition().x, coordinateSystem->transform.getPosition().y, coordinateSystem->transform.getPosition().z);
-			transform.setPosition(newPosition);
+			glm::vec3 p = { camPos.x, camPos.y, camPos.z };
+			p = p * currCsQuat;
+			float r = currCs->scale / parentCs->scale;
+			p *= glm::vec3(r, r, r);
+			Position<Coordinate> currCsPos = currCs->transform.getPosition();
+			p += glm::vec3(currCsPos.x, currCsPos.y, currCsPos.z);
 
-			glm::quat newOrientation = transform.getOrientationQuaternion() * coordinateSystem->transform.getOrientationQuaternion();
-			transform.setOrientation(newOrientation);
+			glm::quat o = transform.getOrientationQuaternion() * currCsQuat;
 
-			coordinateSystem = parentCS;
+			coordinateSystem = parentCs;
+			transform.setPosition(p);
+			transform.setOrientation(o);
 
 			checkForCoordinateSystemSwap();
 		}
@@ -27,24 +32,27 @@ namespace Game
 		else {
 			CoordinateSystem* childCS = nullptr;
 
-			for (auto& subSystem : coordinateSystem->coordinateSystems) {
-				if ((transform.getPosition() - subSystem.transform.getPosition()).length() < subSystem.radius) {
+			for (auto& subSystem : currCs->coordinateSystems) {
+				Position<Coordinate> position = camPos - subSystem.transform.getPosition();
+				if (position.length() < subSystem.radius) {
 					childCS = &subSystem;
 				}
 			}
 
 			if (childCS) {
-				Position<Coordinate> position = transform.getPosition() - childCS->transform.getPosition();
+				Position<Coordinate> position = camPos - childCS->transform.getPosition();
+				glm::quat childCsQuat = glm::conjugate(childCS->transform.getOrientationQuaternion());
 
-				glm::vec3 newPosition = { position.x, position.y, position.z };
-				newPosition = newPosition * glm::conjugate(childCS->transform.getOrientationQuaternion());
-				newPosition *= glm::vec3(coordinateSystem->scale / childCS->scale, coordinateSystem->scale / childCS->scale, coordinateSystem->scale / childCS->scale);
-				transform.setPosition(newPosition);
+				glm::vec3 p = { position.x, position.y, position.z };
+				p = p * childCsQuat;
+				float r = currCs->scale / childCS->scale;
+				p *= glm::vec3(r, r, r);
 
-				glm::quat newOrientation = transform.getOrientationQuaternion() * glm::conjugate(childCS->transform.getOrientationQuaternion());
-				transform.setOrientation(newOrientation);
+				glm::quat o = transform.getOrientationQuaternion() * childCsQuat;
 
 				coordinateSystem = childCS;
+				transform.setPosition(p);
+				transform.setOrientation(o);
 
 				checkForCoordinateSystemSwap();
 			}

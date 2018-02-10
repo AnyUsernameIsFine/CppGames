@@ -25,6 +25,9 @@ namespace Game
 
 		void start()
 		{
+			graphics.text.setFont("Resources/consola.ttf", 16);
+			graphics.text.setColor(1, 1, 1);
+
 			CoordinateSystem::createMesh();
 
 			universe.create("Universe", 10000);
@@ -38,9 +41,6 @@ namespace Game
 			camera.setClippingPlanes(0.001f, 10000000.0f);
 			camera.setSize(10.0f);
 			camera.transform.moveZ(10.0f);
-
-			graphics.text.setFont("Resources/consola.ttf", 16);
-			graphics.text.setColor(1, 1, 1);
 		}
 
 		void onKeyDown(SDL_Keycode key)
@@ -80,12 +80,21 @@ namespace Game
 		{
 			graphics.clearScreen(0, 0, 0);
 
+			drawUniverse();
+			drawInfo();
+		}
+
+		void drawUniverse()
+		{
 			universe.coordinateSystems[0].coordinateSystems[0].coordinateSystems[0].coordinateSystems[0].transform.yaw(45 * graphics.getDeltaSeconds());
 			universe.coordinateSystems[0].coordinateSystems[0].coordinateSystems[0].transform.pitch(45 * graphics.getDeltaSeconds());
 			universe.coordinateSystems[0].coordinateSystems[0].transform.roll(45 * graphics.getDeltaSeconds());
 			universe.coordinateSystems[0].transform.yaw(45 * graphics.getDeltaSeconds());
 			universe.draw(camera);
+		}
 
+		void drawInfo()
+		{
 			int fps = (int)round(graphics.getFps());
 			Position<Coordinate> position = camera.transform.getPosition();
 			glm::ivec3 o = camera.transform.getOrientation();
