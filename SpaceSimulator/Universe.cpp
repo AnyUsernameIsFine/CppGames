@@ -32,8 +32,8 @@ namespace Game
 			for (int y = 0; y <= 0; y += 2) {
 				for (int x = -1; x <= 1; x += 2) {
 
-					float ratio = 3.0f + names.size() / (x + 2.0f);
-					//float ratio = 10;
+					//float ratio = 3.0f + names.size() / (x + 2.0f);
+					float ratio = 10;
 					subSystemScale /= ratio;
 
 					CoordinateSystem subSystem;

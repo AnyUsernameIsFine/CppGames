@@ -31,6 +31,7 @@ namespace Game
 			// save camera matrices
 			p = camera.getProjectionMatrix();
 			v = camera.getViewMatrix();
+			glm::mat4 v2 = camera.getViewMatrix(true);
 
 
 			float ratio;
@@ -43,10 +44,13 @@ namespace Game
 			glm::mat4 s = glm::scale(glm::mat4(1), { ratio, ratio, ratio });
 
 			v *= s;
+			v2 *= s;
 
 			// determine camera coordinate sytem hierarchy
 			std::vector<glm::mat4> rotations;
+			std::vector<CoordinateSystem*> cameraSystems;
 			cameraSystem = (CoordinateSystem*)(camera.coordinateSystem);
+			bool first = true;
 			while (cameraSystem->parent) {
 				float ratio = 1;
 				if (cameraSystem->parent->parent) {
@@ -57,61 +61,97 @@ namespace Game
 				glm::mat4 rotate = glm::scale(glm::mat4(1), { ratio, ratio, ratio });
 				rotate *= cameraSystem->transform.getModelMatrix();
 				rotations.push_back(glm::inverse(rotate));
+				cameraSystems.push_back(cameraSystem);
 				cameraSystem = (CoordinateSystem*)(cameraSystem->parent);
 			}
 
+			output("here we go");
+
 			// draw galaxies
-			for (auto galaxy : coordinateSystems) {
+			for (auto& galaxy : coordinateSystems) {
+				glm::mat4 matrix;
+
 				glm::mat4 m2 = galaxy.transform.getModelMatrix();
-				glm::mat4 rs = glm::scale(glm::mat4(1), { galaxy.radius, galaxy.radius, galaxy.radius });
-				glm::mat4 matrix = p * v;
-				for (auto rotation : rotations) {
-					matrix *= rotation;
+
+				if (&galaxy == camera.coordinateSystem) {
+					matrix = p * v;
 				}
-				matrix *= m2 * rs;
-				galaxy.draw(matrix, { 0, 0, 1 });
-
-				// draw stars
-				for (auto star : galaxy.coordinateSystems) {
-					float r2 = galaxy.scale / scale;
-					glm::mat4 s2 = glm::scale(glm::mat4(1), { r2, r2, r2 });
-
-					glm::mat4 m3 = star.transform.getModelMatrix();
-					glm::mat4 rs = glm::scale(glm::mat4(1), { star.radius, star.radius, star.radius });
-					glm::mat4 matrix = p * v;
+				else {
+					matrix = p * v;
 					for (auto rotation : rotations) {
 						matrix *= rotation;
 					}
-					matrix *= m2 * s2 * m3 * rs;
-					star.draw(matrix, { 1, 0, 0 });
+					matrix *= m2;
+				}
 
-					// draw planets
-					for (auto planet : star.coordinateSystems) {
-						float r3 = star.scale / galaxy.scale;
-						glm::mat4 s3 = glm::scale(glm::mat4(1), { r3, r3, r3 });
+				glm::mat4 rs = glm::scale(glm::mat4(1), { galaxy.radius, galaxy.radius, galaxy.radius });
+				galaxy.draw(matrix * rs, { 0, 0, 1 });
 
-						glm::mat4 m4 = planet.transform.getModelMatrix();
-						glm::mat4 rs = glm::scale(glm::mat4(1), { planet.radius, planet.radius, planet.radius });
-						glm::mat4 matrix = p * v;
+				// draw stars
+				for (auto& star : galaxy.coordinateSystems) {
+					glm::mat4 matrix;
+
+					float r = galaxy.scale / scale;
+					glm::mat4 s3 = glm::scale(glm::mat4(1), { r, r, r });
+					glm::mat4 m3 = star.transform.getModelMatrix();
+
+					if (&star == camera.coordinateSystem) {
+						matrix = p * v;
+					}
+					else {
+						matrix = p * v;
 						for (auto rotation : rotations) {
 							matrix *= rotation;
 						}
-						matrix *= m2 * s2 * m3 * s3 * m4 * rs;
-						planet.draw(matrix, { 1, 1, 0 });
+						matrix *= m2 * s3 * m3 * rs;
+					}
 
-						// draw moons
-						for (auto moon : planet.coordinateSystems) {
-							float r4 = planet.scale / star.scale;
-							glm::mat4 s4 = glm::scale(glm::mat4(1), { r4, r4, r4 });
+					glm::mat4 rs = glm::scale(glm::mat4(1), { star.radius, star.radius, star.radius });
+					star.draw(matrix * rs, { 1, 0, 0 });
 
-							glm::mat4 m5 = moon.transform.getModelMatrix();
-							glm::mat4 rs = glm::scale(glm::mat4(1), { moon.radius, moon.radius, moon.radius });
-							glm::mat4 matrix = p * v;
+					// draw planets
+					for (auto& planet : star.coordinateSystems) {
+						glm::mat4 matrix;
+
+						float r = star.scale / galaxy.scale;
+						glm::mat4 s4 = glm::scale(glm::mat4(1), { r, r, r });
+						glm::mat4 m4 = planet.transform.getModelMatrix();
+
+						if (&planet == camera.coordinateSystem) {
+							matrix = p * v;
+						}
+						else {
+							matrix = p * v;
 							for (auto rotation : rotations) {
 								matrix *= rotation;
 							}
-							matrix *= m2 * s2 * m3 * s3 * m4 * s4 * m5 * rs;
-							moon.draw(matrix, { 1, 0, 1 });
+							matrix *= m2 * s3 * m3 * s4 * m4;
+						}
+
+						glm::mat4 rs = glm::scale(glm::mat4(1), { planet.radius, planet.radius, planet.radius });
+						planet.draw(matrix * rs, { 1, 1, 0 });
+
+						// draw moons
+						for (auto& moon : planet.coordinateSystems) {
+							glm::mat4 matrix;
+
+							float r = planet.scale / star.scale;
+							glm::mat4 s5 = glm::scale(glm::mat4(1), { r, r, r });
+							glm::mat4 m5 = moon.transform.getModelMatrix();
+
+							if (&moon == camera.coordinateSystem) {
+								matrix = p * v;
+							}
+							else {
+								matrix = p * v;
+								for (auto rotation : rotations) {
+									matrix *= rotation;
+								}
+								matrix *= m2 * s3 * m3 * s4 * m4 * s5 * m5;
+							}
+
+							glm::mat4 rs = glm::scale(glm::mat4(1), { moon.radius, moon.radius, moon.radius });
+							moon.draw(matrix * rs, { 1, 0, 1 });
 						}
 					}
 				}
