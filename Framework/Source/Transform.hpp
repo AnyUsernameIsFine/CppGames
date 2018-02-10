@@ -13,6 +13,7 @@ namespace Framework
 		Transform(const Position<T>& position = { 0, 0, 0 }, const glm::vec3& orientation = { 0, 0, 0 }, const glm::vec3& scale = { 1, 1, 1 });
 		void setPosition(const Position<T>& position);
 		void setOrientation(const glm::vec3& orientation);
+		void setOrientation(const glm::quat& orientation);
 		void setScale(float scale);
 		void setScale(const glm::vec3& scale);
 		const Position<T> getPosition() const;
@@ -33,10 +34,7 @@ namespace Framework
 		void scaleZ(float factor);
 		void scale(float factor);
 		void scale(const glm::vec3& factor);
-		const glm::mat4 getScaleMatrix() const;
 		const glm::mat4 getRotateMatrix() const;
-		const glm::mat4 getTranslateMatrix() const;
-		const glm::mat4 getTranslateMatrix(const glm::vec3& position) const;
 		const glm::mat4 getModelMatrix() const;
 		const glm::mat4 getModelMatrix(const Position<T>& cameraPosition) const;
 
@@ -74,6 +72,12 @@ namespace Framework
 	void Transform<T>::setOrientation(const glm::vec3& orientation)
 	{
 		orientation_ = glm::quat(glm::radians(orientation));
+	}
+
+	template<typename T>
+	void Transform<T>::setOrientation(const glm::quat& orientation)
+	{
+		orientation_ = orientation;
 	}
 
 	template<typename T>
@@ -213,22 +217,10 @@ namespace Framework
 	}
 
 	template<typename T>
-	const glm::mat4 Transform<T>::getScaleMatrix() const
-	{
-		return glm::scale(glm::mat4(1), scale_);
-	}
-
-	template<typename T>
 	const glm::mat4 Transform<T>::getRotateMatrix() const
 	{
 		//return glm::inverse(glm::mat4_cast(orientation_));
 		return glm::mat4_cast(glm::conjugate(orientation_));
-	}
-
-	template<typename T>
-	const glm::mat4 Transform<T>::getTranslateMatrix(const glm::vec3& position) const
-	{
-		return glm::translate(glm::mat4(1), position);
 	}
 
 	template<typename T>
@@ -248,6 +240,9 @@ namespace Framework
 	template<typename T>
 	const glm::mat4 Transform<T>::getModelMatrix_(const glm::vec3& position) const
 	{
-		return getTranslateMatrix(position) * getRotateMatrix() * getScaleMatrix();
+		glm::mat4 translate = glm::translate(glm::mat4(1), position);
+		glm::mat4 scale = glm::scale(glm::mat4(1), scale_);
+
+		return translate * getRotateMatrix() * scale;
 	}
 }

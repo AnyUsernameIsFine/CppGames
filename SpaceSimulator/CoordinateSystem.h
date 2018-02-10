@@ -12,7 +12,7 @@ namespace Game
 	class CoordinateSystem : public GameObject
 	{
 	public:
-		std::wstring name;
+		std::string name;
 		float scale = 1;
 		float radius = 0;
 		std::vector<CoordinateSystem> coordinateSystems;
@@ -26,7 +26,5 @@ namespace Game
 	protected:
 		static GLuint vao_;
 		static ShaderProgram* shaderProgram_;
-
-		void drawRecursively_(const glm::mat4& matrix, std::vector<CoordinateSystem*> cameraSystems, int depth) const;
 	};
 }

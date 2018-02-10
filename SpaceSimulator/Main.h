@@ -27,12 +27,12 @@ namespace Game
 		{
 			CoordinateSystem::createMesh();
 
-			universe.create(L"Universe", 10000);
+			universe.create("Universe", 10000);
 
 			//camera.coordinateSystem = &universe;
-			//camera.coordinateSystem = &universe.coordinateSystems[1];
-			camera.coordinateSystem = &universe.coordinateSystems[0].coordinateSystems[0];
-			//camera.coordinateSystem = &universe.coordinateSystems[1].coordinateSystems[1].coordinateSystems[1];
+			//camera.coordinateSystem = &universe.coordinateSystems[0];
+			//camera.coordinateSystem = &universe.coordinateSystems[0].coordinateSystems[0];
+			camera.coordinateSystem = &universe.coordinateSystems[0].coordinateSystems[0].coordinateSystems[0].coordinateSystems[0];
 
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
 			camera.setClippingPlanes(0.001f, 10000000.0f);
@@ -69,6 +69,7 @@ namespace Game
 			camera.transform.moveX(cameraSpeed * (input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)));
 			camera.transform.moveY(cameraSpeed * (input.isKeyDown(SDLK_r) - input.isKeyDown(SDLK_f)));
 			camera.transform.moveZ(cameraSpeed * (input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w)));
+			camera.checkForCoordinateSystemSwap();
 
 			float rollSensitivity = 90 * graphics.getDeltaSeconds();
 			camera.transform.roll(rollSensitivity * (input.isKeyDown(SDLK_e) - input.isKeyDown(SDLK_q)));
@@ -78,21 +79,22 @@ namespace Game
 		{
 			graphics.clearScreen(0, 0, 0);
 
-			//universe.coordinateSystems.back().coordinateSystems.back().transform.yaw(45 * graphics.getDeltaSeconds());
-			//universe.coordinateSystems[0].transform.pitch(45 * graphics.getDeltaSeconds());
-			//output(camera.coordinateSystem);
+			universe.coordinateSystems[0].coordinateSystems[0].coordinateSystems[0].coordinateSystems[0].transform.yaw(45 * graphics.getDeltaSeconds());
+			universe.coordinateSystems[0].coordinateSystems[0].coordinateSystems[0].transform.pitch(45 * graphics.getDeltaSeconds());
+			universe.coordinateSystems[0].coordinateSystems[0].transform.roll(45 * graphics.getDeltaSeconds());
+			universe.coordinateSystems[0].transform.yaw(45 * graphics.getDeltaSeconds());
 			universe.draw(camera);
 
 			int fps = (int)round(graphics.getFps());
 			Position<Coordinate> position = camera.transform.getPosition();
 			glm::ivec3 o = camera.transform.getOrientation();
 
-			std::wstring fpsString = std::to_wstring(fps) + L"fps";
-			std::wstring csString = camera.coordinateSystem->name;
-			std::wstring positionString = L"x: " + std::to_wstring(position.x) + L" y: " + std::to_wstring(position.y) + L" z: " + std::to_wstring(position.z);
-			std::wstring orientatonString = L"yaw: " + std::to_wstring(o.y) + L"° pitch: " + std::to_wstring(o.x) + L"° roll: " + std::to_wstring(o.z) + L"°";
+			std::string fpsString = std::to_string(fps) + "fps";
+			std::string csString = camera.coordinateSystem->name + " (" + std::to_string(camera.coordinateSystem->scale) + "m/u)";
+			std::string positionString = "x: " + std::to_string(position.x) + " y: " + std::to_string(position.y) + " z: " + std::to_string(position.z);
+			std::string orientatonString = "yaw: " + std::to_string(o.y) + " pitch: " + std::to_string(o.x) + " roll: " + std::to_string(o.z);
 
-			graphics.text.draw(0, 0, fpsString + L"\n" + csString + L"\n" + positionString + L"\n" + orientatonString);
+			graphics.text.draw(0, 0, fpsString + "\n" + csString + "\n" + positionString + "\n" + orientatonString);
 		}
 	};
 }

@@ -4,46 +4,48 @@
 
 namespace Game
 {
-	void Universe::create(const std::wstring& name, float scale)
+	void Universe::create(const std::string& name, float scale)
 	{
 		this->name = name;
 		this->scale = scale;
 
-		std::vector<std::wstring> names = {
-			L"Galaxy",
-			L"Star",
-			L"Planet",
-			//L"Moon",
+		std::vector<std::string> names = {
+			"Galaxy",
+			"Star",
+			"Planet",
+			"Moon",
 		};
 
 		addSubSystems_(this, names, scale);
 		linkSubSystems_(this);
-
-		output(&(coordinateSystems[0]));
 	}
 
-	void Universe::addSubSystems_(CoordinateSystem* parent, const std::vector<std::wstring>& names, float scalettt)
+	void Universe::addSubSystems_(CoordinateSystem* parent, const std::vector<std::string>& names, float parentScale)
 	{
 		if (!names.size()) {
 			return;
 		}
 
-		for (int z = -1; z <= 1; z += 2) {
+		float subSystemScale = parentScale;
 
-			float ratio = 3 + 2 * names.size() / (z + 2.0) / 2;
-			scalettt /= ratio;
-			output(scalettt);
+		for (int z = -1; z <= 1; z += 2) {
+			float ratio = 3.0f + names.size() / (z + 2.0f);
+			//float ratio = 10;
+			subSystemScale /= ratio;
 
 			for (int y = 0; y <= 0; y++) {
 				for (int x = 0; x <= 0; x++) {
 					CoordinateSystem subSystem;
-					subSystem.name = names[0];
-					subSystem.scale = scalettt;
-					subSystem.radius = 1;
-					subSystem.transform.setPosition({ x * ratio * 2 / 3, y * ratio * 2 / 3, z * ratio * 2 / 3 });
-					subSystem.transform.rotate(20 * names.size() * z, { 1, 1, 1 });
 
-					addSubSystems_(&subSystem, std::vector<std::wstring>(names.begin() + 1, names.end()), scalettt);
+					subSystem.name = names[0];
+					subSystem.scale = subSystemScale;
+					subSystem.radius = 1;
+
+					float positionOffset = ratio * 2.0f / 3.0f;
+					subSystem.transform.setPosition({ x * positionOffset, y * positionOffset, z * positionOffset });
+					subSystem.transform.rotate(20.0f * names.size() * z, { 1, 1, 1 });
+
+					addSubSystems_(&subSystem, std::vector<std::string>(names.begin() + 1, names.end()), subSystemScale);
 
 					parent->coordinateSystems.push_back(subSystem);
 				}

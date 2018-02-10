@@ -9,10 +9,10 @@ namespace Game
 	class Universe : public CoordinateSystem
 	{
 	public:
-		void create(const std::wstring& name, float scale);
+		void create(const std::string& name, float scale);
 
 	private:
-		void addSubSystems_(CoordinateSystem* parent, const std::vector<std::wstring>& names, float scale);
+		void addSubSystems_(CoordinateSystem* parent, const std::vector<std::string>& names, float subSystemScale);
 		void linkSubSystems_(CoordinateSystem* parent);
 	};
 }

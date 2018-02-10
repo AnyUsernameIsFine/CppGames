@@ -15,6 +15,7 @@ namespace Framework
 		Position<T>& operator+=(const glm::vec3& vec3);
 		const Position<T> operator-(const Position<T>& position) const;
 		const Position<T> operator*(float f) const;
+		const float length() const;
 	};
 }
 
@@ -57,5 +58,11 @@ namespace Framework
 	const Position<T> Position<T>::operator*(float f) const
 	{
 		return Position<T>(x * f, y * f, z * f);
+	}
+
+	template<typename T>
+	const float Position<T>::length() const
+	{
+		return sqrtf((float)x * x + (float)y * y + (float)z * z);
 	}
 }

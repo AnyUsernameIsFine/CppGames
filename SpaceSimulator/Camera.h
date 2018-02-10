@@ -14,5 +14,7 @@ namespace Game
 	{
 	public:
 		CoordinateSystem* coordinateSystem;
+
+		void checkForCoordinateSystemSwap();
 	};
 }

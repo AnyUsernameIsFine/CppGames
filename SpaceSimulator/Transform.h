@@ -6,8 +6,8 @@ namespace Game
 {
 	using namespace Framework;
 
-	typedef float Coordinate;
-	//typedef int_least64_t Coordinate;
+		typedef float Coordinate;
+		//typedef int_least64_t Coordinate;
 
 	class Transform : public Framework::Transform<Coordinate>
 	{
