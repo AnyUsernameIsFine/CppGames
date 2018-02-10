@@ -29,14 +29,15 @@ namespace Game
 
 			universe.create("Universe", 10000);
 
-			//camera.coordinateSystem = &universe;
+			camera.coordinateSystem = &universe;
 			//camera.coordinateSystem = &universe.coordinateSystems[0];
 			//camera.coordinateSystem = &universe.coordinateSystems[0].coordinateSystems[0];
-			camera.coordinateSystem = &universe.coordinateSystems[0].coordinateSystems[0].coordinateSystems[0].coordinateSystems[0];
+			//camera.coordinateSystem = &universe.coordinateSystems[0].coordinateSystems[0].coordinateSystems[0].coordinateSystems[0];
 
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
 			camera.setClippingPlanes(0.001f, 10000000.0f);
 			camera.setSize(10.0f);
+			camera.transform.moveZ(10.0f);
 
 			graphics.text.setFont("Resources/consola.ttf", 16);
 			graphics.text.setColor(1, 1, 1);

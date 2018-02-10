@@ -28,13 +28,14 @@ namespace Game
 
 		float subSystemScale = parentScale;
 
-		for (int z = -1; z <= 1; z += 2) {
-			float ratio = 3.0f + names.size() / (z + 2.0f);
-			//float ratio = 10;
-			subSystemScale /= ratio;
+		for (int z = 0; z <= 0; z += 2) {
+			for (int y = 0; y <= 0; y += 2) {
+				for (int x = -1; x <= 1; x += 2) {
 
-			for (int y = 0; y <= 0; y++) {
-				for (int x = 0; x <= 0; x++) {
+					float ratio = 3.0f + names.size() / (x + 2.0f);
+					//float ratio = 10;
+					subSystemScale /= ratio;
+
 					CoordinateSystem subSystem;
 
 					subSystem.name = names[0];
@@ -43,7 +44,7 @@ namespace Game
 
 					float positionOffset = ratio * 2.0f / 3.0f;
 					subSystem.transform.setPosition({ x * positionOffset, y * positionOffset, z * positionOffset });
-					subSystem.transform.rotate(20.0f * names.size() * z, { 1, 1, 1 });
+					subSystem.transform.rotate(20.0f * names.size() * x, { 1, 1, 1 });
 
 					addSubSystems_(&subSystem, std::vector<std::string>(names.begin() + 1, names.end()), subSystemScale);
 
