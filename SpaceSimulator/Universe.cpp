@@ -44,6 +44,12 @@ namespace Game
 
 					float positionOffset = ratio * 2.0f / 3.0f;
 					subSystem.transform.setPosition({ x * positionOffset, y * positionOffset, z * positionOffset });
+
+					// test long distances
+					if (parentScale == 10000) {
+						subSystem.transform.moveX(10000000);
+					}
+
 					subSystem.transform.rotate(20.0f * names.size() * x, { 1, 1, 1 });
 
 					addSubSystems_(&subSystem, std::vector<std::string>(names.begin() + 1, names.end()), subSystemScale);

@@ -24,8 +24,8 @@ namespace Game
 		void draw(const glm::mat4& matrix, glm::vec3 color) const;
 
 		void drawRecursively(
-			const glm::mat4& initialScaleMatrix,
 			glm::mat4 passMatrix,
+			const glm::mat4& initialScaleMatrix,
 			const Camera& camera,
 			std::vector<CoordinateSystem*>& cameraSystems,
 			std::vector<glm::mat4> rotations,
