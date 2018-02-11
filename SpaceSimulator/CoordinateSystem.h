@@ -29,6 +29,8 @@ namespace Game
 			const Camera& camera,
 			std::vector<CoordinateSystem*>& cameraSystems,
 			std::vector<glm::mat4> rotations,
+			std::vector<Position<Coordinate>> cameraPositions,
+			Position<Coordinate> camPos,
 			int depth
 		) const;
 		void draw(const glm::mat4& matrix, int depth) const;

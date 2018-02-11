@@ -47,7 +47,7 @@ namespace Game
 
 					// test long distances
 					if (parentScale == 10000) {
-						//subSystem.transform.moveX(10000000);
+						//subSystem.transform.moveX(100000000.0f);
 					}
 
 					subSystem.transform.rotate(20.0f * names.size() * x, { 1, 1, 1 });

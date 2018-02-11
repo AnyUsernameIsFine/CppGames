@@ -59,7 +59,7 @@ namespace Game
 					((CoordinateSystem*)cameraSystem->parent)->scale /
 					((CoordinateSystem*)cameraSystem->parent->parent)->scale;
 			}
-			rotation *= glm::inverse(glm::scale(glm::mat4(1), { ratio, ratio, ratio }) * cameraSystem->transform.getModelMatrix());
+			rotation *= glm::inverse(cameraSystem->transform.getRotateMatrix());
 			rotations.push_back(rotation);
 
 			glm::quat q = cameraSystem->transform.getOrientationQuaternion();
@@ -69,6 +69,7 @@ namespace Game
 			p = p * q;
 			Position<Coordinate> csPos = cameraSystem->transform.getPosition();
 			p += glm::vec3(csPos.x, csPos.y, csPos.z);
+			camPos = Position<Coordinate>(p);
 			cameraPositions.push_back(p);
 
 			cameraSystem = (CoordinateSystem*)(cameraSystem->parent);
@@ -78,7 +79,7 @@ namespace Game
 
 		// draw galaxies
 		for (auto& galaxy : coordinateSystems) {
-			galaxy.drawRecursively(glm::mat4(1), s, camera, cameraSystems, rotations, 1);
+			galaxy.drawRecursively(glm::mat4(1), s, camera, cameraSystems, rotations, cameraPositions, camPos, 1);
 		}
 	}
 
@@ -90,10 +91,12 @@ namespace Game
 		const Camera& camera,
 		std::vector<CoordinateSystem*>& cameraSystems,
 		std::vector<glm::mat4> rotations,
+		std::vector<Position<Coordinate>> cameraPositions,
+		Position<Coordinate> camPos,
 		int depth
 	) const
 	{
-		glm::mat4 drawMatrix = camera.getProjectionMatrix() * camera.getViewMatrix() * initialScaleMatrix;
+		glm::mat4 drawMatrix = camera.getProjectionMatrix() * camera.getViewMatrix(true) * initialScaleMatrix;
 
 		float r = 1.0f;
 		if (parent->parent) {
@@ -101,43 +104,80 @@ namespace Game
 		}
 		glm::mat4 relativeScaleMatrix = glm::scale(glm::mat4(1), { r, r, r });
 
-		glm::mat4 modelMatrix = transform.getModelMatrix();
 
 
 
-		bool thisIsCameraSystem = false;
 
 		if (!cameraSystems.empty() && cameraSystems.back() == this) {
-			if (cameraSystems.front() == this) {
-				thisIsCameraSystem = true;
+			bool thisIsCameraSystem = cameraSystems.front() == this;
+
+			if (thisIsCameraSystem) {
+				passMatrix = glm::mat4(1);
+				drawMatrix = camera.getProjectionMatrix() * camera.getViewMatrix() * initialScaleMatrix;
+			}
+			else {
+				glm::mat4 modelMatrix = transform.getModelMatrix(camPos);
+
+				if (!rotations.empty()) {
+					drawMatrix *= rotations.back();
+				}
+				drawMatrix *= passMatrix * relativeScaleMatrix * modelMatrix;
 			}
 
 			cameraSystems.pop_back();
 			rotations.pop_back();
-		}
-		else {
-			passMatrix *= relativeScaleMatrix * modelMatrix;
-		}
+			cameraPositions.pop_back();
 
-		if (thisIsCameraSystem) {
-			passMatrix = glm::mat4(1);
+			if (!cameraPositions.empty()) {
+				camPos = cameraPositions.back();
+			}
+			else {
+				camPos = camera.transform.getPosition();
+			}
 		}
 		else {
+			glm::mat4 modelMatrix = transform.getModelMatrix(camPos);
+
 			if (!rotations.empty()) {
 				drawMatrix *= rotations.back();
 			}
-			drawMatrix *= passMatrix;
+			drawMatrix *= passMatrix * relativeScaleMatrix * modelMatrix;
+
+			passMatrix *= transform.getRotateMatrix();
+
+			Position<Coordinate> position = camPos - transform.getPosition();
+			glm::quat childCsQuat = glm::conjugate(transform.getOrientationQuaternion());
+
+			glm::vec3 p = { position.x, position.y, position.z };
+			p = p * childCsQuat;
+			r = ((CoordinateSystem*)parent)->scale / scale;
+			p *= glm::vec3(r, r, r);
+			camPos = p;
+
 		}
+
+
+
+
+
+
+
+
 
 
 
 		drawMatrix *= glm::scale(glm::mat4(1), { radius, radius, radius });
 		draw(drawMatrix, depth);
 
-		for (auto& coordinateSystem : coordinateSystems) {
-			coordinateSystem.drawRecursively(passMatrix, initialScaleMatrix, camera, cameraSystems, rotations, depth + 1);
-		}
+		//if (depth == 1) {
+			for (auto& coordinateSystem : coordinateSystems) {
+				coordinateSystem.drawRecursively(passMatrix, initialScaleMatrix, camera, cameraSystems, rotations, cameraPositions, camPos, depth + 1);
+			}
+		//}
 	}
+
+
+
 
 	void CoordinateSystem::draw(const glm::mat4& matrix, int depth) const
 	{
