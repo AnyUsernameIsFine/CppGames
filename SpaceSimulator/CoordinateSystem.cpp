@@ -42,27 +42,41 @@ namespace Game
 		glm::mat4 s = glm::scale(glm::mat4(1), { ratio, ratio, ratio });
 
 		// determine camera coordinate sytem hierarchy
-		std::vector<glm::mat4> rotations;
 		std::vector<CoordinateSystem*> cameraSystems;
+		std::vector<glm::mat4> rotations;
+		std::vector<Position<Coordinate>> cameraPositions;
+
 		cameraSystem = (CoordinateSystem*)(camera.coordinateSystem);
-		bool first = true;
+		glm::mat4 rotation = glm::mat4(1);
+		Position<Coordinate> camPos = camera.transform.getPosition();
+
 		while (cameraSystem->parent) {
+			cameraSystems.push_back(cameraSystem);
+
 			float ratio = 1;
 			if (cameraSystem->parent->parent) {
 				ratio =
 					((CoordinateSystem*)cameraSystem->parent)->scale /
 					((CoordinateSystem*)cameraSystem->parent->parent)->scale;
 			}
-			glm::mat4 rotate = glm::scale(glm::mat4(1), { ratio, ratio, ratio });
-			rotate *= cameraSystem->transform.getModelMatrix();
-			rotations.push_back(glm::inverse(rotate));
-			cameraSystems.push_back(cameraSystem);
+			rotation *= glm::inverse(glm::scale(glm::mat4(1), { ratio, ratio, ratio }) * cameraSystem->transform.getModelMatrix());
+			rotations.push_back(rotation);
+
+			glm::quat q = cameraSystem->transform.getOrientationQuaternion();
+			float r = cameraSystem->scale / ((CoordinateSystem*)cameraSystem->parent)->scale;
+			// TODO: something about precision loss
+			glm::vec3 p = { camPos.x * r, camPos.y * r, camPos.z * r };
+			p = p * q;
+			Position<Coordinate> csPos = cameraSystem->transform.getPosition();
+			p += glm::vec3(csPos.x, csPos.y, csPos.z);
+			cameraPositions.push_back(p);
+
 			cameraSystem = (CoordinateSystem*)(cameraSystem->parent);
 		}
 
 		//output("here we go");
 
-			// draw galaxies
+		// draw galaxies
 		for (auto& galaxy : coordinateSystems) {
 			galaxy.drawRecursively(glm::mat4(1), s, camera, cameraSystems, rotations, 1);
 		}
@@ -91,27 +105,27 @@ namespace Game
 
 
 
+		bool thisIsCameraSystem = false;
+
 		if (!cameraSystems.empty() && cameraSystems.back() == this) {
-			bool thisIsCameraSystem = cameraSystems.front() == this;
+			if (cameraSystems.front() == this) {
+				thisIsCameraSystem = true;
+			}
 
 			cameraSystems.pop_back();
 			rotations.pop_back();
-
-			if (thisIsCameraSystem) {
-				passMatrix = glm::mat4(1);
-			}
-			else {
-				for (auto rotation : rotations) {
-					drawMatrix *= rotation;
-				}
-				drawMatrix *= passMatrix;
-			}
 		}
 		else {
-			for (auto rotation : rotations) {
-				drawMatrix *= rotation;
-			}
 			passMatrix *= relativeScaleMatrix * modelMatrix;
+		}
+
+		if (thisIsCameraSystem) {
+			passMatrix = glm::mat4(1);
+		}
+		else {
+			if (!rotations.empty()) {
+				drawMatrix *= rotations.back();
+			}
 			drawMatrix *= passMatrix;
 		}
 
