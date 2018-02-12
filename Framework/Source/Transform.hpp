@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Position.hpp"
+#include "Vector3.hpp"
 
 #include <glm\gtc\quaternion.hpp>
 
@@ -10,41 +10,50 @@ namespace Framework
 	class Transform
 	{
 	public:
-		Transform(const Position<T>& position = { 0, 0, 0 }, const glm::vec3& orientation = { 0, 0, 0 }, const glm::vec3& scale = { 1, 1, 1 });
-		void setPosition(const Position<T>& position);
-		void setOrientation(const glm::vec3& orientation);
-		void setOrientation(const glm::quat& orientation);
-		void setScale(float scale);
-		void setScale(const glm::vec3& scale);
-		const Position<T> getPosition() const;
-		const glm::vec3 getOrientation() const;
-		const glm::quat getOrientationQuaternion() const;
-		const glm::vec3 getScale() const;
+		Transform(
+			const Vector3<T>& position = { 0, 0, 0 },
+			const glm::vec3& eulerAngles = { 0, 0, 0 },
+			const glm::vec3& scale = { 1, 1, 1 }
+		);
 		void useModelAxes(bool use = true);
-		void moveX(float distance);
-		void moveY(float distance);
-		void moveZ(float distance);
-		void move(const glm::vec3& vector);
+		void setPosition(const Vector3<T>& position);
+		void setPosition(T x, T y, T z);
+		void setOrientation(const glm::quat& orientation);
+		void setEulerAngles(const glm::vec3& eulerAngles);
+		void setEulerAngles(float yaw, float pitch, float roll);
+		void setScale(const glm::vec3& scale);
+		void setScale(float x, float y, float z);
+		void setScale(float scale);
+		const Vector3<T> getPosition() const;
+		const glm::vec3 getEulerAngles() const;
+		const glm::quat getOrientation() const;
+		const glm::vec3 getScale() const;
+		void move(const Vector3<T>& vector);
+		void move(T x, T y, T z);
+		void moveX(T distance);
+		void moveY(T distance);
+		void moveZ(T distance);
+		void rotate(float angle, const glm::vec3& axis);
 		void yaw(float angle);
 		void pitch(float angle);
 		void roll(float angle);
-		void rotate(float angle, const glm::vec3& axis);
-		void scaleX(float factor);
-		void scaleY(float factor);
-		void scaleZ(float factor);
-		void scale(float factor);
-		void scale(const glm::vec3& factor);
+		void scale(const glm::vec3& scale);
+		void scale(float x, float y, float z);
+		void scale(float scale);
+		void scaleX(float scale);
+		void scaleY(float scale);
+		void scaleZ(float scale);
 		const glm::mat4 getRotateMatrix() const;
 		const glm::mat4 getModelMatrix() const;
-		const glm::mat4 getModelMatrix(const Position<T>& cameraPosition) const;
+		const glm::mat4 getModelMatrix(const Vector3<T>& cameraPosition) const;
 
 	private:
-		Position<T> position_;
+		Vector3<T> position_;
 		glm::quat orientation_;
 		glm::vec3 scale_;
 		bool useModelAxes_ = true;
 
-		const glm::mat4 getModelMatrix_(const glm::vec3& position) const;
+		const glm::mat4 getModelMatrix_(const Vector3<T>& position) const;
 	};
 }
 
@@ -55,65 +64,11 @@ namespace Framework
 namespace Framework
 {
 	template<typename T>
-	Transform<T>::Transform(const Position<T>& position, const glm::vec3& orientation, const glm::vec3& scale)
+	Transform<T>::Transform(const Vector3<T>& position, const glm::vec3& eulerAngles, const glm::vec3& scale)
 	{
 		setPosition(position);
-		setOrientation(orientation);
+		setEulerAngles(eulerAngles);
 		setScale(scale);
-	}
-
-	template<typename T>
-	void Transform<T>::setPosition(const Position<T>& position)
-	{
-		position_ = position;
-	}
-
-	template<typename T>
-	void Transform<T>::setOrientation(const glm::vec3& orientation)
-	{
-		orientation_ = glm::quat(glm::radians(orientation));
-	}
-
-	template<typename T>
-	void Transform<T>::setOrientation(const glm::quat& orientation)
-	{
-		orientation_ = orientation;
-	}
-
-	template<typename T>
-	void Transform<T>::setScale(float scale)
-	{
-		scale_ = { scale, scale, scale };
-	}
-
-	template<typename T>
-	void Transform<T>::setScale(const glm::vec3& scale)
-	{
-		scale_ = scale;
-	}
-
-	template<typename T>
-	const Position<T> Transform<T>::getPosition() const
-	{
-		return position_;
-	}
-
-	template<typename T>
-	const glm::vec3 Transform<T>::getOrientation() const
-	{
-		return glm::degrees(glm::eulerAngles(orientation_));
-	}
-
-	template<typename T>
-	const glm::quat Transform<T>::getOrientationQuaternion() const
-	{
-		return orientation_;
-	}
-
-	template<typename T>
-	const glm::vec3 Transform<T>::getScale() const
-	{
-		return scale_;
 	}
 
 	template<typename T>
@@ -123,25 +78,79 @@ namespace Framework
 	}
 
 	template<typename T>
-	void Transform<T>::moveX(float distance)
+	void Transform<T>::setPosition(const Vector3<T>& position)
 	{
-		move({ distance, 0, 0 });
+		position_ = position;
 	}
 
 	template<typename T>
-	void Transform<T>::moveY(float distance)
+	void Transform<T>::setPosition(T x, T y, T z)
 	{
-		move({ 0, distance, 0 });
+		setPosition({ x, y, z });
 	}
 
 	template<typename T>
-	void Transform<T>::moveZ(float distance)
+	void Transform<T>::setOrientation(const glm::quat& orientation)
 	{
-		move({ 0, 0, distance });
+		orientation_ = orientation;
 	}
 
 	template<typename T>
-	void Transform<T>::move(const glm::vec3& vector)
+	void Transform<T>::setEulerAngles(const glm::vec3& eulerAngles)
+	{
+		setOrientation(glm::quat(glm::radians(eulerAngles)));
+	}
+
+	template<typename T>
+	void Transform<T>::setEulerAngles(float yaw, float pitch, float roll)
+	{
+		setEulerAngles({ yaw, pitch, roll });
+	}
+
+	template<typename T>
+	void Transform<T>::setScale(const glm::vec3& scale)
+	{
+		scale_ = scale;
+	}
+
+	template<typename T>
+	void Transform<T>::setScale(float x, float y, float z)
+	{
+		setScale({ x, y, z });
+	}
+
+	template<typename T>
+	void Transform<T>::setScale(float scale)
+	{
+		setScale(scale, scale, scale);
+	}
+
+	template<typename T>
+	const Vector3<T> Transform<T>::getPosition() const
+	{
+		return position_;
+	}
+
+	template<typename T>
+	const glm::quat Transform<T>::getOrientation() const
+	{
+		return orientation_;
+	}
+
+	template<typename T>
+	const glm::vec3 Transform<T>::getEulerAngles() const
+	{
+		return glm::degrees(glm::eulerAngles(orientation_));
+	}
+
+	template<typename T>
+	const glm::vec3 Transform<T>::getScale() const
+	{
+		return scale_;
+	}
+
+	template<typename T>
+	void Transform<T>::move(const Vector3<T>& vector)
 	{
 		if (useModelAxes_) {
 			position_ += vector * orientation_;
@@ -149,6 +158,45 @@ namespace Framework
 		else {
 			position_ += vector;
 		}
+	}
+
+	template<typename T>
+	void Transform<T>::move(T x, T y, T z)
+	{
+		move({ x, y, z });
+	}
+
+	template<typename T>
+	void Transform<T>::moveX(T distance)
+	{
+		move(distance, 0, 0);
+	}
+
+	template<typename T>
+	void Transform<T>::moveY(T distance)
+	{
+		move(0, distance, 0);
+	}
+
+	template<typename T>
+	void Transform<T>::moveZ(T distance)
+	{
+		move(0, 0, distance);
+	}
+
+	template<typename T>
+	void Transform<T>::rotate(float angle, const glm::vec3& axis)
+	{
+		glm::quat rotation = glm::angleAxis(glm::radians(angle), axis);
+
+		if (useModelAxes_) {
+			orientation_ = rotation * orientation_;
+		}
+		else {
+			orientation_ *= rotation;
+		}
+
+		orientation_ = glm::normalize(orientation_);
 	}
 
 	template<typename T>
@@ -172,54 +220,44 @@ namespace Framework
 	}
 
 	template<typename T>
-	void Transform<T>::rotate(float angle, const glm::vec3& axis)
+	void Transform<T>::scale(const glm::vec3& scale)
 	{
-		glm::quat rotation = glm::angleAxis(glm::radians(angle), axis);
-
-		if (useModelAxes_) {
-			orientation_ = rotation * orientation_;
-		}
-		else {
-			orientation_ *= rotation;
-		}
-
-		orientation_ = glm::normalize(orientation_);
+		scale_ *= scale;
 	}
 
 	template<typename T>
-	void Transform<T>::scaleX(float factor)
+	void Transform<T>::scale(float x, float y, float z)
 	{
-		scale({ factor, 0, 0 });
+		scale({ x, y, z });
 	}
 
 	template<typename T>
-	void Transform<T>::scaleY(float factor)
+	void Transform<T>::scale(float scale)
 	{
-		scale({ 0, factor, 0 });
+		scale_ *= scale;
 	}
 
 	template<typename T>
-	void Transform<T>::scaleZ(float factor)
+	void Transform<T>::scaleX(float scale)
 	{
-		scale({ 0, 0, factor });
+		scale(scale, 0, 0);
 	}
 
 	template<typename T>
-	void Transform<T>::scale(float factor)
+	void Transform<T>::scaleY(float scale)
 	{
-		scale_ *= factor;
+		scale(0, scale, 0);
 	}
 
 	template<typename T>
-	void Transform<T>::scale(const glm::vec3& factor)
+	void Transform<T>::scaleZ(float scale)
 	{
-		scale_ *= factor;
+		scale(0, 0, scale);
 	}
 
 	template<typename T>
 	const glm::mat4 Transform<T>::getRotateMatrix() const
 	{
-		//return glm::inverse(glm::mat4_cast(orientation_));
 		return glm::mat4_cast(glm::conjugate(orientation_));
 	}
 
@@ -230,18 +268,18 @@ namespace Framework
 	}
 
 	template<typename T>
-	const glm::mat4 Transform<T>::getModelMatrix(const Position<T>& cameraPosition) const
+	const glm::mat4 Transform<T>::getModelMatrix(const Vector3<T>& cameraPosition) const
 	{
-		Position<T> distance = position_ - cameraPosition;
+		Vector3<T> distance = position_ - cameraPosition;
 
-		// TODO: something about loss of precision?
 		return getModelMatrix_({ distance.x, distance.y, distance.z });
 	}
 
 	template<typename T>
-	const glm::mat4 Transform<T>::getModelMatrix_(const glm::vec3& position) const
+	const glm::mat4 Transform<T>::getModelMatrix_(const Vector3<T>& position) const
 	{
-		glm::mat4 translate = glm::translate(glm::mat4(1), position);
+		// TODO: something about loss of precision?
+		glm::mat4 translate = glm::translate(glm::mat4(1), { position.x, position.y, position.z });
 		glm::mat4 scale = glm::scale(glm::mat4(1), scale_);
 
 		return translate * getRotateMatrix() * scale;

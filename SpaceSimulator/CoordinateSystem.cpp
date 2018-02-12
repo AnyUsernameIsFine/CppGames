@@ -24,18 +24,15 @@ namespace Game
 
 		// determine camera coordinate system hierarchy
 		while (parentCs) {
-			glm::quat q = ch.coordinateSystem->transform.getOrientationQuaternion();
+			glm::quat q = ch.coordinateSystem->transform.getOrientation();
 			ch.rotation *= glm::mat4_cast(q);
 
 			cameraHierarchy.push_back(ch);
 
-			// TODO: something about loss of precision?
-			float r = ch.coordinateSystem->scale / parentCs->scale;
-			glm::vec3 p = { ch.position.x * r, ch.position.y * r, ch.position.z * r };
-			p = p * q;
-			Position<Coordinate> csPos = ch.coordinateSystem->transform.getPosition();
-			p += glm::vec3(csPos.x, csPos.y, csPos.z);
-			ch.position = Position<Coordinate>(p);
+			// TODO: reorder these next two operations for added precision?
+			ch.position *= q;
+			ch.position *= ch.coordinateSystem->scale / parentCs->scale;
+			ch.position += ch.coordinateSystem->transform.getPosition();
 
 			ch.coordinateSystem = parentCs;
 
@@ -67,11 +64,11 @@ namespace Game
 
 	void CoordinateSystem::drawRecursively_(
 		int hierarchyIndex,										// which level of the camera hierarchy should we use for inverse rotations
-		glm::mat4 rotations,									// matrix of the combined rotations of all this coordinate system's ancestors' rotations
+		glm::mat4 rotations,									// matrix of the combined rotations of all this coordinate system's ancestors
 		const glm::mat4& pr,									// camera projection matrix * camera rotation matrix
 		const glm::mat4& pv,									// camera projection matrix * camera view matrix
-		const std::vector<CameraHierarchy>& cameraHierarchy,	// list of the camera's positions and rotations relative to all its ancestors' coordinate systems from inside to outside
-		Position<Coordinate> camPos,							// camera position relative to this coordinate system's parent
+		const std::vector<CameraHierarchy>& cameraHierarchy,	// list of the camera's positions and rotations relative to all its coordinate system's ancestors from inside to outside
+		Vector3 camPos,											// camera position relative to this coordinate system's parent
 		int depth												// current depth of this coordinate system relative to the universe (used for coloring only)
 	) const
 	{
@@ -82,6 +79,7 @@ namespace Game
 		if (hierarchyIndex >= 0 && cameraHierarchy[hierarchyIndex].coordinateSystem == this) {
 			bool thisIsCameraSystem = (hierarchyIndex == 0);
 
+			// save the camera position relative to the current coordinate system
 			camPos = cameraHierarchy[hierarchyIndex].position;
 
 			hierarchyIndex--;
@@ -93,13 +91,16 @@ namespace Game
 				m = pv;
 			}
 
-			// if this coordinate system is an ancestor of the one the camera is in, we will rotate it by only its 
+			// if this coordinate system is an ancestor of the one the camera is in
 			else {
+				// use the camera's projection and rotation
+				// and the camera's rotation relative to this coordinate system's ancestors
 				m = pr;
 				if (hierarchyIndex >= 0) {
 					m *= cameraHierarchy[hierarchyIndex].rotation;
 				}
 
+				// translate by the camera's position relative to this coordinate system
 				glm::vec3 v = { -camPos.x, -camPos.y, -camPos.z };
 				v *= scale / ((CoordinateSystem*)parent)->scale;
 				m = glm::translate(m, v);
@@ -108,29 +109,31 @@ namespace Game
 
 		// if this coordinate system is not in the hierarchy of the camera's coordinate systems
 		else {
+			// use the camera's projection and rotation
+			// and the camera's rotation relative to it's coordinate systems and its ancestors
+			// up to but excluding the first shared ancestor with this coordinate system
 			m = pr;
 			if (hierarchyIndex >= 0) {
 				m *= cameraHierarchy[hierarchyIndex].rotation;
 			}
 
+			// rotate by the combined rotations of all this coordinate system's ancestors
+			// up to but exluding the first shared ancestor with the hierarchy of the camera's coordinate systems
+			// and rotate by this coordinate system's model matrix
 			float r = 1.0f;
 			if (parent->parent) {
 				r = ((CoordinateSystem*)parent)->scale / ((CoordinateSystem*)parent->parent)->scale;
 			}
-
 			m *= glm::scale(rotations, { r, r, r }) * transform.getModelMatrix(camPos);
 
+			// add the current coordinate system's rotation to the combined rotations to use by its descendants
 			rotations *= transform.getRotateMatrix();
 
-			Position<Coordinate> position = camPos - transform.getPosition();
-			glm::quat q = glm::conjugate(transform.getOrientationQuaternion());
-
-			// TODO: something about loss of precision?
-			glm::vec3 p = { position.x, position.y, position.z };
-			p = p * q;
-			r = ((CoordinateSystem*)parent)->scale / scale;
-			p *= glm::vec3(r, r, r);
-			camPos = p;
+			// calculate the camera position relative to this coordinate system
+			camPos -= transform.getPosition();
+			// TODO: reorder these next two operations for added precision?
+			camPos *= glm::conjugate(transform.getOrientation());
+			camPos *= ((CoordinateSystem*)parent)->scale / scale;
 		}
 
 		// make a final scale adjustment according to the coordinate system's radius and draw it

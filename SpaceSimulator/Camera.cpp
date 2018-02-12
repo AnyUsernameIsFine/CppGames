@@ -5,27 +5,24 @@ namespace Game
 {
 	void Camera::checkForCoordinateSystemSwap()
 	{
-		CoordinateSystem* currCs = coordinateSystem;
-		CoordinateSystem* parentCs = (CoordinateSystem*)currCs->parent;
-		Position<Coordinate> camPos = transform.getPosition();
+		CoordinateSystem* cs = coordinateSystem;
+		CoordinateSystem* parentCs = (CoordinateSystem*)cs->parent;
+		Vector3 p = transform.getPosition();
 
 		// go to parent
-		if (parentCs && camPos.length() > currCs->radius * (parentCs->scale / currCs->scale)) {
-			glm::quat currCsQuat = currCs->transform.getOrientationQuaternion();
+		if (parentCs && p.length() > cs->radius * (parentCs->scale / cs->scale)) {
+			glm::quat q = cs->transform.getOrientation();
 
-			// TODO: something about loss of precision?
-			glm::vec3 p = { camPos.x, camPos.y, camPos.z };
-			p = p * currCsQuat;
-			float r = currCs->scale / parentCs->scale;
-			p *= glm::vec3(r, r, r);
-			Position<Coordinate> currCsPos = currCs->transform.getPosition();
-			p += glm::vec3(currCsPos.x, currCsPos.y, currCsPos.z);
+			// TODO: reorder these next two operations for added precision?
+			p *= q;
+			p *= cs->scale / parentCs->scale;
+			p += cs->transform.getPosition();
 
-			glm::quat o = transform.getOrientationQuaternion() * currCsQuat;
+			glm::quat o = transform.getOrientation() * q;
 
 			coordinateSystem = parentCs;
 			transform.setPosition(p);
-			transform.setOrientation(o);
+			transform.setOrientation(transform.getOrientation() * q);
 
 			checkForCoordinateSystemSwap();
 		}
@@ -33,28 +30,24 @@ namespace Game
 		else {
 			CoordinateSystem* childCS = nullptr;
 
-			for (auto& cs : currCs->descendants) {
-				Position<Coordinate> position = camPos - cs.transform.getPosition();
-				if (position.length() < cs.radius) {
-					childCS = &cs;
+			for (auto& descendant : cs->descendants) {
+				Vector3 position = p - descendant.transform.getPosition();
+				if (position.length() < descendant.radius) {
+					childCS = &descendant;
 				}
 			}
 
 			if (childCS) {
-				Position<Coordinate> position = camPos - childCS->transform.getPosition();
-				glm::quat childCsQuat = glm::conjugate(childCS->transform.getOrientationQuaternion());
+				glm::quat q = glm::conjugate(childCS->transform.getOrientation());
 
-				// TODO: something about loss of precision?
-				glm::vec3 p = { position.x, position.y, position.z };
-				p = p * childCsQuat;
-				float r = currCs->scale / childCS->scale;
-				p *= glm::vec3(r, r, r);
-
-				glm::quat o = transform.getOrientationQuaternion() * childCsQuat;
+				p -= childCS->transform.getPosition();
+				// TODO: reorder these next two operations for added precision?
+				p *= q;
+				p *= cs->scale / childCS->scale;
 
 				coordinateSystem = childCS;
 				transform.setPosition(p);
-				transform.setOrientation(o);
+				transform.setOrientation(transform.getOrientation() * q);
 
 				checkForCoordinateSystemSwap();
 			}

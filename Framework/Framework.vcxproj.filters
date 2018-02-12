@@ -62,10 +62,10 @@
     <ClInclude Include="Source\Camera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Position.hpp">
+    <ClInclude Include="Source\Transform.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Transform.hpp">
+    <ClInclude Include="Source\Vector3.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

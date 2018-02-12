@@ -141,6 +141,7 @@
     <ClInclude Include="Main.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Universe.h" />
+    <ClInclude Include="Vector3.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\simple.frag" />

@@ -143,8 +143,8 @@ namespace Game
 			}
 
 			int fps = (int)round(graphics.getFps());
-			Position<> position = camera.transform.getPosition();
-			glm::ivec3 o = camera.transform.getOrientation();
+			Vector3<> position = camera.transform.getPosition();
+			glm::ivec3 o = camera.transform.getEulerAngles();
 
 			std::wstring fpsString = std::to_wstring(fps) + L"fps";
 			std::wstring positionString = L"x: " + std::to_wstring(position.x) + L" y: " + std::to_wstring(position.y) + L" z: " + std::to_wstring(position.z);

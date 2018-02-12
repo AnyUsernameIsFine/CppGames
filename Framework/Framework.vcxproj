@@ -29,7 +29,7 @@
     <ClInclude Include="Source\IndexBufferObject.hpp" />
     <ClInclude Include="Source\Input.hpp" />
     <ClInclude Include="Source\OpenGLObject.hpp" />
-    <ClInclude Include="Source\Position.hpp" />
+    <ClInclude Include="Source\Vector3.hpp" />
     <ClInclude Include="Source\Shader.hpp" />
     <ClInclude Include="Source\ShaderProgram.hpp" />
     <ClInclude Include="Source\Text.hpp" />

@@ -82,14 +82,14 @@ namespace Framework
 	template<typename T>
 	const glm::mat4 Camera<T>::getViewMatrix(bool rotationOnly) const
 	{
-		glm::mat4 rotation = glm::mat4_cast(transform.getOrientationQuaternion());
+		glm::mat4 rotation = glm::mat4_cast(transform.getOrientation());
 
 		if (rotationOnly) {
 			return rotation;
 		}
 		else {
 			// TODO: something about loss of precision?
-			Position<T> position = transform.getPosition();
+			Vector3<T> position = transform.getPosition();
 			glm::vec3 positionVec3 = { position.x, position.y, position.z };
 
 			return glm::translate(rotation, -positionVec3);

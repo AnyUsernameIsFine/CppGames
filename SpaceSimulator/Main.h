@@ -12,7 +12,7 @@ namespace Game
 	class Game : public Framework::Game
 	{
 	public:
-		Universe universe = Universe(100000000);
+		Universe universe { 100000000 };
 		Camera camera;
 
 		Game()
@@ -31,16 +31,16 @@ namespace Game
 			CoordinateSystem::createMesh();
 
 			camera.coordinateSystem = &universe;
-			//camera.coordinateSystem = &universe.descendants[0];
-			//camera.coordinateSystem = &universe.descendants[0].descendants[0];
-			//camera.coordinateSystem = &universe.descendants[0].descendants[1].descendants[1];
-			//camera.coordinateSystem = &universe.descendants[1].descendants[1].descendants[1].descendants[1];
-			//camera.coordinateSystem = &universe.descendants[0].descendants[0].descendants[0].descendants[0].descendants[0];
+			//camera.coordinateSystem = &universe.descendants.at(0);
+			//camera.coordinateSystem = &universe.descendants.at(0).descendants.at(0);
+			//camera.coordinateSystem = &universe.descendants.at(0).descendants.at(1).descendants.at(1);
+			//camera.coordinateSystem = &universe.descendants.at(1).descendants.at(1).descendants.at(1).descendants.at(1);
+			//camera.coordinateSystem = &universe.descendants.at(0).descendants.at(1).descendants.at(1).descendants.at(1).descendants.at(1);
 
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
 			camera.setClippingPlanes(0.001f, 10000000.0f);
 			camera.setSize(10.0f);
-			camera.transform.moveZ(10.0f);
+			camera.transform.moveZ((Coordinate)10);
 		}
 
 		void onKeyDown(SDL_Keycode key)
@@ -67,9 +67,9 @@ namespace Game
 		{
 			float cameraSpeed = 5 * graphics.getDeltaSeconds();
 
-			camera.transform.moveX(cameraSpeed * (input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)));
-			camera.transform.moveY(cameraSpeed * (input.isKeyDown(SDLK_r) - input.isKeyDown(SDLK_f)));
-			camera.transform.moveZ(cameraSpeed * (input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w)));
+			camera.transform.moveX((Coordinate)(cameraSpeed * (input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a))));
+			camera.transform.moveY((Coordinate)(cameraSpeed * (input.isKeyDown(SDLK_r) - input.isKeyDown(SDLK_f))));
+			camera.transform.moveZ((Coordinate)(cameraSpeed * (input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w))));
 			camera.checkForCoordinateSystemSwap();
 
 			float rollSensitivity = 90 * graphics.getDeltaSeconds();
@@ -86,19 +86,19 @@ namespace Game
 
 		void drawUniverse()
 		{
-			universe.descendants[0].transform.yaw(20 * graphics.getDeltaSeconds());
-			universe.descendants[0].descendants[0].transform.roll(20 * graphics.getDeltaSeconds());
-			universe.descendants[0].descendants[0].descendants[0].transform.pitch(20 * graphics.getDeltaSeconds());
-			universe.descendants[0].descendants[0].descendants[0].descendants[0].transform.yaw(20 * graphics.getDeltaSeconds());
-			universe.descendants[0].descendants[0].descendants[0].descendants[0].descendants[0].transform.roll(20 * graphics.getDeltaSeconds());
+			universe.descendants.at(0).transform.yaw(20 * graphics.getDeltaSeconds());
+			universe.descendants.at(0).descendants.at(0).transform.roll(20 * graphics.getDeltaSeconds());
+			universe.descendants.at(0).descendants.at(0).descendants.at(0).transform.pitch(20 * graphics.getDeltaSeconds());
+			universe.descendants.at(0).descendants.at(0).descendants.at(0).descendants.at(0).transform.yaw(20 * graphics.getDeltaSeconds());
+			//universe.descendants.at(0).descendants.at(0).descendants.at(0).descendants.at(0).descendants.at(0).transform.roll(20 * graphics.getDeltaSeconds());
 			universe.draw(camera);
 		}
 
 		void drawInfo()
 		{
 			int fps = (int)round(graphics.getFps());
-			Position<Coordinate> position = camera.transform.getPosition();
-			glm::ivec3 o = camera.transform.getOrientation();
+			Vector3 position = camera.transform.getPosition();
+			glm::ivec3 o = camera.transform.getEulerAngles();
 
 			std::string fpsString = std::to_string(fps) + "fps";
 			std::string csString = camera.coordinateSystem->name + " (" + std::to_string(camera.coordinateSystem->scale) + "m/u)";

@@ -13,7 +13,7 @@ namespace Game
 	class Camera : public Framework::Camera<Coordinate>
 	{
 	public:
-		CoordinateSystem * coordinateSystem;
+		CoordinateSystem* coordinateSystem;
 
 		void checkForCoordinateSystemSwap();
 	};

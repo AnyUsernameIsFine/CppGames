@@ -24,7 +24,7 @@ namespace Game
 		struct CameraHierarchy {
 			CoordinateSystem* coordinateSystem;
 			glm::mat4 rotation;
-			Position<Coordinate> position;
+			Vector3 position;
 		};
 
 		static GLuint vao_;
@@ -36,7 +36,7 @@ namespace Game
 			const glm::mat4& pv,
 			const glm::mat4& pv2,
 			const std::vector<CameraHierarchy>& cameraHierarchy,
-			Position<Coordinate> camPos,
+			Vector3 camPos,
 			int depth
 		) const;
 		void draw_(const glm::mat4& matrix, int depth) const;

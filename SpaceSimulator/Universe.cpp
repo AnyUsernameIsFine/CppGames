@@ -14,7 +14,7 @@ namespace Game
 			"Star",
 			"Planet",
 			"Moon",
-			"Asteroid",
+			//"Asteroid",
 		};
 
 		addDecendants_(this, names, scale);
