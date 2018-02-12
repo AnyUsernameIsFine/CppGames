@@ -43,7 +43,7 @@ namespace Game
 					cs.scale = csScale;
 					cs.radius = 1;
 
-					float positionOffset = ratio * 2.0f / 3.0f;
+					Coordinate positionOffset = ratio * 2.0f / 3.0f;
 					cs.transform.setPosition({ x * positionOffset, y * positionOffset, z * positionOffset });
 
 					// test long distances

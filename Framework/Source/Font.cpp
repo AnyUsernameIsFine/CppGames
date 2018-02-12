@@ -27,7 +27,7 @@ namespace Framework
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 		// Load first 128 characters of ASCII set
-		for (FT_ULong c = 0; c < face->num_glyphs; c++) {
+		for (int c = 0; c < face->num_glyphs; c++) {
 			// Load character glyph 
 			if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
 				error("ERROR::FREETYTPE: Failed to load Glyph");

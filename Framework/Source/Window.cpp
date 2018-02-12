@@ -43,7 +43,7 @@ namespace Framework
 		}
 	}
 
-	const int Window::getWidth() const
+	int Window::getWidth() const
 	{
 		int width;
 		sdlCheck(SDL_GL_GetDrawableSize(window_, &width, nullptr));
@@ -51,7 +51,7 @@ namespace Framework
 		return width;
 	}
 
-	const int Window::getHeight() const
+	int Window::getHeight() const
 	{
 		int height;
 		sdlCheck(SDL_GL_GetDrawableSize(window_, nullptr, &height));

@@ -5,23 +5,23 @@
 
 namespace Framework
 {
-	void Graphics::clearScreen(float r, float g, float b, bool depth)
+	void Graphics::clearScreen(float r, float g, float b, bool depth) const
 	{
 		glCheck(glClearColor(r, g, b, 1.0f));
 		glCheck(glClear(GL_COLOR_BUFFER_BIT | (depth ? GL_DEPTH_BUFFER_BIT : 0)));
 	}
 
-	float Graphics::getDeltaSeconds()
+	float Graphics::getDeltaSeconds() const
 	{
 		return (float)(frameLengths_[frameLengthsIndex_] / NANOSECONDS_PER_SECOND_);
 	}
 
-	float Graphics::getTotalSeconds()
+	float Graphics::getTotalSeconds() const
 	{
 		return (float)(nanosecondsSinceStart_ / NANOSECONDS_PER_SECOND_);
 	}
 
-	float Graphics::getFps()
+	float Graphics::getFps() const
 	{
 		return (float)(numberOfFrameLengths_ * NANOSECONDS_PER_SECOND_ / frameLengthsTotal_);
 	}

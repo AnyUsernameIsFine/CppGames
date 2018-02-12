@@ -24,10 +24,10 @@ namespace Framework
 		void setScale(const glm::vec3& scale);
 		void setScale(float x, float y, float z);
 		void setScale(float scale);
-		const Vector3<T> getPosition() const;
-		const glm::vec3 getEulerAngles() const;
-		const glm::quat getOrientation() const;
-		const glm::vec3 getScale() const;
+		const Vector3<T>& getPosition() const;
+		glm::vec3 getEulerAngles() const;
+		const glm::quat& getOrientation() const;
+		const glm::vec3& getScale() const;
 		void move(const Vector3<T>& vector);
 		void move(T x, T y, T z);
 		void moveX(T distance);
@@ -43,9 +43,9 @@ namespace Framework
 		void scaleX(float scale);
 		void scaleY(float scale);
 		void scaleZ(float scale);
-		const glm::mat4 getRotateMatrix() const;
-		const glm::mat4 getModelMatrix() const;
-		const glm::mat4 getModelMatrix(const Vector3<T>& cameraPosition) const;
+		glm::mat4 getRotateMatrix() const;
+		glm::mat4 getModelMatrix() const;
+		glm::mat4 getModelMatrix(const Vector3<T>& cameraPosition) const;
 
 	private:
 		Vector3<T> position_;
@@ -53,7 +53,7 @@ namespace Framework
 		glm::vec3 scale_;
 		bool useModelAxes_ = true;
 
-		const glm::mat4 getModelMatrix_(const Vector3<T>& position) const;
+		glm::mat4 getModelMatrix_(const Vector3<T>& position) const;
 	};
 }
 
@@ -126,25 +126,25 @@ namespace Framework
 	}
 
 	template<typename T>
-	const Vector3<T> Transform<T>::getPosition() const
+	const Vector3<T>& Transform<T>::getPosition() const
 	{
 		return position_;
 	}
 
 	template<typename T>
-	const glm::quat Transform<T>::getOrientation() const
+	const glm::quat& Transform<T>::getOrientation() const
 	{
 		return orientation_;
 	}
 
 	template<typename T>
-	const glm::vec3 Transform<T>::getEulerAngles() const
+	glm::vec3 Transform<T>::getEulerAngles() const
 	{
 		return glm::degrees(glm::eulerAngles(orientation_));
 	}
 
 	template<typename T>
-	const glm::vec3 Transform<T>::getScale() const
+	const glm::vec3& Transform<T>::getScale() const
 	{
 		return scale_;
 	}
@@ -256,19 +256,19 @@ namespace Framework
 	}
 
 	template<typename T>
-	const glm::mat4 Transform<T>::getRotateMatrix() const
+	glm::mat4 Transform<T>::getRotateMatrix() const
 	{
 		return glm::mat4_cast(glm::conjugate(orientation_));
 	}
 
 	template<typename T>
-	const glm::mat4 Transform<T>::getModelMatrix() const
+	glm::mat4 Transform<T>::getModelMatrix() const
 	{
 		return getModelMatrix_({ position_.x, position_.y, position_.z });
 	}
 
 	template<typename T>
-	const glm::mat4 Transform<T>::getModelMatrix(const Vector3<T>& cameraPosition) const
+	glm::mat4 Transform<T>::getModelMatrix(const Vector3<T>& cameraPosition) const
 	{
 		Vector3<T> distance = position_ - cameraPosition;
 
@@ -276,7 +276,7 @@ namespace Framework
 	}
 
 	template<typename T>
-	const glm::mat4 Transform<T>::getModelMatrix_(const Vector3<T>& position) const
+	glm::mat4 Transform<T>::getModelMatrix_(const Vector3<T>& position) const
 	{
 		// TODO: something about loss of precision?
 		glm::mat4 translate = glm::translate(glm::mat4(1), { position.x, position.y, position.z });

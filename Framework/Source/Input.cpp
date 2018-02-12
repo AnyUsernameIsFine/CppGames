@@ -8,12 +8,12 @@ namespace Framework
 	//	keyboardState_ = SDL_GetKeyboardState(nullptr);
 	//}
 
-	const bool Input::isKeyDown(SDL_Keycode key) const
+	bool Input::isKeyDown(SDL_Keycode key) const
 	{
 		return keyboardState_[SDL_GetScancodeFromKey(key)];
 	}
 
-	const bool Input::isKeyUp(SDL_Keycode key) const
+	bool Input::isKeyUp(SDL_Keycode key) const
 	{
 		return !keyboardState_[SDL_GetScancodeFromKey(key)];
 	}

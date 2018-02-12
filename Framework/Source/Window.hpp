@@ -21,8 +21,8 @@ namespace Framework
 		void setSize(int width, int height);
 		void hideCursor(bool hide = true);
 		void enableVSync(bool enable = true);
-		const int getWidth() const;
-		const int getHeight() const;
+		int getWidth() const;
+		int getHeight() const;
 
 	private:
 		friend class Graphics;

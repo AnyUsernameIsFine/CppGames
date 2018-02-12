@@ -16,8 +16,8 @@ namespace Framework
 	public:
 		void setColor(float r = 0, float g = 0, float b = 0, float a = 1);
 		void setFont(const std::string& filename, int size);
-		void draw(float x, float y, const std::string& text);
-		void draw(float x, float y, const std::wstring& text);
+		void draw(float x, float y, const std::string& text) const;
+		void draw(float x, float y, const std::wstring& text) const;
 
 	private:
 		friend class Graphics;

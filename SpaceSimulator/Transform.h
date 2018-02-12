@@ -6,10 +6,5 @@
 
 namespace Game
 {
-	using namespace Framework;
-
-	class Transform : public Framework::Transform<Coordinate>
-	{
-
-	};
+	typedef Framework::Transform<Coordinate> Transform;
 }

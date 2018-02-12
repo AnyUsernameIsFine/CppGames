@@ -7,7 +7,7 @@ namespace Framework
 	class OpenGLObject abstract
 	{
 	public:
-		const GLuint getId() const;
+		GLuint getId() const;
 
 	protected:
 		GLuint id_ = 0;

@@ -16,7 +16,7 @@ namespace Framework
 		//
 	}
 
-	ShaderProgram::ShaderProgram(std::initializer_list<GLShader*> shaders)
+	ShaderProgram::ShaderProgram(const std::initializer_list<GLShader*>& shaders)
 	{
 		bool error = false;
 
@@ -137,7 +137,7 @@ namespace Framework
 		glCheck(glUniformMatrix4fv(getUniformLocation_(name), 1, transpose, &value[0][0]));
 	}
 
-	const GLint ShaderProgram::getUniformLocation_(const std::string& name) const
+	GLint ShaderProgram::getUniformLocation_(const std::string& name) const
 	{
 		return glGetUniformLocation(id_, name.c_str());
 	}

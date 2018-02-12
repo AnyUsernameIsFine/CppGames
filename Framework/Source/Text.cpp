@@ -25,12 +25,12 @@ namespace Framework
 		}
 	}
 
-	void Text::draw(float x, float y, const std::string& text)
+	void Text::draw(float x, float y, const std::string& text) const
 	{
 		draw(x, y, std::wstring(text.begin(), text.end()));
 	}
 
-	void Text::draw(float x, float y, const std::wstring& text)
+	void Text::draw(float x, float y, const std::wstring& text) const
 	{
 		GLboolean depthTest;
 		glGetBooleanv(GL_DEPTH_TEST, &depthTest);

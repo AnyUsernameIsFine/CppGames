@@ -10,15 +10,15 @@ namespace Framework
 	public:
 		Transform<T> transform;
 
-		const bool isPerspective() const;
-		const float getFieldOfView() const;
+		bool isPerspective() const;
+		float getFieldOfView() const;
 		void setPerspective(bool perspective = true);
 		void setAspectRatio(float ratio);
 		void setFieldOfView(float fov);
 		void setClippingPlanes(float near, float far);
 		void setSize(float size);
-		const glm::mat4 getViewMatrix(bool rotationOnly = false) const;
-		const glm::mat4 getProjectionMatrix() const;
+		glm::mat4 getViewMatrix(bool rotationOnly = false) const;
+		glm::mat4 getProjectionMatrix() const;
 
 	private:
 		bool perspective_ = true;
@@ -37,13 +37,13 @@ namespace Framework
 namespace Framework
 {
 	template<typename T>
-	const bool Camera<T>::isPerspective() const
+	bool Camera<T>::isPerspective() const
 	{
 		return perspective_;
 	}
 
 	template<typename T>
-	const float Camera<T>::getFieldOfView() const
+	float Camera<T>::getFieldOfView() const
 	{
 		return fov_;
 	}
@@ -80,7 +80,7 @@ namespace Framework
 	}
 
 	template<typename T>
-	const glm::mat4 Camera<T>::getViewMatrix(bool rotationOnly) const
+	glm::mat4 Camera<T>::getViewMatrix(bool rotationOnly) const
 	{
 		glm::mat4 rotation = glm::mat4_cast(transform.getOrientation());
 
@@ -97,7 +97,7 @@ namespace Framework
 	}
 
 	template<typename T>
-	const glm::mat4 Camera<T>::getProjectionMatrix() const
+	glm::mat4 Camera<T>::getProjectionMatrix() const
 	{
 		if (perspective_) {
 			return glm::perspective(glm::radians(fov_), ratio_, near_, far_);

@@ -5,6 +5,8 @@
 #include "Universe.h"
 #include "Camera.h"
 
+#include <iomanip>
+
 namespace Game
 {
 	using namespace Framework;
@@ -12,7 +14,8 @@ namespace Game
 	class Game : public Framework::Game
 	{
 	public:
-		Universe universe { 100000000 };
+		Universe universe{ 1ll << 54 };
+		//Universe universe { 100000000 };
 		Camera camera;
 
 		Game()
@@ -87,9 +90,9 @@ namespace Game
 		void drawUniverse()
 		{
 			universe.descendants.at(0).transform.yaw(20 * graphics.getDeltaSeconds());
-			universe.descendants.at(0).descendants.at(0).transform.roll(20 * graphics.getDeltaSeconds());
-			universe.descendants.at(0).descendants.at(0).descendants.at(0).transform.pitch(20 * graphics.getDeltaSeconds());
-			universe.descendants.at(0).descendants.at(0).descendants.at(0).descendants.at(0).transform.yaw(20 * graphics.getDeltaSeconds());
+			//universe.descendants.at(0).descendants.at(0).transform.roll(20 * graphics.getDeltaSeconds());
+			//universe.descendants.at(0).descendants.at(0).descendants.at(0).transform.pitch(20 * graphics.getDeltaSeconds());
+			//universe.descendants.at(0).descendants.at(0).descendants.at(0).descendants.at(0).transform.yaw(20 * graphics.getDeltaSeconds());
 			//universe.descendants.at(0).descendants.at(0).descendants.at(0).descendants.at(0).descendants.at(0).transform.roll(20 * graphics.getDeltaSeconds());
 			universe.draw(camera);
 		}

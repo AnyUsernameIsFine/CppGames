@@ -3,7 +3,7 @@
 
 namespace Framework
 {
-	const GLuint OpenGLObject::getId() const
+	GLuint OpenGLObject::getId() const
 	{
 		return id_;
 	}

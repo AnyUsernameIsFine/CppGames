@@ -15,7 +15,7 @@ namespace Framework
 	{
 	public:
 		ShaderProgram(const std::string& vsFilename, const std::string& fsFilename, bool fromFile = true);
-		ShaderProgram(std::initializer_list<GLShader*> shaders);
+		ShaderProgram(const std::initializer_list<GLShader*>& shaders);
 		~ShaderProgram();
 
 		void use() const;
@@ -36,6 +36,6 @@ namespace Framework
 		void setUniform(const std::string& name, const glm::mat4& value, bool transpose = false) const;
 
 	private:
-		const GLint getUniformLocation_(const std::string& name) const;
+		GLint getUniformLocation_(const std::string& name) const;
 	};
 }

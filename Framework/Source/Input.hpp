@@ -8,8 +8,8 @@ namespace Framework
 	{
 	public:
 		//Input();
-		const bool isKeyDown(SDL_Keycode key) const;
-		const bool isKeyUp(SDL_Keycode key) const;
+		bool isKeyDown(SDL_Keycode key) const;
+		bool isKeyUp(SDL_Keycode key) const;
 
 	private:
 		friend class Game;
