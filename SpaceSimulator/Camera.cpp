@@ -13,6 +13,7 @@ namespace Game
 		if (parentCs && camPos.length() > currCs->radius * (parentCs->scale / currCs->scale)) {
 			glm::quat currCsQuat = currCs->transform.getOrientationQuaternion();
 
+			// TODO: something about loss of precision?
 			glm::vec3 p = { camPos.x, camPos.y, camPos.z };
 			p = p * currCsQuat;
 			float r = currCs->scale / parentCs->scale;
@@ -32,10 +33,10 @@ namespace Game
 		else {
 			CoordinateSystem* childCS = nullptr;
 
-			for (auto& subSystem : currCs->coordinateSystems) {
-				Position<Coordinate> position = camPos - subSystem.transform.getPosition();
-				if (position.length() < subSystem.radius) {
-					childCS = &subSystem;
+			for (auto& cs : currCs->descendants) {
+				Position<Coordinate> position = camPos - cs.transform.getPosition();
+				if (position.length() < cs.radius) {
+					childCS = &cs;
 				}
 			}
 
@@ -43,6 +44,7 @@ namespace Game
 				Position<Coordinate> position = camPos - childCS->transform.getPosition();
 				glm::quat childCsQuat = glm::conjugate(childCS->transform.getOrientationQuaternion());
 
+				// TODO: something about loss of precision?
 				glm::vec3 p = { position.x, position.y, position.z };
 				p = p * childCsQuat;
 				float r = currCs->scale / childCS->scale;

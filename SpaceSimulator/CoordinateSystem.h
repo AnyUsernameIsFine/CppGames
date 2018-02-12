@@ -15,28 +15,30 @@ namespace Game
 		std::string name;
 		float scale = 1;
 		float radius = 0;
-		std::vector<CoordinateSystem> coordinateSystems;
-
-		glm::mat4 getModelMatrix(Position<Coordinate> cameraPosition);
+		std::vector<CoordinateSystem> descendants;
 
 		static void createMesh();
 		void draw(const Camera& camera) const;
-		void draw(const glm::mat4& matrix, glm::vec3 color) const;
 
-		void drawRecursively(
+	protected:
+		struct CameraHierarchy {
+			CoordinateSystem* coordinateSystem;
+			glm::mat4 rotation;
+			Position<Coordinate> position;
+		};
+
+		static GLuint vao_;
+		static ShaderProgram* shaderProgram_;
+
+		void drawRecursively_(
+			int hierarchyIndex,
 			glm::mat4 passMatrix,
-			const glm::mat4& initialScaleMatrix,
-			const Camera& camera,
-			std::vector<CoordinateSystem*>& cameraSystems,
-			std::vector<glm::mat4> rotations,
-			std::vector<Position<Coordinate>> cameraPositions,
+			const glm::mat4& pv,
+			const glm::mat4& pv2,
+			const std::vector<CameraHierarchy>& cameraHierarchy,
 			Position<Coordinate> camPos,
 			int depth
 		) const;
-		void draw(const glm::mat4& matrix, int depth) const;
-
-	protected:
-		static GLuint vao_;
-		static ShaderProgram* shaderProgram_;
+		void draw_(const glm::mat4& matrix, int depth) const;
 	};
 }

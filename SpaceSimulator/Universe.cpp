@@ -4,9 +4,9 @@
 
 namespace Game
 {
-	void Universe::create(const std::string& name, float scale)
+	Universe::Universe(float scale)
 	{
-		this->name = name;
+		this->name = "Universe";
 		this->scale = scale;
 
 		std::vector<std::string> names = {
@@ -14,57 +14,58 @@ namespace Game
 			"Star",
 			"Planet",
 			"Moon",
+			"Asteroid",
 		};
 
-		addSubSystems_(this, names, scale);
-		linkSubSystems_(this);
+		addDecendants_(this, names, scale);
+		linkDecendants_(this);
 	}
 
-	void Universe::addSubSystems_(CoordinateSystem* parent, const std::vector<std::string>& names, float parentScale)
+	void Universe::addDecendants_(CoordinateSystem* parent, const std::vector<std::string>& names, float parentScale)
 	{
 		if (!names.size()) {
 			return;
 		}
 
-		float subSystemScale = parentScale;
+		float csScale = parentScale;
 
 		for (int z = 0; z <= 0; z += 2) {
 			for (int y = 0; y <= 0; y += 2) {
 				for (int x = -1; x <= 1; x += 2) {
 
-					//float ratio = 3.0f + names.size() / (x + 2.0f);
-					float ratio = 10;
-					subSystemScale /= ratio;
+					float ratio = 3.0f + names.size() / (x + 2.0f);
+					//float ratio = 10;
+					csScale /= ratio;
 
-					CoordinateSystem subSystem;
+					CoordinateSystem cs;
 
-					subSystem.name = names[0];
-					subSystem.scale = subSystemScale;
-					subSystem.radius = 1;
+					cs.name = names[0];
+					cs.scale = csScale;
+					cs.radius = 1;
 
 					float positionOffset = ratio * 2.0f / 3.0f;
-					subSystem.transform.setPosition({ x * positionOffset, y * positionOffset, z * positionOffset });
+					cs.transform.setPosition({ x * positionOffset, y * positionOffset, z * positionOffset });
 
 					// test long distances
-					if (parentScale == 10000) {
-						//subSystem.transform.moveX(100000000.0f);
+					if (parentScale == 100000000) {
+						//cs.transform.moveX(100000000.0f);
 					}
 
-					subSystem.transform.rotate(20.0f * names.size() * x, { 1, 1, 1 });
+					cs.transform.rotate(20.0f * names.size() * x, { 1, 1, 1 });
 
-					addSubSystems_(&subSystem, std::vector<std::string>(names.begin() + 1, names.end()), subSystemScale);
+					addDecendants_(&cs, std::vector<std::string>(names.begin() + 1, names.end()), csScale);
 
-					parent->coordinateSystems.push_back(subSystem);
+					parent->descendants.push_back(cs);
 				}
 			}
 		}
 	}
 
-	void Universe::linkSubSystems_(CoordinateSystem* parent)
+	void Universe::linkDecendants_(CoordinateSystem* parent)
 	{
-		for (auto &subSystem : parent->coordinateSystems) {
-			linkSubSystems_(&subSystem);
-			subSystem.parent = parent;
+		for (auto &cs : parent->descendants) {
+			linkDecendants_(&cs);
+			cs.parent = parent;
 		}
 	}
 }

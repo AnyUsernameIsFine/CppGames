@@ -12,7 +12,7 @@ namespace Game
 	class Game : public Framework::Game
 	{
 	public:
-		Universe universe;
+		Universe universe = Universe(100000000);
 		Camera camera;
 
 		Game()
@@ -30,13 +30,12 @@ namespace Game
 
 			CoordinateSystem::createMesh();
 
-			universe.create("Universe", 10000);
-
 			camera.coordinateSystem = &universe;
-			//camera.coordinateSystem = &universe.coordinateSystems[0];
-			//camera.coordinateSystem = &universe.coordinateSystems[0].coordinateSystems[0];
-			//camera.coordinateSystem = &universe.coordinateSystems[1].coordinateSystems[1].coordinateSystems[1];
-			//camera.coordinateSystem = &universe.coordinateSystems[1].coordinateSystems[1].coordinateSystems[1].coordinateSystems[1];
+			//camera.coordinateSystem = &universe.descendants[0];
+			//camera.coordinateSystem = &universe.descendants[0].descendants[0];
+			//camera.coordinateSystem = &universe.descendants[0].descendants[1].descendants[1];
+			//camera.coordinateSystem = &universe.descendants[1].descendants[1].descendants[1].descendants[1];
+			//camera.coordinateSystem = &universe.descendants[0].descendants[0].descendants[0].descendants[0].descendants[0];
 
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
 			camera.setClippingPlanes(0.001f, 10000000.0f);
@@ -87,10 +86,11 @@ namespace Game
 
 		void drawUniverse()
 		{
-			universe.coordinateSystems[0].coordinateSystems[0].coordinateSystems[0].coordinateSystems[0].transform.yaw(45 * graphics.getDeltaSeconds());
-			universe.coordinateSystems[0].coordinateSystems[0].coordinateSystems[0].transform.pitch(45 * graphics.getDeltaSeconds());
-			universe.coordinateSystems[0].coordinateSystems[0].transform.roll(45 * graphics.getDeltaSeconds());
-			universe.coordinateSystems[0].transform.yaw(45 * graphics.getDeltaSeconds());
+			universe.descendants[0].transform.yaw(20 * graphics.getDeltaSeconds());
+			universe.descendants[0].descendants[0].transform.roll(20 * graphics.getDeltaSeconds());
+			universe.descendants[0].descendants[0].descendants[0].transform.pitch(20 * graphics.getDeltaSeconds());
+			universe.descendants[0].descendants[0].descendants[0].descendants[0].transform.yaw(20 * graphics.getDeltaSeconds());
+			universe.descendants[0].descendants[0].descendants[0].descendants[0].descendants[0].transform.roll(20 * graphics.getDeltaSeconds());
 			universe.draw(camera);
 		}
 

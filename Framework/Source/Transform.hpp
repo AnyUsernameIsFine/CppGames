@@ -234,6 +234,7 @@ namespace Framework
 	{
 		Position<T> distance = position_ - cameraPosition;
 
+		// TODO: something about loss of precision?
 		return getModelMatrix_({ distance.x, distance.y, distance.z });
 	}
 
