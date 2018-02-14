@@ -61,15 +61,16 @@ namespace Game
 
 		void update()
 		{
-			float deltaSeconds = graphics.getDeltaSeconds();
+			float deltaSeconds = 1.0f;
 
 			camera.moveX(deltaSeconds * (input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)));
 			camera.moveY(deltaSeconds * (input.isKeyDown(SDLK_r) - input.isKeyDown(SDLK_f)));
 			camera.moveZ(deltaSeconds * (input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w)));
-			camera.checkForCoordinateSystemSwap();
 
 			float rollSensitivity = 90 * deltaSeconds;
 			camera.transform.roll(rollSensitivity * (input.isKeyDown(SDLK_e) - input.isKeyDown(SDLK_q)));
+
+			camera.update(graphics.getDeltaSeconds());
 		}
 
 		void draw()
@@ -91,12 +92,13 @@ namespace Game
 			Vector3 position = camera.transform.getPosition();
 			glm::ivec3 o = camera.transform.getEulerAngles();
 
-			std::string fpsString = std::to_string(fps) + "fps";
+			std::string fpsString = std::to_string(fps) + " fps";
 			std::string csString = camera.coordinateSystem->name;
+			std::string speedString = camera.getSpeedString();
 			//std::string positionString = "x: " + std::to_string(position.x) + " y: " + std::to_string(position.y) + " z: " + std::to_string(position.z);
 			//std::string orientatonString = "yaw: " + std::to_string(o.y) + " pitch: " + std::to_string(o.x) + " roll: " + std::to_string(o.z);
 
-			graphics.text.draw(0, 0, fpsString + "\n" + csString);
+			graphics.text.draw(0, 0, fpsString + "\n" + csString + "\n" + speedString);
 			//graphics.text.draw(0, 0, fpsString + "\n" + csString + "\n" + positionString + "\n" + orientatonString);
 		}
 	};

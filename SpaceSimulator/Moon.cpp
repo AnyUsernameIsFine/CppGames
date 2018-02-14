@@ -9,7 +9,7 @@ namespace Game
 #ifdef USE_REALISTIC_SCALE
 		const float SCALE = 1.0f / (1 << 14); // A little over 0.06 millimeters per unit.
 #else
-		const float SCALE = (int_least64_t)1 << 26;
+		const float SCALE = 1.0f / (1 << 14);
 #endif
 	}
 

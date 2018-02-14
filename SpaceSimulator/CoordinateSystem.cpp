@@ -1,9 +1,5 @@
 #include "CoordinateSystem.h"
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm\gtx\norm.hpp>
-#include <glm\gtx\string_cast.hpp>
-
 namespace Game
 {
 	void CoordinateSystem::draw(const Camera& camera) const

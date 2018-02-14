@@ -11,7 +11,7 @@ namespace Game
 		// Allows for galaxies with a radius of up to nearly 16 million light-years
 		// when using 64-bit integers.
 #else
-		const float SCALE = (int_least64_t)1 << 47;
+		const float SCALE = (int_least64_t)1 << 7;
 #endif
 	}
 

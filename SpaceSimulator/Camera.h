@@ -16,6 +16,15 @@ namespace Game
 		void moveX(float distance);
 		void moveY(float distance);
 		void moveZ(float distance);
-		void checkForCoordinateSystemSwap();
+		void update(float deltaSeconds);
+		float getSpeed() const;
+		std::string getSpeedString() const;
+
+	private:
+		glm::vec3 velocity_;
+		glm::vec3 maxVelocity_;
+		glm::vec3 acceleration_;
+
+		void setCorrectCoordinateSystem_();
 	};
 }

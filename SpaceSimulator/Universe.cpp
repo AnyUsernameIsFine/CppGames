@@ -13,7 +13,7 @@ namespace Game
 		// Gives a universe with a radius of over 17.5 million million million light-years
 		// when using 64 bit integers. One light-year is 9,460,730,472,580,800 meters.
 #else
-		const float SCALE = (int_least64_t)1 << 54;
+		const float SCALE = (int_least64_t)1 << 14;
 #endif
 	}
 

@@ -13,7 +13,7 @@ namespace Game
 		// between the Moon and the Earth) when using 64-bit integers. Enough precision
 		// and size to fit any planetary satellite orbit. 
 #else
-		const float SCALE = (int_least64_t)1 << 33;
+		const float SCALE = 1.0f / (1 << 7);
 #endif
 	}
 

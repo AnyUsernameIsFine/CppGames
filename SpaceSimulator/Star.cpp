@@ -15,7 +15,7 @@ namespace Game
 		// The largest estimate of the size of the Oort cloud,
 		// considered the ultimate edge of our Solar System, is 200,000 AU.
 #else
-		const float SCALE = (int_least64_t)1 << 40;
+		const float SCALE = 1.0f;
 #endif
 	}
 
