@@ -1,5 +1,5 @@
 #include "Texture2D.hpp"
-#include "Error.hpp"
+#include "System\Error.hpp"
 
 #include <GL\glew.h>
 #define STB_IMAGE_IMPLEMENTATION

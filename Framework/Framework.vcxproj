@@ -18,43 +18,6 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Source\Camera.hpp" />
-    <ClInclude Include="Source\Error.hpp" />
-    <ClInclude Include="Source\Font.hpp" />
-    <ClInclude Include="Source\FragmentShader.hpp" />
-    <ClInclude Include="Source\Framework.hpp" />
-    <ClInclude Include="Source\Game.hpp" />
-    <ClInclude Include="Source\Graphics.hpp" />
-    <ClInclude Include="Source\IndexBufferObject.hpp" />
-    <ClInclude Include="Source\Input.hpp" />
-    <ClInclude Include="Source\OpenGLObject.hpp" />
-    <ClInclude Include="Source\Vector3.hpp" />
-    <ClInclude Include="Source\Shader.hpp" />
-    <ClInclude Include="Source\ShaderProgram.hpp" />
-    <ClInclude Include="Source\Text.hpp" />
-    <ClInclude Include="Source\Texture2D.hpp" />
-    <ClInclude Include="Source\Transform.hpp" />
-    <ClInclude Include="Source\VertexBufferObject.hpp" />
-    <ClInclude Include="Source\VertexShader.hpp" />
-    <ClInclude Include="Source\Window.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\Font.cpp" />
-    <ClCompile Include="Source\FragmentShader.cpp" />
-    <ClCompile Include="Source\Game.cpp" />
-    <ClCompile Include="Source\Graphics.cpp" />
-    <ClCompile Include="Source\IndexBufferObject.cpp" />
-    <ClCompile Include="Source\Input.cpp" />
-    <ClCompile Include="Source\OpenGLObject.cpp" />
-    <ClCompile Include="Source\Shader.cpp" />
-    <ClCompile Include="Source\ShaderProgram.cpp" />
-    <ClCompile Include="Source\Text.cpp" />
-    <ClCompile Include="Source\Texture2D.cpp" />
-    <ClCompile Include="Source\VertexBufferObject.cpp" />
-    <ClCompile Include="Source\VertexShader.cpp" />
-    <ClCompile Include="Source\Window.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{833D7DF2-0746-4DA6-87D3-8A5C6953103A}</ProjectGuid>
@@ -117,11 +80,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
-      <AdditionalLibraryDirectories>C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\freetype-2.8\lib;C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\glew-2.1.0\lib\Release\Win32;C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Dependencies\freetype-2.8\lib;Dependencies\glew-2.1.0\lib\Release\Win32;Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>freetype.lib;opengl32.lib;glew32s.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
@@ -131,11 +93,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
-      <AdditionalLibraryDirectories>C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\freetype-2.8\lib;C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\glew-2.1.0\lib\Release\Win32;C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Dependencies\freetype-2.8\lib;Dependencies\glew-2.1.0\lib\Release\Win32;Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>freetype.lib;opengl32.lib;glew32s.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
@@ -147,7 +108,6 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -155,7 +115,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\freetype-2.8\lib;C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\glew-2.1.0\lib\Release\Win32;C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Dependencies\freetype-2.8\lib;Dependencies\glew-2.1.0\lib\Release\Win32;Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>freetype.lib;opengl32.lib;glew32s.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
@@ -167,7 +127,6 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -175,7 +134,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\freetype-2.8\lib;C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\glew-2.1.0\lib\Release\Win32;C:\Users\Pelle\source\repos\CppGames\Framework\Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>Dependencies\freetype-2.8\lib;Dependencies\glew-2.1.0\lib\Release\Win32;Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>freetype.lib;opengl32.lib;glew32s.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>

@@ -1,5 +1,5 @@
 #include "OpenGLObject.hpp"
-#include "Error.hpp"
+#include "System\Error.hpp"
 
 namespace Framework
 {

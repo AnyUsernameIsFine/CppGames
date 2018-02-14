@@ -1,5 +1,5 @@
 #include "Text.hpp"
-#include "Error.hpp"
+#include "System\Error.hpp"
 
 #include <glm\glm.hpp>
 #include <glm\gtc\matrix_transform.hpp>

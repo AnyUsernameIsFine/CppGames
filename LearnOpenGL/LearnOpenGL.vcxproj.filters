@@ -15,11 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="SDL2.dll" />
-    <None Include="Resources\simple.frag">
+    <None Include="Resources\simple.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\simple.vert">
+    <None Include="Resources\simple.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -41,15 +40,5 @@
     <Image Include="Resources\journey.jpg">
       <Filter>Resource Files</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Main.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

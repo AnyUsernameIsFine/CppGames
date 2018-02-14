@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Font.hpp"
-#include "ShaderProgram.hpp"
-#include "VertexBufferObject.hpp"
+#include "OpenGL\ShaderProgram.hpp"
+#include "OpenGL\VertexBufferObject.hpp"
 
 #include <GL\glew.h>
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Graphics.hpp"
-#include "Input.hpp"
+#include "Graphics\Graphics.hpp"
+#include "Input\Input.hpp"
 
 namespace Framework
 {

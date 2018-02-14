@@ -1,7 +1,7 @@
 #include "ShaderProgram.hpp"
 #include "VertexShader.hpp"
 #include "FragmentShader.hpp"
-#include "Error.hpp"
+#include "System\Error.hpp"
 
 #include <glm\gtc\type_ptr.hpp>
 

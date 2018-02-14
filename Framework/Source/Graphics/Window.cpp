@@ -1,5 +1,5 @@
 #include "Window.hpp"
-#include "Error.hpp"
+#include "System\Error.hpp"
 
 #include <GL\glew.h>
 

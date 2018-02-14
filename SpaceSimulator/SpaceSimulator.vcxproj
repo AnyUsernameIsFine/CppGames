@@ -81,9 +81,6 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
-    <Link>
-      <AdditionalLibraryDirectories>C:\Users\Pelle\source\repos\CppGames\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -92,9 +89,6 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
-    <Link>
-      <AdditionalLibraryDirectories>C:\Users\Pelle\source\repos\CppGames\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -108,7 +102,6 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Users\Pelle\source\repos\CppGames\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -123,38 +116,13 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Users\Pelle\source\repos\CppGames\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CoordinateSystem.cpp" />
-    <ClCompile Include="Galaxy.cpp" />
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Moon.cpp" />
-    <ClCompile Include="Planet.cpp" />
-    <ClCompile Include="Star.cpp" />
-    <ClCompile Include="Universe.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="CoordinateSystem.h" />
-    <ClInclude Include="Galaxy.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="Main.h" />
-    <ClInclude Include="Moon.h" />
-    <ClInclude Include="Planet.h" />
-    <ClInclude Include="Star.h" />
-    <ClInclude Include="Transform.h" />
-    <ClInclude Include="Universe.h" />
-  </ItemGroup>
   <ItemGroup>
     <None Include="Resources\simple.frag" />
     <None Include="Resources\simple.vert" />
     <None Include="Resources\simpleColor.frag" />
     <None Include="Resources\simpleColor.vert" />
-    <None Include="SDL2.dll" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\consola.ttf" />
@@ -165,8 +133,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\LearnOpenGL\Resources\flow.jpg" />
-    <Image Include="..\LearnOpenGL\Resources\journey.jpg" />
     <Image Include="Resources\flow.jpg" />
     <Image Include="Resources\journey.jpg" />
   </ItemGroup>

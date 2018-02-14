@@ -1,5 +1,5 @@
 #include "Graphics.hpp"
-#include "Error.hpp"
+#include "System\Error.hpp"
 
 #include <thread>
 
