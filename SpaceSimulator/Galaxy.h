@@ -10,6 +10,8 @@ namespace Game
 		Galaxy(CoordinateSystem* parent, float radius);
 
 	private:
+		static int counter_;
+
 		void addStars_();
 	};
 }

@@ -10,6 +10,8 @@ namespace Game
 		Star(CoordinateSystem* parent, float radius);
 
 	private:
+		static int counter_;
+
 		void addPlanets_();
 	};
 }

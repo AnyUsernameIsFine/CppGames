@@ -12,6 +12,7 @@ namespace Framework
 
 		Vector3<T>(T t = 0);
 		Vector3<T>(T x, T y, T z);
+		Vector3<T>(const glm::vec3& v);
 		Vector3<T> operator-() const;
 		Vector3<T>& operator+=(const Vector3& v);
 		Vector3<T>& operator-=(const Vector3& v);
@@ -25,8 +26,8 @@ namespace Framework
 		Vector3<T> operator*(const glm::quat& q) const;
 		Vector3<T> operator*(float f) const;
 		Vector3<T> operator*(double d) const;
-		double length() const;
-		double dot(const Vector3& v) const;
+		float length() const;
+		float dot(const Vector3& v) const;
 		Vector3<T> cross(const Vector3& v) const;
 	};
 }
@@ -49,6 +50,14 @@ namespace Framework
 		this->x = x;
 		this->y = y;
 		this->z = z;
+	}
+
+	template<typename T>
+	Vector3<T>::Vector3(const glm::vec3& v)
+	{
+		this->x = static_cast<T>(v.x);
+		this->y = static_cast<T>(v.y);
+		this->z = static_cast<T>(v.z);
 	}
 
 	template<typename T>
@@ -180,14 +189,14 @@ namespace Framework
 	}
 
 	template<typename T>
-	double Vector3<T>::length() const
+	float Vector3<T>::length() const
 	{
 		// TODO: something about loss of precision?
-		return sqrt((double)x * (double)x + (double)y * (double)y + (double)z * (double)z);
+		return sqrt((float)x * (float)x + (float)y * (float)y + (float)z * (float)z);
 	}
 
 	template<typename T>
-	double Vector3<T>::dot(const Vector3& v) const
+	float Vector3<T>::dot(const Vector3& v) const
 	{
 		// TODO: something about loss of precision?
 		return this->x * v.x + this->y * v.y + this->z * v.z;

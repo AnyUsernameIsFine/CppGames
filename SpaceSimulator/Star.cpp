@@ -15,15 +15,17 @@ namespace Game
 		// The largest estimate of the size of the Oort cloud,
 		// considered the ultimate edge of our Solar System, is 200,000 AU.
 #else
-		const float SCALE = (int_least64_t)1 << 42;
+		const float SCALE = (int_least64_t)1 << 40;
 #endif
 	}
+
+	int Star::counter_ = 1;
 
 	Star::Star(CoordinateSystem* parent, float radius)
 	{
 		this->parent = parent;
 		this->radius = radius;
-		this->name = "Star";
+		this->name = "Star #" + std::to_string(counter_++);
 		this->scale = SCALE;
 
 		addPlanets_();
@@ -46,16 +48,16 @@ namespace Game
 
 		for (int i = 0; i < numberOfPlanets; i++) {
 			float r = (float)rand() / RAND_MAX;
-			float planetRadius = maxRadius * (0.25 + 0.75 * r * r);
+			float planetRadius = maxRadius * (0.25f + 0.75f * r * r);
 
 			children.push_back(std::make_unique<Planet>(this, planetRadius));
 
 			Planet* planet = (Planet*)children.back().get();
 
-			glm::vec2 v = glm::diskRand(radius * 100);
-			planet->transform.setPosition(Vector3(v.x, 0, v.y));
+			glm::vec2 v = glm::diskRand(0.5f * radius * ((CoordinateSystem*)parent)->scale / scale);
+			planet->transform.setPosition(Vector3((Coordinate)v.x, 0, (Coordinate)v.y));
 			r = (float)rand() / RAND_MAX;
-			planet->transform.rotate(45 * r * r, glm::sphericalRand(1));
+			planet->transform.rotate(45.0f * r * r, glm::sphericalRand(1.0f));
 		}
 	}
 }

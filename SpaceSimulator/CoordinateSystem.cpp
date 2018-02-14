@@ -82,8 +82,6 @@ namespace Game
 		// define the matrix to be used for drawing
 		glm::mat4 m;
 
-		bool drawDescendants = true;
-
 		// if this coordinate system is in the hierarchy of the camera's coordinate systems
 		if (hierarchyIndex > 0 && cameraHierarchy[hierarchyIndex - 1].coordinateSystem == this) {
 			hierarchyIndex--;

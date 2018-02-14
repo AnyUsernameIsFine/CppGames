@@ -10,6 +10,8 @@ namespace Game
 		Planet(CoordinateSystem* parent, float radius);
 
 	private:
+		static int counter_;
+
 		void addMoons_();
 	};
 }

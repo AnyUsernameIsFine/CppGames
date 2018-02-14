@@ -61,23 +61,14 @@ namespace Game
 
 		void update()
 		{
-#ifdef USE_REALISTIC_SCALE
-			float cameraSpeed = 1000000.0f;
-#else
-			float cameraSpeed = ((int_least64_t)1 << 58) * graphics.getDeltaSeconds();
-#endif
-			CoordinateSystem* parentCs = (CoordinateSystem*)camera.coordinateSystem->parent;
-			//if (parentCs) {
-			//	float r = camera.coordinateSystem->scale / parentCs->scale;
-			//	cameraSpeed = camera.coordinateSystem->radius / r / 8 * graphics.getDeltaSeconds();
-			//}
+			float deltaSeconds = graphics.getDeltaSeconds();
 
-			camera.transform.moveX((Coordinate)(cameraSpeed * (input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a))));
-			camera.transform.moveY((Coordinate)(cameraSpeed * (input.isKeyDown(SDLK_r) - input.isKeyDown(SDLK_f))));
-			camera.transform.moveZ((Coordinate)(cameraSpeed * (input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w))));
+			camera.moveX(deltaSeconds * (input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)));
+			camera.moveY(deltaSeconds * (input.isKeyDown(SDLK_r) - input.isKeyDown(SDLK_f)));
+			camera.moveZ(deltaSeconds * (input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w)));
 			camera.checkForCoordinateSystemSwap();
 
-			float rollSensitivity = 90 * graphics.getDeltaSeconds();
+			float rollSensitivity = 90 * deltaSeconds;
 			camera.transform.roll(rollSensitivity * (input.isKeyDown(SDLK_e) - input.isKeyDown(SDLK_q)));
 		}
 
@@ -91,10 +82,6 @@ namespace Game
 
 		void drawUniverse()
 		{
-			//universe.children[0]->transform.yaw(20 * graphics.getDeltaSeconds());
-			//universe.children[0]->children[0]->transform.roll(20 * graphics.getDeltaSeconds());
-			//universe.children[0]->children[0]->children[0]->transform.pitch(20 * graphics.getDeltaSeconds());
-			//universe.children[0]->children[0]->children[0]->children[0]->transform.yaw(20 * graphics.getDeltaSeconds());
 			universe.draw(camera);
 		}
 
@@ -105,11 +92,12 @@ namespace Game
 			glm::ivec3 o = camera.transform.getEulerAngles();
 
 			std::string fpsString = std::to_string(fps) + "fps";
-			std::string csString = camera.coordinateSystem->name + " (" + std::to_string(camera.coordinateSystem->scale) + "m/u)";
-			std::string positionString = "x: " + std::to_string(position.x) + " y: " + std::to_string(position.y) + " z: " + std::to_string(position.z);
-			std::string orientatonString = "yaw: " + std::to_string(o.y) + " pitch: " + std::to_string(o.x) + " roll: " + std::to_string(o.z);
+			std::string csString = camera.coordinateSystem->name;
+			//std::string positionString = "x: " + std::to_string(position.x) + " y: " + std::to_string(position.y) + " z: " + std::to_string(position.z);
+			//std::string orientatonString = "yaw: " + std::to_string(o.y) + " pitch: " + std::to_string(o.x) + " roll: " + std::to_string(o.z);
 
-			graphics.text.draw(0, 0, fpsString + "\n" + csString + "\n" + positionString + "\n" + orientatonString);
+			graphics.text.draw(0, 0, fpsString + "\n" + csString);
+			//graphics.text.draw(0, 0, fpsString + "\n" + csString + "\n" + positionString + "\n" + orientatonString);
 		}
 	};
 }

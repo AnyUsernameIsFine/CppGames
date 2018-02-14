@@ -13,15 +13,17 @@ namespace Game
 		// between the Moon and the Earth) when using 64-bit integers. Enough precision
 		// and size to fit any planetary satellite orbit. 
 #else
-		const float SCALE = (int_least64_t)1 << 35;
+		const float SCALE = (int_least64_t)1 << 33;
 #endif
 	}
+
+	int Planet::counter_ = 1;
 
 	Planet::Planet(CoordinateSystem* parent, float radius)
 	{
 		this->parent = parent;
 		this->radius = radius;
-		this->name = "Planet";
+		this->name = "Planet #" + std::to_string(counter_++);
 		this->scale = SCALE;
 
 		addMoons_();
@@ -43,16 +45,16 @@ namespace Game
 
 		for (int i = 0; i < numberOfMoons; i++) {
 			float r = (float)rand() / RAND_MAX;
-			float moonRadius = maxRadius * (0.25 + 0.75 * r * r);
+			float moonRadius = maxRadius * (0.25f + 0.75f * r * r);
 
 			children.push_back(std::make_unique<Moon>(this, moonRadius));
 
 			Moon* moon = (Moon*)children.back().get();
 
-			glm::vec2 v = glm::diskRand(radius * 100);
-			moon->transform.setPosition(Vector3(v.x, 0, v.y));
+			glm::vec2 v = glm::diskRand(0.5f * radius * ((CoordinateSystem*)parent)->scale / scale);
+			moon->transform.setPosition(Vector3((Coordinate)v.x, 0, (Coordinate)v.y));
 			r = (float)rand() / RAND_MAX;
-			moon->transform.rotate(45 * r * r, glm::sphericalRand(1));
+			moon->transform.rotate(45 * r * r, glm::sphericalRand(1.0f));
 		}
 	}
 }

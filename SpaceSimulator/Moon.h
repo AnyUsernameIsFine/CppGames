@@ -9,6 +9,8 @@ namespace Game
 	class Moon : public CoordinateSystem
 	{
 	public:
+		static int counter_;
+
 		Moon(CoordinateSystem* parent, float radius);
 	};
 }

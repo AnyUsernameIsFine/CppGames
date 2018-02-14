@@ -11,15 +11,17 @@ namespace Game
 		// Allows for galaxies with a radius of up to nearly 16 million light-years
 		// when using 64-bit integers.
 #else
-		const float SCALE = (int_least64_t)1 << 49;
+		const float SCALE = (int_least64_t)1 << 47;
 #endif
 	}
+
+	int Galaxy::counter_ = 1;
 
 	Galaxy::Galaxy(CoordinateSystem* parent, float radius)
 	{
 		this->parent = parent;
 		this->radius = radius;
-		this->name = "Galaxy";
+		this->name = "Galaxy #" + std::to_string(counter_++);
 		this->scale = SCALE;
 
 		addStars_();
@@ -42,16 +44,16 @@ namespace Game
 
 		for (int i = 0; i < numberOfStars; i++) {
 			float r = (float)rand() / RAND_MAX;
-			float starRadius = maxRadius * (0.25 + 0.75 * r * r);
+			float starRadius = maxRadius * (0.25f + 0.75f * r * r);
 
 			children.push_back(std::make_unique<Star>(this, starRadius));
 
 			Star* star = (Star*)children.back().get();
 
-			glm::vec3 v = glm::ballRand(radius * 100);
-			star->transform.setPosition(Vector3(v.x, v.y * roundness, v.z));
+			glm::vec3 v = glm::ballRand(0.5f * radius * ((CoordinateSystem*)parent)->scale / scale);
+			star->transform.setPosition(Vector3((Coordinate)v.x, (Coordinate)(v.y * roundness), (Coordinate)v.z));
 			r = (float)rand() / RAND_MAX;
-			star->transform.rotate(360 * r, glm::sphericalRand(1));
+			star->transform.rotate(360 * r, glm::sphericalRand(1.0f));
 		}
 	}
 }
