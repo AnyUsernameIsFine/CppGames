@@ -15,21 +15,17 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\simple.vert">
+    <None Include="Resources\light.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\simple.frag">
+    <None Include="Resources\light.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Resources\cube.vert" />
+    <None Include="Resources\cube.frag" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Resources\arial.ttf">
-      <Filter>Resource Files</Filter>
-    </Font>
     <Font Include="Resources\consola.ttf">
-      <Filter>Resource Files</Filter>
-    </Font>
-    <Font Include="Resources\lucon.ttf">
       <Filter>Resource Files</Filter>
     </Font>
   </ItemGroup>
@@ -40,5 +36,15 @@
     <Image Include="Resources\journey.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\**\*.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\**\*.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
