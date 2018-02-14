@@ -43,8 +43,8 @@ namespace Framework
 			glCheck(glGetProgramiv(id_, GL_INFO_LOG_LENGTH, &infoLogLength));
 			char* infoLog = new char[infoLogLength + 1];
 			glCheck(glGetProgramInfoLog(id_, infoLogLength, nullptr, infoLog));
-
 			error("Program info log:\n" + std::string(infoLog));
+			delete[] infoLog;
 		}
 
 		for (GLShader* shader : shaders) {

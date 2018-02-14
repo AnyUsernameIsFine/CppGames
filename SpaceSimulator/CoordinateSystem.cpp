@@ -1,24 +1,31 @@
 #include "CoordinateSystem.h"
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm\gtx\norm.hpp>
+#include <glm\gtx\string_cast.hpp>
+
 namespace Game
 {
 	void CoordinateSystem::draw(const Camera& camera) const
 	{
 		// initialize some variables
-		std::vector<CameraHierarchy> cameraHierarchy;
-
 		CameraHierarchy ch {
 			camera.coordinateSystem,
 			glm::mat4(1),
 			camera.transform.getPosition(),
 		};
 
+		std::vector<CameraHierarchy> cameraHierarchy = { ch };
+
 		CoordinateSystem* parentCs = (CoordinateSystem*)ch.coordinateSystem->parent;
 
 		// determine initial scale ratio (inverse of the camera's coordinate system's scale to its parent's)
+		// and number of sub levels to draw for galaxies (0 when inside a galaxy, 1 when outside)
 		float r = 1.0f;
+		int numberOfSubLevelsToDraw = 1;
 		if (parentCs) {
 			r = parentCs->scale / ch.coordinateSystem->scale;
+			numberOfSubLevelsToDraw = 0;
 		}
 		glm::vec3 s = { r, r, r };
 
@@ -27,14 +34,14 @@ namespace Game
 			glm::quat q = ch.coordinateSystem->transform.getOrientation();
 			ch.rotation *= glm::mat4_cast(q);
 
-			cameraHierarchy.push_back(ch);
-
-			// TODO: reorder these next two operations for added precision?
+			// TODO: add more precision?
 			ch.position *= q;
 			ch.position *= ch.coordinateSystem->scale / parentCs->scale;
 			ch.position += ch.coordinateSystem->transform.getPosition();
 
 			ch.coordinateSystem = parentCs;
+
+			cameraHierarchy.push_back(ch);
 
 			parentCs = (CoordinateSystem*)parentCs->parent;
 		}
@@ -49,46 +56,45 @@ namespace Game
 		draw_(matrix, 0);
 
 		// draw galaxies
-		for (auto& cs : descendants) {
-			cs.drawRecursively_(
-				cameraHierarchy.size() - 1, 
-				glm::mat4(1),
+		for (auto& cs : children) {
+			cs->drawRecursively_(
 				glm::scale(pr, s),
 				glm::scale(pv, s),
 				cameraHierarchy,
-				ch.position, 
-				1
+				cameraHierarchy.size() - 1,
+				numberOfSubLevelsToDraw
 			);
 		}
 	}
 
 	void CoordinateSystem::drawRecursively_(
-		int hierarchyIndex,										// which level of the camera hierarchy should we use for inverse rotations
-		glm::mat4 rotations,									// matrix of the combined rotations of all this coordinate system's ancestors
 		const glm::mat4& pr,									// camera projection matrix * camera rotation matrix
 		const glm::mat4& pv,									// camera projection matrix * camera view matrix
 		const std::vector<CameraHierarchy>& cameraHierarchy,	// list of the camera's positions and rotations relative to all its coordinate system's ancestors from inside to outside
-		Vector3 camPos,											// camera position relative to this coordinate system's parent
-		int depth												// current depth of this coordinate system relative to the universe (used for coloring only)
+		int hierarchyIndex,										// which level of the camera hierarchy should we use for inverse rotations
+		int numberOfSubLevelsToDraw,
+		glm::mat4 rotations,									// matrix of the combined rotations of all this coordinate system's ancestors
+		glm::vec3 camPos,										// camera position relative to this coordinate system's parent (we have to use floating point precision because this will be used for coordinate systems the camera is outside of)
+		int depth,												// current depth of this coordinate system relative to the universe (used for coloring only)
+		bool useHighRes
 	) const
 	{
 		// define the matrix to be used for drawing
 		glm::mat4 m;
 
+		bool drawDescendants = true;
+
 		// if this coordinate system is in the hierarchy of the camera's coordinate systems
-		if (hierarchyIndex >= 0 && cameraHierarchy[hierarchyIndex].coordinateSystem == this) {
-			bool thisIsCameraSystem = (hierarchyIndex == 0);
-
-			// save the camera position relative to the current coordinate system
-			camPos = cameraHierarchy[hierarchyIndex].position;
-
+		if (hierarchyIndex > 0 && cameraHierarchy[hierarchyIndex - 1].coordinateSystem == this) {
 			hierarchyIndex--;
 
 			// if this is the coordinate system the camera is in 
 			// we don't need to rotate it at all, and can use the camera's 
 			// actual view matrix in stead of just its rotation
-			if (thisIsCameraSystem) {
+			if (hierarchyIndex == 0) {
 				m = pv;
+
+				numberOfSubLevelsToDraw = 2;
 			}
 
 			// if this coordinate system is an ancestor of the one the camera is in
@@ -96,14 +102,17 @@ namespace Game
 				// use the camera's projection and rotation
 				// and the camera's rotation relative to this coordinate system's ancestors
 				m = pr;
-				if (hierarchyIndex >= 0) {
+				if (hierarchyIndex > 0) {
 					m *= cameraHierarchy[hierarchyIndex].rotation;
 				}
 
 				// translate by the camera's position relative to this coordinate system
-				glm::vec3 v = { -camPos.x, -camPos.y, -camPos.z };
-				v *= scale / ((CoordinateSystem*)parent)->scale;
+				Vector3 highResCamPos = cameraHierarchy[hierarchyIndex].position;
+				float r = scale / ((CoordinateSystem*)parent)->scale;
+				glm::vec3 v = { -highResCamPos.x * r, -highResCamPos.y * r, -highResCamPos.z * r };
 				m = glm::translate(m, v);
+
+				numberOfSubLevelsToDraw = 1;
 			}
 		}
 
@@ -113,7 +122,7 @@ namespace Game
 			// and the camera's rotation relative to it's coordinate systems and its ancestors
 			// up to but excluding the first shared ancestor with this coordinate system
 			m = pr;
-			if (hierarchyIndex >= 0) {
+			if (hierarchyIndex > 0) {
 				m *= cameraHierarchy[hierarchyIndex].rotation;
 			}
 
@@ -124,16 +133,29 @@ namespace Game
 			if (parent->parent) {
 				r = ((CoordinateSystem*)parent)->scale / ((CoordinateSystem*)parent->parent)->scale;
 			}
-			m *= glm::scale(rotations, { r, r, r }) * transform.getModelMatrix(camPos);
+
+			if (useHighRes) {
+				useHighRes = false;
+
+				Vector3 highResCamPos = cameraHierarchy[hierarchyIndex].position;
+				m *= glm::scale(rotations, { r, r, r }) * transform.getModelMatrix(highResCamPos);
+
+				Vector3 csPos = highResCamPos - transform.getPosition();
+				camPos = glm::vec3(csPos.x, csPos.y, csPos.z);
+			}
+			else {
+				m *= glm::scale(rotations, { r, r, r }) * transform.getModelMatrix(camPos);
+
+				Vector3 csPos = transform.getPosition();
+				camPos -= glm::vec3(csPos.x, csPos.y, csPos.z);
+			}
 
 			// add the current coordinate system's rotation to the combined rotations to use by its descendants
 			rotations *= transform.getRotateMatrix();
 
 			// calculate the camera position relative to this coordinate system
-			camPos -= transform.getPosition();
-			// TODO: reorder these next two operations for added precision?
-			camPos *= glm::conjugate(transform.getOrientation());
-			camPos *= ((CoordinateSystem*)parent)->scale / scale;
+			camPos = camPos * glm::conjugate(transform.getOrientation());
+			camPos *= (((CoordinateSystem*)parent)->scale / scale);
 		}
 
 		// make a final scale adjustment according to the coordinate system's radius and draw it
@@ -141,16 +163,20 @@ namespace Game
 		draw_(m, depth);
 
 		// draw the coordinate system's descendants
-		for (auto& cs : descendants) {
-			cs.drawRecursively_(
-				hierarchyIndex,
-				rotations, 
-				pr, 
-				pv,
-				cameraHierarchy,
-				camPos, 
-				depth + 1
-			);
+		if (numberOfSubLevelsToDraw > 0) {
+			for (auto& cs : children) {
+				cs->drawRecursively_(
+					pr,
+					pv,
+					cameraHierarchy,
+					hierarchyIndex,
+					numberOfSubLevelsToDraw - 1,
+					rotations,
+					camPos,
+					depth + 1,
+					useHighRes
+				);
+			}
 		}
 	}
 
@@ -170,6 +196,7 @@ namespace Game
 		shaderProgram_->setUniform("matrix", matrix);
 
 		glBindVertexArray(vao_);
+		glDrawElements(GL_POINTS, 24, GL_UNSIGNED_INT, nullptr);
 		glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, nullptr);
 	}
 

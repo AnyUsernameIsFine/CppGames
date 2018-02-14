@@ -1,14 +1,15 @@
 #pragma once
 
-#include "CoordinateSystem.h"
+#include "Star.h"
 
 namespace Game
 {
-	using namespace Framework;
-
 	class Galaxy : public CoordinateSystem
 	{
 	public:
+		Galaxy(CoordinateSystem* parent, float radius);
 
+	private:
+		void addStars_();
 	};
 }

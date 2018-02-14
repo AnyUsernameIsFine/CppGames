@@ -10,7 +10,8 @@ namespace Framework
 	public:
 		T x, y, z;
 
-		Vector3<T>(T x = 0, T y = 0, T z = 0);
+		Vector3<T>(T t = 0);
+		Vector3<T>(T x, T y, T z);
 		Vector3<T> operator-() const;
 		Vector3<T>& operator+=(const Vector3& v);
 		Vector3<T>& operator-=(const Vector3& v);
@@ -34,6 +35,14 @@ namespace Framework
 
 namespace Framework
 {
+	template<typename T>
+	Vector3<T>::Vector3(T t)
+	{
+		this->x = t;
+		this->y = t;
+		this->z = t;
+	}
+
 	template<typename T>
 	Vector3<T>::Vector3(T x, T y, T z)
 	{

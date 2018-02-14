@@ -132,6 +132,9 @@
     <ClCompile Include="Galaxy.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Moon.cpp" />
+    <ClCompile Include="Planet.cpp" />
+    <ClCompile Include="Star.cpp" />
     <ClCompile Include="Universe.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -140,9 +143,11 @@
     <ClInclude Include="Galaxy.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Main.h" />
+    <ClInclude Include="Moon.h" />
+    <ClInclude Include="Planet.h" />
+    <ClInclude Include="Star.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Universe.h" />
-    <ClInclude Include="Vector3.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\simple.frag" />

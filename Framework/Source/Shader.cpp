@@ -44,8 +44,8 @@ namespace Framework
 			glCheck(glGetShaderiv(id_, GL_INFO_LOG_LENGTH, &infoLogLength));
 			char* infoLog = new char[infoLogLength + 1];
 			glCheck(glGetShaderInfoLog(id_, infoLogLength, nullptr, infoLog));
-
 			error("Shader info log:\n" + std::string(infoLog));
+			delete[] infoLog;
 		}
 	}
 }

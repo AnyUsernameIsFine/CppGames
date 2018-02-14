@@ -46,6 +46,7 @@ namespace Framework
 		glm::mat4 getRotateMatrix() const;
 		glm::mat4 getModelMatrix() const;
 		glm::mat4 getModelMatrix(const Vector3<T>& cameraPosition) const;
+		glm::mat4 getModelMatrix(const glm::vec3& cameraPosition) const;
 
 	private:
 		Vector3<T> position_;
@@ -53,7 +54,7 @@ namespace Framework
 		glm::vec3 scale_;
 		bool useModelAxes_ = true;
 
-		glm::mat4 getModelMatrix_(const Vector3<T>& position) const;
+		glm::mat4 getModelMatrix_(const glm::vec3& position) const;
 	};
 }
 
@@ -276,10 +277,19 @@ namespace Framework
 	}
 
 	template<typename T>
-	glm::mat4 Transform<T>::getModelMatrix_(const Vector3<T>& position) const
+	glm::mat4 Transform<T>::getModelMatrix(const glm::vec3& cameraPosition) const
 	{
-		// TODO: something about loss of precision?
-		glm::mat4 translate = glm::translate(glm::mat4(1), { position.x, position.y, position.z });
+		return getModelMatrix_({
+			(float)position_.x - cameraPosition.x,
+			(float)position_.y - cameraPosition.y,
+			(float)position_.z - cameraPosition.z,
+		});
+	}
+
+	template<typename T>
+	glm::mat4 Transform<T>::getModelMatrix_(const glm::vec3& position) const
+	{
+		glm::mat4 translate = glm::translate(glm::mat4(1), position);
 		glm::mat4 scale = glm::scale(glm::mat4(1), scale_);
 
 		return translate * getRotateMatrix() * scale;

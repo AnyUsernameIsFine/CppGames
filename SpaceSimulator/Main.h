@@ -3,9 +3,6 @@
 #include <Framework.hpp>
 
 #include "Universe.h"
-#include "Camera.h"
-
-#include <iomanip>
 
 namespace Game
 {
@@ -14,8 +11,7 @@ namespace Game
 	class Game : public Framework::Game
 	{
 	public:
-		Universe universe{ 1ll << 54 };
-		//Universe universe { 100000000 };
+		Universe universe;
 		Camera camera;
 
 		Game()
@@ -33,17 +29,14 @@ namespace Game
 
 			CoordinateSystem::createMesh();
 
-			camera.coordinateSystem = &universe;
-			//camera.coordinateSystem = &universe.descendants.at(0);
-			//camera.coordinateSystem = &universe.descendants.at(0).descendants.at(0);
-			//camera.coordinateSystem = &universe.descendants.at(0).descendants.at(1).descendants.at(1);
-			//camera.coordinateSystem = &universe.descendants.at(1).descendants.at(1).descendants.at(1).descendants.at(1);
-			//camera.coordinateSystem = &universe.descendants.at(0).descendants.at(1).descendants.at(1).descendants.at(1).descendants.at(1);
-
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
-			camera.setClippingPlanes(0.001f, 10000000.0f);
+			camera.setClippingPlanes(0.001f, 100000.0f);
 			camera.setSize(10.0f);
-			camera.transform.moveZ((Coordinate)10);
+
+			camera.coordinateSystem = &universe;
+			CoordinateSystem* toPutCameraNextTo = camera.coordinateSystem->children[1].get();
+			camera.transform.setPosition(toPutCameraNextTo->transform.getPosition());
+			camera.transform.moveZ((Coordinate)(toPutCameraNextTo->radius * 5));
 		}
 
 		void onKeyDown(SDL_Keycode key)
@@ -68,7 +61,16 @@ namespace Game
 
 		void update()
 		{
-			float cameraSpeed = 5 * graphics.getDeltaSeconds();
+#ifdef USE_REALISTIC_SCALE
+			float cameraSpeed = 1000000.0f;
+#else
+			float cameraSpeed = ((int_least64_t)1 << 58) * graphics.getDeltaSeconds();
+#endif
+			CoordinateSystem* parentCs = (CoordinateSystem*)camera.coordinateSystem->parent;
+			//if (parentCs) {
+			//	float r = camera.coordinateSystem->scale / parentCs->scale;
+			//	cameraSpeed = camera.coordinateSystem->radius / r / 8 * graphics.getDeltaSeconds();
+			//}
 
 			camera.transform.moveX((Coordinate)(cameraSpeed * (input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a))));
 			camera.transform.moveY((Coordinate)(cameraSpeed * (input.isKeyDown(SDLK_r) - input.isKeyDown(SDLK_f))));
@@ -89,11 +91,10 @@ namespace Game
 
 		void drawUniverse()
 		{
-			universe.descendants.at(0).transform.yaw(20 * graphics.getDeltaSeconds());
-			//universe.descendants.at(0).descendants.at(0).transform.roll(20 * graphics.getDeltaSeconds());
-			//universe.descendants.at(0).descendants.at(0).descendants.at(0).transform.pitch(20 * graphics.getDeltaSeconds());
-			//universe.descendants.at(0).descendants.at(0).descendants.at(0).descendants.at(0).transform.yaw(20 * graphics.getDeltaSeconds());
-			//universe.descendants.at(0).descendants.at(0).descendants.at(0).descendants.at(0).descendants.at(0).transform.roll(20 * graphics.getDeltaSeconds());
+			//universe.children[0]->transform.yaw(20 * graphics.getDeltaSeconds());
+			//universe.children[0]->children[0]->transform.roll(20 * graphics.getDeltaSeconds());
+			//universe.children[0]->children[0]->children[0]->transform.pitch(20 * graphics.getDeltaSeconds());
+			//universe.children[0]->children[0]->children[0]->children[0]->transform.yaw(20 * graphics.getDeltaSeconds());
 			universe.draw(camera);
 		}
 
