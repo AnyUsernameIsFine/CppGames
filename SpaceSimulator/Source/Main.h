@@ -36,7 +36,7 @@ namespace Game
 			camera.coordinateSystem = &universe;
 			CoordinateSystem* toPutCameraNextTo = camera.coordinateSystem->children[1].get();
 			camera.transform.setPosition(toPutCameraNextTo->transform.getPosition());
-			camera.transform.moveZ((Coordinate)(toPutCameraNextTo->radius * 5));
+			camera.transform.moveZ(5 * toPutCameraNextTo->radius);
 		}
 
 		void onKeyDown(SDL_Keycode key)
@@ -61,16 +61,18 @@ namespace Game
 
 		void update()
 		{
-			float deltaSeconds = 1.0f;
+			float deltaSeconds = graphics.getDeltaSeconds();
 
-			camera.moveX(deltaSeconds * (input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)));
-			camera.moveY(deltaSeconds * (input.isKeyDown(SDLK_r) - input.isKeyDown(SDLK_f)));
-			camera.moveZ(deltaSeconds * (input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w)));
+			camera.move(
+				(float)(input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)),
+				(float)(input.isKeyDown(SDLK_r) - input.isKeyDown(SDLK_f)),
+				(float)(input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w))
+			);
 
 			float rollSensitivity = 90 * deltaSeconds;
 			camera.transform.roll(rollSensitivity * (input.isKeyDown(SDLK_e) - input.isKeyDown(SDLK_q)));
 
-			camera.update(graphics.getDeltaSeconds());
+			camera.update(deltaSeconds);
 		}
 
 		void draw()

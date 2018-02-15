@@ -101,9 +101,8 @@ namespace Game
 				}
 
 				// translate by the camera's position relative to this coordinate system
-				Vector3 highResCamPos = cameraHierarchy[hierarchyIndex].position;
 				float r = scale / ((CoordinateSystem*)parent)->scale;
-				glm::vec3 v = { -highResCamPos.x * r, -highResCamPos.y * r, -highResCamPos.z * r };
+				glm::vec3 v = -cameraHierarchy[hierarchyIndex].position.toVec3() * r;
 				m = glm::translate(m, v);
 
 				numberOfSubLevelsToDraw = 1;
@@ -134,14 +133,12 @@ namespace Game
 				Vector3 highResCamPos = cameraHierarchy[hierarchyIndex].position;
 				m *= glm::scale(rotations, { r, r, r }) * transform.getModelMatrix(highResCamPos);
 
-				Vector3 csPos = highResCamPos - transform.getPosition();
-				camPos = glm::vec3(csPos.x, csPos.y, csPos.z);
+				camPos = (highResCamPos - transform.getPosition()).toVec3();
 			}
 			else {
 				m *= glm::scale(rotations, { r, r, r }) * transform.getModelMatrix(camPos);
 
-				Vector3 csPos = transform.getPosition();
-				camPos -= glm::vec3(csPos.x, csPos.y, csPos.z);
+				camPos -= transform.getPosition().toVec3();
 			}
 
 			// add the current coordinate system's rotation to the combined rotations to use by its descendants

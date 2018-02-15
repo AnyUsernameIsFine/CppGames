@@ -51,7 +51,7 @@ namespace Game
 			Star* star = (Star*)children.back().get();
 
 			glm::vec3 v = glm::ballRand(0.5f * radius * ((CoordinateSystem*)parent)->scale / scale);
-			star->transform.setPosition(Vector3((Coordinate)v.x, (Coordinate)(v.y * roundness), (Coordinate)v.z));
+			star->transform.setPosition({ (Coordinate)v.x, (Coordinate)(v.y * roundness), (Coordinate)v.z });
 			r = (float)rand() / RAND_MAX;
 			star->transform.rotate(360 * r, glm::sphericalRand(1.0f));
 		}

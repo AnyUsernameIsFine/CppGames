@@ -2,7 +2,7 @@
 
 #include <Framework.hpp>
 
-#include <time.h>
+#include <ctime>
 
 namespace Game
 {
@@ -22,7 +22,7 @@ namespace Game
 		this->name = "Universe";
 		this->scale = SCALE;
 
-		srand(static_cast<unsigned int>(time(nullptr)));
+		srand((int)time(nullptr));
 
 		addGalaxies_();
 	}
@@ -47,7 +47,7 @@ namespace Game
 			Galaxy* galaxy = (Galaxy*)children.back().get();
 
 			glm::vec3 v = glm::ballRand(maxRadius * 100);
-			galaxy->transform.setPosition(Vector3((Coordinate)v.x, (Coordinate)v.y, (Coordinate)v.z));
+			galaxy->transform.setPosition({ (Coordinate)v.x, (Coordinate)v.y, (Coordinate)v.z });
 			r = (float)rand() / RAND_MAX;
 			galaxy->transform.rotate(360 * r, glm::sphericalRand(1.0f));
 		}

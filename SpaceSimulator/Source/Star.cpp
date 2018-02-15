@@ -55,7 +55,7 @@ namespace Game
 			Planet* planet = (Planet*)children.back().get();
 
 			glm::vec2 v = glm::diskRand(0.5f * radius * ((CoordinateSystem*)parent)->scale / scale);
-			planet->transform.setPosition(Vector3((Coordinate)v.x, 0, (Coordinate)v.y));
+			planet->transform.setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });
 			r = (float)rand() / RAND_MAX;
 			planet->transform.rotate(45.0f * r * r, glm::sphericalRand(1.0f));
 		}

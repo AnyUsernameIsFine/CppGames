@@ -52,7 +52,7 @@ namespace Game
 			Moon* moon = (Moon*)children.back().get();
 
 			glm::vec2 v = glm::diskRand(0.5f * radius * ((CoordinateSystem*)parent)->scale / scale);
-			moon->transform.setPosition(Vector3((Coordinate)v.x, 0, (Coordinate)v.y));
+			moon->transform.setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });
 			r = (float)rand() / RAND_MAX;
 			moon->transform.rotate(45 * r * r, glm::sphericalRand(1.0f));
 		}

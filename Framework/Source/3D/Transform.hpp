@@ -28,11 +28,11 @@ namespace Framework
 		glm::vec3 getEulerAngles() const;
 		const glm::quat& getOrientation() const;
 		const glm::vec3& getScale() const;
-		void move(const Vector3<T>& vector);
-		void move(T x, T y, T z);
-		void moveX(T distance);
-		void moveY(T distance);
-		void moveZ(T distance);
+		void move(const glm::vec3& vector);
+		void move(float x, float y, float z);
+		void moveX(float distance);
+		void moveY(float distance);
+		void moveZ(float distance);
 		void rotate(float angle, const glm::vec3& axis);
 		void yaw(float angle);
 		void pitch(float angle);
@@ -151,7 +151,7 @@ namespace Framework
 	}
 
 	template<typename T>
-	void Transform<T>::move(const Vector3<T>& vector)
+	void Transform<T>::move(const glm::vec3& vector)
 	{
 		if (useModelAxes_) {
 			position_ += vector * orientation_;
@@ -162,25 +162,25 @@ namespace Framework
 	}
 
 	template<typename T>
-	void Transform<T>::move(T x, T y, T z)
+	void Transform<T>::move(float x, float y, float z)
 	{
 		move({ x, y, z });
 	}
 
 	template<typename T>
-	void Transform<T>::moveX(T distance)
+	void Transform<T>::moveX(float distance)
 	{
 		move(distance, 0, 0);
 	}
 
 	template<typename T>
-	void Transform<T>::moveY(T distance)
+	void Transform<T>::moveY(float distance)
 	{
 		move(0, distance, 0);
 	}
 
 	template<typename T>
-	void Transform<T>::moveZ(T distance)
+	void Transform<T>::moveZ(float distance)
 	{
 		move(0, 0, distance);
 	}

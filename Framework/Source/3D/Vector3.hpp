@@ -26,6 +26,7 @@ namespace Framework
 		Vector3<T> operator*(const glm::quat& q) const;
 		Vector3<T> operator*(float f) const;
 		Vector3<T> operator*(double d) const;
+		glm::vec3 toVec3() const;
 		float length() const;
 		float dot(const Vector3& v) const;
 		Vector3<T> cross(const Vector3& v) const;
@@ -185,6 +186,16 @@ namespace Framework
 			static_cast<T>(x * d),
 			static_cast<T>(y * d),
 			static_cast<T>(z * d),
+		};
+	}
+
+	template<typename T>
+	glm::vec3 Vector3<T>::toVec3() const
+	{
+		return {
+			this->x,
+			this->y,
+			this->z,
 		};
 	}
 

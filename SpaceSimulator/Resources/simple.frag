@@ -1,8 +1,8 @@
 #version 330 core
 
-in vec2 vertTexCoords;
+in vec2 fragTexCoords;
 
-out vec4 fragColor;
+out vec4 finalColor;
 
 uniform sampler2D texture1;
 uniform sampler2D texture2;
@@ -10,5 +10,5 @@ uniform float mix;
 
 void main()
 {
-    fragColor = mix(texture(texture1, vertTexCoords), texture(texture2, vertTexCoords), mix);
+    finalColor = mix(texture(texture1, fragTexCoords), texture(texture2, fragTexCoords), mix);
 }
