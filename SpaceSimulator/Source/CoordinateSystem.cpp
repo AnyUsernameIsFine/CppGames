@@ -95,7 +95,7 @@ namespace Game
 		// make a final scale adjustment according to the coordinate system's radius and draw it
 		m = glm::scale(m, { radius, radius, radius });
 
-		map.push_back({ this, m });
+		map.push_back({ m, this->getColor() });
 
 		// draw the coordinate system's descendants
 		if (numberOfSubLevelsToDraw > 0) {
@@ -118,15 +118,33 @@ namespace Game
 	void CoordinateSystem::draw_(std::vector<DrawConfiguration> drawConfigurations)
 	{
 		shaderProgram_->use();
+
 		glBindVertexArray(vao_);
 
-		for (auto& drawConfiguration : drawConfigurations) {
-			shaderProgram_->setUniform("color", drawConfiguration.coordinateSystem->getColor());
-			shaderProgram_->setUniform("matrix", drawConfiguration.matrix);
+		unsigned int buffer;
+		glGenBuffers(1, &buffer);
+		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		glBufferData(GL_ARRAY_BUFFER, drawConfigurations.size() * (sizeof(glm::mat4) + sizeof(glm::vec4)), &drawConfigurations[0], GL_STATIC_DRAW);
 
-			glDrawElements(GL_POINTS, 24, GL_UNSIGNED_INT, nullptr);
-			glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, nullptr);
-		}
+		GLsizei vec4Size = sizeof(glm::vec4);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)0);
+		glVertexAttribDivisor(1, 1);
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(1 * vec4Size));
+		glVertexAttribDivisor(2, 1);
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(2 * vec4Size));
+		glVertexAttribDivisor(3, 1);
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(3 * vec4Size));
+		glVertexAttribDivisor(4, 1);
+		glEnableVertexAttribArray(5);
+		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(4 * vec4Size));
+		glVertexAttribDivisor(5, 1);
+
+		glDrawElementsInstanced(GL_POINTS, 24, GL_UNSIGNED_INT, nullptr, drawConfigurations.size());
+		glDrawElementsInstanced(GL_LINES, 24, GL_UNSIGNED_INT, nullptr, drawConfigurations.size());
 	}
 
 	void CoordinateSystem::createMesh()

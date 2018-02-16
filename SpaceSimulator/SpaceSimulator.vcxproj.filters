@@ -21,12 +21,6 @@
     <None Include="Resources\simpleColor.frag">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\simple.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\simple.vert">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\consola.ttf">
@@ -34,14 +28,6 @@
     </Font>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Resources\flow.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Resources\journey.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Source\CoordinateSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -234,28 +220,28 @@
     <ClCompile Include="Source\Universe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\CoordinateSystem.cpp">
+    <ClCompile Include="Source\**\*.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Galaxy.cpp">
+    <ClCompile Include="Source\**\*.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObject.cpp">
+    <ClCompile Include="Source\**\*.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Main.cpp">
+    <ClCompile Include="Source\**\*.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Moon.cpp">
+    <ClCompile Include="Source\**\*.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Planet.cpp">
+    <ClCompile Include="Source\**\*.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Star.cpp">
+    <ClCompile Include="Source\**\*.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Universe.cpp">
+    <ClCompile Include="Source\**\*.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\**\*.cpp">
@@ -530,31 +516,31 @@
     <ClInclude Include="Source\Universe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\CoordinateSystem.h">
+    <ClInclude Include="Source\**\*.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Galaxy.h">
+    <ClInclude Include="Source\**\*.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObject.h">
+    <ClInclude Include="Source\**\*.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Main.h">
+    <ClInclude Include="Source\**\*.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Moon.h">
+    <ClInclude Include="Source\**\*.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Planet.h">
+    <ClInclude Include="Source\**\*.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Star.h">
+    <ClInclude Include="Source\**\*.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Transform.h">
+    <ClInclude Include="Source\**\*.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Universe.h">
+    <ClInclude Include="Source\**\*.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\**\*.h">

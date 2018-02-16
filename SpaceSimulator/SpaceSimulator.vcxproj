@@ -119,8 +119,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="Resources\simple.frag" />
-    <None Include="Resources\simple.vert" />
     <None Include="Resources\simpleColor.frag" />
     <None Include="Resources\simpleColor.vert" />
   </ItemGroup>
@@ -131,10 +129,6 @@
     <ProjectReference Include="..\Framework\Framework.vcxproj">
       <Project>{833d7df2-0746-4da6-87d3-8a5c6953103a}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="Resources\flow.jpg" />
-    <Image Include="Resources\journey.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

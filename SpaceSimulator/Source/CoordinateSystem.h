@@ -27,8 +27,8 @@ namespace Game
 	protected:
 		struct DrawConfiguration
 		{
-			const CoordinateSystem* coordinateSystem;
 			glm::mat4 matrix;
+			glm::vec4 color;
 		};
 
 		struct CameraHierarchyLevel
