@@ -21,8 +21,12 @@
     <None Include="Resources\light.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\cube.vert" />
-    <None Include="Resources\cube.frag" />
+    <None Include="Resources\cube.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\cube.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\consola.ttf">

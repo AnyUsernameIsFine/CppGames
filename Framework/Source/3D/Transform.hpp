@@ -43,7 +43,7 @@ namespace Framework
 		void scaleX(float scale);
 		void scaleY(float scale);
 		void scaleZ(float scale);
-		glm::mat4 getRotateMatrix() const;
+		glm::mat4 getRotationMatrix() const;
 		glm::mat4 getModelMatrix() const;
 		glm::mat4 getModelMatrix(const Vector3<T>& cameraPosition) const;
 		glm::mat4 getModelMatrix(const glm::vec3& cameraPosition) const;
@@ -257,7 +257,7 @@ namespace Framework
 	}
 
 	template<typename T>
-	glm::mat4 Transform<T>::getRotateMatrix() const
+	glm::mat4 Transform<T>::getRotationMatrix() const
 	{
 		return glm::mat4_cast(glm::conjugate(orientation_));
 	}
@@ -292,6 +292,6 @@ namespace Framework
 		glm::mat4 translate = glm::translate(glm::mat4(1), position);
 		glm::mat4 scale = glm::scale(glm::mat4(1), scale_);
 
-		return translate * getRotateMatrix() * scale;
+		return translate * getRotationMatrix() * scale;
 	}
 }

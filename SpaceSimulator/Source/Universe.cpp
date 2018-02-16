@@ -19,6 +19,7 @@ namespace Game
 
 	Universe::Universe()
 	{
+		this->radius = 1;
 		this->name = "Universe";
 		this->scale = SCALE;
 
@@ -51,5 +52,59 @@ namespace Game
 			r = (float)rand() / RAND_MAX;
 			galaxy->transform.rotate(360 * r, glm::sphericalRand(1.0f));
 		}
+	}
+
+	void Universe::draw(const Camera& camera) const
+	{
+		// initialize some variables
+		CameraHierarchyLevel ch{
+			camera.coordinateSystem,
+			glm::mat4(1),
+			camera.transform.getPosition(),
+		};
+
+		std::vector<CameraHierarchyLevel> hierarchy = { ch };
+
+		CoordinateSystem* parentCs = (CoordinateSystem*)ch.coordinateSystem->parent;
+
+		// determine initial scale ratio (inverse of the camera's coordinate system's scale to its parent's)
+		// and number of sub levels to draw for galaxies (0 when inside a galaxy, 1 when outside)
+		float r = 1.0f;
+		int numberOfSubLevelsToDraw = 1;
+		if (parentCs) {
+			r = parentCs->scale / ch.coordinateSystem->scale;
+			numberOfSubLevelsToDraw = 0;
+		}
+		glm::vec3 s = { r, r, r };
+
+		// determine camera coordinate system hierarchy
+		while (parentCs) {
+			glm::quat q = ch.coordinateSystem->transform.getOrientation();
+			ch.rotation *= glm::mat4_cast(q);
+
+			// TODO: add more precision?
+			ch.position *= q;
+			ch.position *= ch.coordinateSystem->scale / parentCs->scale;
+			ch.position += ch.coordinateSystem->transform.getPosition();
+
+			ch.coordinateSystem = parentCs;
+
+			hierarchy.push_back(ch);
+
+			parentCs = (CoordinateSystem*)parentCs->parent;
+		}
+
+		// save projection and view matrices
+		glm::mat4 p = camera.getProjectionMatrix();
+		glm::mat4 pr = p * camera.getViewMatrix(true);
+		glm::mat4 pv = p * camera.getViewMatrix();
+
+		// draw the universe
+		drawRecursively_(
+			glm::scale(pr, s),
+			glm::scale(pv, s),
+			hierarchy,
+			hierarchy.size() - 1
+		);
 	}
 }

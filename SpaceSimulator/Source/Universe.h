@@ -8,6 +8,7 @@ namespace Game
 	{
 	public:
 		Universe();
+		void draw(const Camera& camera) const;
 
 	private:
 		void addGalaxies_();

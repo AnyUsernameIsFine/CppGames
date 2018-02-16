@@ -1,72 +1,13 @@
 #include "CoordinateSystem.h"
 
+#include <System\Error.hpp>
+
 namespace Game
 {
-	void CoordinateSystem::draw(const Camera& camera) const
-	{
-		// initialize some variables
-		CameraHierarchy ch {
-			camera.coordinateSystem,
-			glm::mat4(1),
-			camera.transform.getPosition(),
-		};
-
-		std::vector<CameraHierarchy> cameraHierarchy = { ch };
-
-		CoordinateSystem* parentCs = (CoordinateSystem*)ch.coordinateSystem->parent;
-
-		// determine initial scale ratio (inverse of the camera's coordinate system's scale to its parent's)
-		// and number of sub levels to draw for galaxies (0 when inside a galaxy, 1 when outside)
-		float r = 1.0f;
-		int numberOfSubLevelsToDraw = 1;
-		if (parentCs) {
-			r = parentCs->scale / ch.coordinateSystem->scale;
-			numberOfSubLevelsToDraw = 0;
-		}
-		glm::vec3 s = { r, r, r };
-
-		// determine camera coordinate system hierarchy
-		while (parentCs) {
-			glm::quat q = ch.coordinateSystem->transform.getOrientation();
-			ch.rotation *= glm::mat4_cast(q);
-
-			// TODO: add more precision?
-			ch.position *= q;
-			ch.position *= ch.coordinateSystem->scale / parentCs->scale;
-			ch.position += ch.coordinateSystem->transform.getPosition();
-
-			ch.coordinateSystem = parentCs;
-
-			cameraHierarchy.push_back(ch);
-
-			parentCs = (CoordinateSystem*)parentCs->parent;
-		}
-
-		// save projection and view matrices
-		glm::mat4 p = camera.getProjectionMatrix();
-		glm::mat4 pr = p * camera.getViewMatrix(true);
-		glm::mat4 pv = p * camera.getViewMatrix();
-
-		// draw the universe
-		glm::mat4 matrix = pr * ch.rotation;
-		draw_(matrix, 0);
-
-		// draw galaxies
-		for (auto& cs : children) {
-			cs->drawRecursively_(
-				glm::scale(pr, s),
-				glm::scale(pv, s),
-				cameraHierarchy,
-				cameraHierarchy.size() - 1,
-				numberOfSubLevelsToDraw
-			);
-		}
-	}
-
 	void CoordinateSystem::drawRecursively_(
 		const glm::mat4& pr,									// camera projection matrix * camera rotation matrix
 		const glm::mat4& pv,									// camera projection matrix * camera view matrix
-		const std::vector<CameraHierarchy>& cameraHierarchy,	// list of the camera's positions and rotations relative to all its coordinate system's ancestors from inside to outside
+		const std::vector<CameraHierarchyLevel>& hierarchy,		// list of the camera's positions and rotations relative to all its coordinate system's ancestors from inside to outside
 		int hierarchyIndex,										// which level of the camera hierarchy should we use for inverse rotations
 		int numberOfSubLevelsToDraw,
 		glm::mat4 rotations,									// matrix of the combined rotations of all this coordinate system's ancestors
@@ -79,14 +20,15 @@ namespace Game
 		glm::mat4 m;
 
 		// if this coordinate system is in the hierarchy of the camera's coordinate systems
-		if (hierarchyIndex > 0 && cameraHierarchy[hierarchyIndex - 1].coordinateSystem == this) {
+		if (hierarchyIndex >= 0 && hierarchy[hierarchyIndex].coordinateSystem == this) {
 			hierarchyIndex--;
 
 			// if this is the coordinate system the camera is in 
 			// we don't need to rotate it at all, and can use the camera's 
-			// actual view matrix in stead of just its rotation
-			if (hierarchyIndex == 0) {
-				m = pv;
+			// actual view matrix in stead of just its rotation,
+			// except when this is the universe
+			if (hierarchyIndex == -1) {
+				m = depth == 0 ? pr : pv;
 
 				numberOfSubLevelsToDraw = 2;
 			}
@@ -96,14 +38,16 @@ namespace Game
 				// use the camera's projection and rotation
 				// and the camera's rotation relative to this coordinate system's ancestors
 				m = pr;
-				if (hierarchyIndex > 0) {
-					m *= cameraHierarchy[hierarchyIndex].rotation;
+				if (hierarchyIndex >= 0) {
+					m *= hierarchy[hierarchyIndex + 1].rotation;
 				}
 
 				// translate by the camera's position relative to this coordinate system
-				float r = scale / ((CoordinateSystem*)parent)->scale;
-				glm::vec3 v = -cameraHierarchy[hierarchyIndex].position.toVec3() * r;
-				m = glm::translate(m, v);
+				if (parent) {
+					float r = scale / ((CoordinateSystem*)parent)->scale;
+					glm::vec3 v = -hierarchy[hierarchyIndex + 1].position.toVec3() * r;
+					m = glm::translate(m, v);
+				}
 
 				numberOfSubLevelsToDraw = 1;
 			}
@@ -115,34 +59,35 @@ namespace Game
 			// and the camera's rotation relative to it's coordinate systems and its ancestors
 			// up to but excluding the first shared ancestor with this coordinate system
 			m = pr;
-			if (hierarchyIndex > 0) {
-				m *= cameraHierarchy[hierarchyIndex].rotation;
+			if (hierarchyIndex >= 0) {
+				m *= hierarchy[hierarchyIndex + 1].rotation;
 			}
 
 			// rotate by the combined rotations of all this coordinate system's ancestors
 			// up to but exluding the first shared ancestor with the hierarchy of the camera's coordinate systems
-			// and rotate by this coordinate system's model matrix
 			float r = 1.0f;
 			if (parent->parent) {
 				r = ((CoordinateSystem*)parent)->scale / ((CoordinateSystem*)parent->parent)->scale;
 			}
+			m *= glm::scale(rotations, { r, r, r });
 
+			// rotate by this coordinate system's model matrix
 			if (useHighRes) {
 				useHighRes = false;
 
-				Vector3 highResCamPos = cameraHierarchy[hierarchyIndex].position;
-				m *= glm::scale(rotations, { r, r, r }) * transform.getModelMatrix(highResCamPos);
+				Vector3 highResCamPos = hierarchy[hierarchyIndex + 1].position;
+				m *= transform.getModelMatrix(highResCamPos);
 
 				camPos = (highResCamPos - transform.getPosition()).toVec3();
 			}
 			else {
-				m *= glm::scale(rotations, { r, r, r }) * transform.getModelMatrix(camPos);
+				m *= transform.getModelMatrix(camPos);
 
 				camPos -= transform.getPosition().toVec3();
 			}
 
 			// add the current coordinate system's rotation to the combined rotations to use by its descendants
-			rotations *= transform.getRotateMatrix();
+			rotations *= transform.getRotationMatrix();
 
 			// calculate the camera position relative to this coordinate system
 			camPos = camPos * glm::conjugate(transform.getOrientation());
@@ -159,7 +104,7 @@ namespace Game
 				cs->drawRecursively_(
 					pr,
 					pv,
-					cameraHierarchy,
+					hierarchy,
 					hierarchyIndex,
 					numberOfSubLevelsToDraw - 1,
 					rotations,

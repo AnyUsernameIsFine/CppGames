@@ -71,8 +71,8 @@ namespace Framework
 			SDL_WINDOWPOS_UNDEFINED,
 			width_,
 			height_,
-			SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL)
-		);
+			SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL
+		));
 
 		if (window_ == NULL) {
 			return 1;
