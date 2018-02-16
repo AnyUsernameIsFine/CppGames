@@ -1,10 +1,9 @@
 #include "CoordinateSystem.h"
 
-#include <System\Error.hpp>
-
 namespace Game
 {
 	void CoordinateSystem::drawRecursively_(
+		std::vector<DrawConfiguration>& map,
 		const glm::mat4& pr,									// camera projection matrix * camera rotation matrix
 		const glm::mat4& pv,									// camera projection matrix * camera view matrix
 		const std::vector<CameraHierarchyLevel>& hierarchy,		// list of the camera's positions and rotations relative to all its coordinate system's ancestors from inside to outside
@@ -12,7 +11,6 @@ namespace Game
 		int numberOfSubLevelsToDraw,
 		glm::mat4 rotations,									// matrix of the combined rotations of all this coordinate system's ancestors
 		glm::vec3 camPos,										// camera position relative to this coordinate system's parent (we have to use floating point precision because this will be used for coordinate systems the camera is outside of)
-		int depth,												// current depth of this coordinate system relative to the universe (used for coloring only)
 		bool useHighRes
 	) const
 	{
@@ -28,7 +26,7 @@ namespace Game
 			// actual view matrix in stead of just its rotation,
 			// except when this is the universe
 			if (hierarchyIndex == -1) {
-				m = depth == 0 ? pr : pv;
+				m = hierarchy.size() == 1 ? pr : pv;
 
 				numberOfSubLevelsToDraw = 2;
 			}
@@ -96,12 +94,14 @@ namespace Game
 
 		// make a final scale adjustment according to the coordinate system's radius and draw it
 		m = glm::scale(m, { radius, radius, radius });
-		draw_(m, depth);
+
+		map.push_back({ this, m });
 
 		// draw the coordinate system's descendants
 		if (numberOfSubLevelsToDraw > 0) {
 			for (auto& cs : children) {
 				cs->drawRecursively_(
+					map,
 					pr,
 					pv,
 					hierarchy,
@@ -109,31 +109,24 @@ namespace Game
 					numberOfSubLevelsToDraw - 1,
 					rotations,
 					camPos,
-					depth + 1,
 					useHighRes
 				);
 			}
 		}
 	}
 
-	void CoordinateSystem::draw_(const glm::mat4& matrix, int depth) const
+	void CoordinateSystem::draw_(std::vector<DrawConfiguration> drawConfigurations)
 	{
-		glm::vec3 colors[] = {
-			{ 0, 1, 0 },
-			{ 0, 0, 1 },
-			{ 1, 0, 0 },
-			{ 1, 1, 0 },
-			{ 1, 0, 1 },
-			{ 0, 1, 1 },
-		};
-
 		shaderProgram_->use();
-		shaderProgram_->setUniform("color", glm::vec4(colors[depth], 1));
-		shaderProgram_->setUniform("matrix", matrix);
-
 		glBindVertexArray(vao_);
-		glDrawElements(GL_POINTS, 24, GL_UNSIGNED_INT, nullptr);
-		glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, nullptr);
+
+		for (auto& drawConfiguration : drawConfigurations) {
+			shaderProgram_->setUniform("color", drawConfiguration.coordinateSystem->getColor());
+			shaderProgram_->setUniform("matrix", drawConfiguration.matrix);
+
+			glDrawElements(GL_POINTS, 24, GL_UNSIGNED_INT, nullptr);
+			glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, nullptr);
+		}
 	}
 
 	void CoordinateSystem::createMesh()

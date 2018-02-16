@@ -9,6 +9,7 @@ namespace Game
 	public:
 		Universe();
 		void draw(const Camera& camera) const;
+		glm::vec4 getColor() const { return { 0, 1, 0, 1 }; }
 
 	private:
 		void addGalaxies_();

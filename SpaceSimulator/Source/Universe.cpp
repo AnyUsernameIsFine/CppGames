@@ -68,12 +68,9 @@ namespace Game
 		CoordinateSystem* parentCs = (CoordinateSystem*)ch.coordinateSystem->parent;
 
 		// determine initial scale ratio (inverse of the camera's coordinate system's scale to its parent's)
-		// and number of sub levels to draw for galaxies (0 when inside a galaxy, 1 when outside)
 		float r = 1.0f;
-		int numberOfSubLevelsToDraw = 1;
 		if (parentCs) {
 			r = parentCs->scale / ch.coordinateSystem->scale;
-			numberOfSubLevelsToDraw = 0;
 		}
 		glm::vec3 s = { r, r, r };
 
@@ -100,11 +97,14 @@ namespace Game
 		glm::mat4 pv = p * camera.getViewMatrix();
 
 		// draw the universe
+		std::vector<DrawConfiguration> map;
 		drawRecursively_(
+			map,
 			glm::scale(pr, s),
 			glm::scale(pv, s),
 			hierarchy,
 			hierarchy.size() - 1
 		);
+		draw_(map);
 	}
 }

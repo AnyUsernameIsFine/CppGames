@@ -8,6 +8,7 @@ namespace Game
 	{
 	public:
 		Planet(CoordinateSystem* parent, float radius);
+		glm::vec4 getColor() const { return { 1, 1, 0, 1 }; }
 
 	private:
 		static int counter_;

@@ -9,8 +9,10 @@ namespace Game
 	class Moon : public CoordinateSystem
 	{
 	public:
-		static int counter_;
-
 		Moon(CoordinateSystem* parent, float radius);
+		glm::vec4 getColor() const { return { 1, 0, 1, 1 }; }
+
+	private:
+		static int counter_;
 	};
 }
