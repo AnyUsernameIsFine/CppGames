@@ -19,7 +19,7 @@ namespace Game
 			graphics.window.setTitle("SpaceSimulator");
 			graphics.window.setSize(960, 540);
 			graphics.window.hideCursor();
-			//graphics.window.enableVSync();
+			graphics.window.enableVSync();
 		}
 
 		void start()

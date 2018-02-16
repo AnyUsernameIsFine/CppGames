@@ -51,7 +51,7 @@ namespace Game
 			glm::mat4 rotations = glm::mat4(1),
 			glm::vec3 camPos = glm::vec3(1),
 			bool useHighRes = true
-		) const;
+		);
 		static void draw_(std::vector<DrawConfiguration> drawConfigurations);
 	};
 }

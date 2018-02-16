@@ -54,7 +54,7 @@ namespace Game
 		}
 	}
 
-	void Universe::draw(const Camera& camera) const
+	void Universe::draw(const Camera& camera)
 	{
 		// initialize some variables
 		CameraHierarchyLevel ch{

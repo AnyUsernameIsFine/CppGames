@@ -43,10 +43,11 @@ namespace Framework
 		void scaleX(float scale);
 		void scaleY(float scale);
 		void scaleZ(float scale);
-		glm::mat4 getRotationMatrix() const;
-		glm::mat4 getModelMatrix() const;
-		glm::mat4 getModelMatrix(const Vector3<T>& cameraPosition) const;
-		glm::mat4 getModelMatrix(const glm::vec3& cameraPosition) const;
+		const glm::mat4& getRotationMatrix();
+		const glm::mat4& getScaleMatrix();
+		const glm::mat4& getModelMatrix();
+		const glm::mat4& getModelMatrix(const Vector3<T>& cameraPosition);
+		const glm::mat4& getModelMatrix(const glm::vec3& cameraPosition);
 
 	private:
 		Vector3<T> position_;
@@ -54,7 +55,17 @@ namespace Framework
 		glm::vec3 scale_;
 		bool useModelAxes_ = true;
 
-		glm::mat4 getModelMatrix_(const glm::vec3& position) const;
+		bool isScaleMatrixValid_;
+		glm::mat4 rotationMatrix_;
+		bool isRotationMatrixValid_;
+		glm::mat4 scaleMatrix_;
+		bool isRotationScaleMatrixValid_;
+		glm::mat4 rotationScaleMatrix_;
+		glm::vec3 modelMatrixPosition_;
+		glm::mat4 modelMatrix_;
+
+		const glm::mat4& getModelMatrix_(const glm::vec3& position);
+		const glm::mat4& getRotationScaleMatrix_();
 	};
 }
 
@@ -94,6 +105,8 @@ namespace Framework
 	void Transform<T>::setOrientation(const glm::quat& orientation)
 	{
 		orientation_ = orientation;
+
+		isRotationMatrixValid_ = false;
 	}
 
 	template<typename T>
@@ -112,6 +125,8 @@ namespace Framework
 	void Transform<T>::setScale(const glm::vec3& scale)
 	{
 		scale_ = scale;
+
+		isScaleMatrixValid_ = false;
 	}
 
 	template<typename T>
@@ -197,7 +212,7 @@ namespace Framework
 			orientation_ *= rotation;
 		}
 
-		orientation_ = glm::normalize(orientation_);
+		setOrientation(glm::normalize(orientation_));
 	}
 
 	template<typename T>
@@ -223,7 +238,7 @@ namespace Framework
 	template<typename T>
 	void Transform<T>::scale(const glm::vec3& scale)
 	{
-		scale_ *= scale;
+		setScale(scale_ * scale);
 	}
 
 	template<typename T>
@@ -257,19 +272,35 @@ namespace Framework
 	}
 
 	template<typename T>
-	glm::mat4 Transform<T>::getRotationMatrix() const
+	const glm::mat4& Transform<T>::getRotationMatrix()
 	{
-		return glm::mat4_cast(glm::conjugate(orientation_));
+		if (!isRotationMatrixValid_) {
+			rotationMatrix_ = glm::mat4_cast(glm::conjugate(orientation_));
+			isRotationMatrixValid_ = true;
+		}
+
+		return rotationMatrix_;
 	}
 
 	template<typename T>
-	glm::mat4 Transform<T>::getModelMatrix() const
+	const glm::mat4& Transform<T>::getScaleMatrix()
+	{
+		if (!isScaleMatrixValid_) {
+			scaleMatrix_ = glm::scale(glm::mat4(1), scale_);
+			isScaleMatrixValid_ = true;
+		}
+
+		return scaleMatrix_;
+	}
+
+	template<typename T>
+	const glm::mat4& Transform<T>::getModelMatrix()
 	{
 		return getModelMatrix_({ position_.x, position_.y, position_.z });
 	}
 
 	template<typename T>
-	glm::mat4 Transform<T>::getModelMatrix(const Vector3<T>& cameraPosition) const
+	const glm::mat4& Transform<T>::getModelMatrix(const Vector3<T>& cameraPosition)
 	{
 		Vector3<T> distance = position_ - cameraPosition;
 
@@ -277,21 +308,34 @@ namespace Framework
 	}
 
 	template<typename T>
-	glm::mat4 Transform<T>::getModelMatrix(const glm::vec3& cameraPosition) const
+	const glm::mat4& Transform<T>::getModelMatrix(const glm::vec3& cameraPosition)
 	{
 		return getModelMatrix_({
 			(float)position_.x - cameraPosition.x,
 			(float)position_.y - cameraPosition.y,
 			(float)position_.z - cameraPosition.z,
-		});
+			});
 	}
 
 	template<typename T>
-	glm::mat4 Transform<T>::getModelMatrix_(const glm::vec3& position) const
+	const glm::mat4& Transform<T>::getModelMatrix_(const glm::vec3& position)
 	{
-		glm::mat4 translate = glm::translate(glm::mat4(1), position);
-		glm::mat4 scale = glm::scale(glm::mat4(1), scale_);
+		if (position != modelMatrixPosition_) {
+			modelMatrix_ = glm::translate(glm::mat4(1), position) * getRotationScaleMatrix_();
+			modelMatrixPosition_ = position;
+		}
 
-		return translate * getRotationMatrix() * scale;
+		return modelMatrix_;
+	}
+
+	template<typename T>
+	const glm::mat4& Transform<T>::getRotationScaleMatrix_()
+	{
+		if (!isRotationScaleMatrixValid_) {
+			rotationScaleMatrix_ = getRotationMatrix() * getScaleMatrix();
+			isRotationScaleMatrixValid_ = true;
+		}
+
+		return rotationScaleMatrix_;
 	}
 }

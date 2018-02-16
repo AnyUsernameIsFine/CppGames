@@ -12,7 +12,7 @@ namespace Game
 		glm::mat4 rotations,									// matrix of the combined rotations of all this coordinate system's ancestors
 		glm::vec3 camPos,										// camera position relative to this coordinate system's parent (we have to use floating point precision because this will be used for coordinate systems the camera is outside of)
 		bool useHighRes
-	) const
+	)
 	{
 		// define the matrix to be used for drawing
 		glm::mat4 m;
