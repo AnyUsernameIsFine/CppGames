@@ -27,23 +27,15 @@ namespace Game
 			graphics.text.setFont("Resources/consola.ttf", 16);
 			graphics.text.setColor(1, 1, 1);
 
-			CoordinateSystem::createMesh();
-
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
 			camera.setClippingPlanes(0.001f, 100000.0f);
-			camera.setSize(10.0f);
+
+			CoordinateSystem::createMesh();
 
 			camera.coordinateSystem = &universe;
 			CoordinateSystem* toPutCameraNextTo = camera.coordinateSystem->children[1].get();
 			camera.transform.setPosition(toPutCameraNextTo->transform.getPosition());
 			camera.transform.moveZ(5 * toPutCameraNextTo->radius);
-		}
-
-		void onKeyDown(SDL_Keycode key)
-		{
-			if (key == SDLK_p) {
-				camera.setPerspective(!camera.isPerspective());
-			}
 		}
 
 		void onMouseMove(int x, int y)
@@ -54,20 +46,15 @@ namespace Game
 			camera.transform.pitch(sensitivity * y);
 		}
 
-		void onMouseWheel(int y)
-		{
-			camera.setFieldOfView(camera.getFieldOfView() - y * 10);
-		}
-
 		void update()
 		{
-			float deltaSeconds = graphics.getDeltaSeconds();
-
 			camera.move(
 				(float)(input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)),
 				(float)(input.isKeyDown(SDLK_r) - input.isKeyDown(SDLK_f)),
 				(float)(input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w))
 			);
+
+			float deltaSeconds = graphics.getDeltaSeconds();
 
 			float rollSensitivity = 90 * deltaSeconds;
 			camera.transform.roll(rollSensitivity * (input.isKeyDown(SDLK_e) - input.isKeyDown(SDLK_q)));
@@ -79,17 +66,8 @@ namespace Game
 		{
 			graphics.clearScreen(0, 0, 0);
 
-			drawUniverse();
-			drawInfo();
-		}
-
-		void drawUniverse()
-		{
 			universe.draw(camera);
-		}
 
-		void drawInfo()
-		{
 			int fps = (int)round(graphics.getFps());
 			Vector3 position = camera.transform.getPosition();
 			glm::ivec3 o = camera.transform.getEulerAngles();

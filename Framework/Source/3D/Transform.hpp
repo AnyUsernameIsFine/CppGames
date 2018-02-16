@@ -56,7 +56,7 @@ namespace Framework
 		bool useModelAxes_ = true;
 
 		glm::vec3 translationMatrixPosition_;
-		glm::mat4 translationMatrix_;
+		glm::mat4 translationMatrix_ = glm::mat4(1);
 		bool isRotationMatrixValid_;
 		glm::mat4 scaleMatrix_;
 		bool isScaleMatrixValid_;
