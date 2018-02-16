@@ -24,7 +24,8 @@ namespace Game
 
 		void start()
 		{
-			graphics.text.setFont("Resources/consola.ttf", 16);
+			graphics.text.loadFont("Resources/consola.ttf");
+			graphics.text.setFont("Consolas", 16);
 			graphics.text.setColor(1, 1, 1);
 
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());

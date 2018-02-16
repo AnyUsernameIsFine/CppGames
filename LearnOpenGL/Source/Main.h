@@ -26,7 +26,7 @@ namespace Game
 
 		Game()
 		{
-			graphics.window.setTitle("Learn OpenGL");
+			graphics.window.setTitle("Learn OpenG");
 			graphics.window.setSize(800, 600);
 			graphics.window.hideCursor();
 			graphics.window.enableVSync();
@@ -36,8 +36,8 @@ namespace Game
 		{
 			srand((int)time(nullptr));
 
-			graphics.text.setFont("Resources/consola.ttf", 16);
-			graphics.text.setColor(1, 1, 1);
+			graphics.text.loadFont("Resources/consola.ttf");
+			graphics.text.setFontFamily("Consolas");
 
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
 			camera.transform.moveZ(10);
@@ -207,11 +207,28 @@ namespace Game
 			Vector3<> position = camera.transform.getPosition();
 			glm::ivec3 o = camera.transform.getEulerAngles();
 
-			std::wstring fpsString = std::to_wstring(fps) + L"fps";
-			std::wstring positionString = L"x: " + std::to_wstring(position.x) + L" y: " + std::to_wstring(position.y) + L" z: " + std::to_wstring(position.z);
-			std::wstring orientatonString = L"yaw: " + std::to_wstring(o.y) + L"° pitch: " + std::to_wstring(o.x) + L"° roll: " + std::to_wstring(o.z) + L"°";
+			std::string fpsString = std::to_string(fps) + "fps";
+			std::string positionString = "x: " + std::to_string(position.x) + " y: " + std::to_string(position.y) + " z: " + std::to_string(position.z);
+			std::string orientatonString = "yaw: " + std::to_string(o.y) + "° pitch: " + std::to_string(o.x) + "° roll: " + std::to_string(o.z) + "°";
 
-			graphics.text.draw(0, 0, fpsString + L"\n" + positionString + L"\n" + orientatonString);
+			graphics.text.draw(0, 0, fpsString + "\n" + positionString + "\n" + orientatonString);
+			//graphics.text.draw(0, 100,
+				//"This field represents a default line spacing (i.e., the baseline-to-baseline distance)\n"
+				//"when writing text with this font. Note that it usually is larger than the sum of the\n"
+				//"ascender and descender taken as absolute values. There is also no guarantee that no\n"
+				//"glyphs extend above or below subsequent baselines when using this distance – think of\n"
+				//"it as a value the designer of the font finds appropriate.\n"
+				//"This field represents a default line spacing (i.e., the baseline-to-baseline distance)\n"
+				//"when writing text with this font. Note that it usually is larger than the sum of the\n"
+				//"ascender and descender taken as absolute values. There is also no guarantee that no\n"
+				//"glyphs extend above or below subsequent baselines when using this distance – think of\n"
+				//"it as a value the designer of the font finds appropriate.\n"
+				//"This field represents a default line spacing (i.e., the baseline-to-baseline distance)\n"
+				//"when writing text with this font. Note that it usually is larger than the sum of the\n"
+				//"ascender and descender taken as absolute values. There is also no guarantee that no\n"
+				//"glyphs extend above or below subsequent baselines when using this distance – think of\n"
+				//"it as a value the designer of the font finds appropriate.\n"
+			//);
 		}
 	};
 }

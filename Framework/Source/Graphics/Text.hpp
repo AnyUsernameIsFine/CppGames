@@ -4,20 +4,17 @@
 #include "OpenGL\ShaderProgram.hpp"
 #include "OpenGL\VertexBufferObject.hpp"
 
-#include <GL\glew.h>
-
-#include <string>
-#include <map>
-
 namespace Framework
 {
 	class Text
 	{
 	public:
+		void loadFont(const std::string& filename);
+		void setFontFamily(const std::string& family);
+		void setFontSize(int size);
+		void setFont(const std::string& family, int size);
 		void setColor(float r = 0, float g = 0, float b = 0, float a = 1);
-		void setFont(const std::string& filename, int size);
 		void draw(float x, float y, const std::string& text) const;
-		void draw(float x, float y, const std::wstring& text) const;
 
 	private:
 		friend class Graphics;
@@ -28,9 +25,11 @@ namespace Framework
 		GLuint vao_;
 		VertexBufferObject* vbo_;
 
-		std::map<std::string, Font> fonts_;
-		Font* font_;
+		std::vector<std::shared_ptr<Font>> fonts_;
+		Font* font_ = nullptr;
+		int size_ = 30;
 
 		void initialize_(int windowWidth, int windowHeight);
+		Font* findFont_(const FT_String* family) const;
 	};
 }

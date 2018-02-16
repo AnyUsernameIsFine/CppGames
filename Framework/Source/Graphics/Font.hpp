@@ -1,33 +1,28 @@
 #pragma once
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
-#include <GL\glew.h>
+#include "FontSize.hpp"
 
 #include <string>
-#include <map>
+#include <memory>
 
 namespace Framework
 {
 	class Font
 	{
 	public:
-		Font(const std::string& filename, int size);
+		Font(const std::string& filename);
+		~Font();
+		void setSize(int size);
+		FT_String* getFamilyName() const;
+		FT_Pos getLineHeight() const;
+		const Glyph* getGlyph(char character) const;
 
 	private:
-		friend class Text;
+		FT_Library freeType_;
+		FT_Face face_;
+		std::vector<std::shared_ptr<FontSize>> fontSizes_;
+		FontSize* fontSize_ = nullptr;
 
-		struct Glyph_
-		{
-			GLuint textureId;
-			unsigned int width;
-			unsigned int height;
-			FT_Int left;
-			FT_Int top;
-			FT_Pos advanceX;
-		};
-
-		FT_Pos height_;
-		std::map<FT_ULong, Glyph_> glyphs_;
+		FontSize* findFontSize_(int size) const;
 	};
 }
