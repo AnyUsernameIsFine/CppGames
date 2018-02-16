@@ -104,10 +104,10 @@ namespace Game
 		if (glm::length2(velocity_) > FLT_EPSILON) {
 			transform.move(velocity_ * deltaSeconds);
 
-			velocity_ *= 0.9f;
+			velocity_ *= powf(0.5f, deltaSeconds * 10);
 
 			if (glm::length2(velocity_) < glm::length2(maxVelocity_) * 0.00001f) {
-				velocity_ = glm::vec3(0);
+				velocity_ = { 0 };
 			}
 
 			setCorrectCoordinateSystem_();

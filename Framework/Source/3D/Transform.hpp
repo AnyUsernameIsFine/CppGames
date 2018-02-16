@@ -55,17 +55,18 @@ namespace Framework
 		glm::vec3 scale_;
 		bool useModelAxes_ = true;
 
-		bool isScaleMatrixValid_;
-		glm::mat4 rotationMatrix_;
+		glm::vec3 translationMatrixPosition_;
+		glm::mat4 translationMatrix_;
 		bool isRotationMatrixValid_;
 		glm::mat4 scaleMatrix_;
+		bool isScaleMatrixValid_;
+		glm::mat4 rotationMatrix_;
 		bool isRotationScaleMatrixValid_;
 		glm::mat4 rotationScaleMatrix_;
-		glm::vec3 modelMatrixPosition_;
+		bool isModelMatrixValid_;
 		glm::mat4 modelMatrix_;
 
 		const glm::mat4& getModelMatrix_(const glm::vec3& position);
-		const glm::mat4& getRotationScaleMatrix_();
 	};
 }
 
@@ -107,6 +108,7 @@ namespace Framework
 		orientation_ = orientation;
 
 		isRotationMatrixValid_ = false;
+		isRotationScaleMatrixValid_ = false;
 	}
 
 	template<typename T>
@@ -127,6 +129,7 @@ namespace Framework
 		scale_ = scale;
 
 		isScaleMatrixValid_ = false;
+		isRotationScaleMatrixValid_ = false;
 	}
 
 	template<typename T>
@@ -320,22 +323,23 @@ namespace Framework
 	template<typename T>
 	const glm::mat4& Transform<T>::getModelMatrix_(const glm::vec3& position)
 	{
-		if (position != modelMatrixPosition_) {
-			modelMatrix_ = glm::translate(glm::mat4(1), position) * getRotationScaleMatrix_();
-			modelMatrixPosition_ = position;
+		if (position != translationMatrixPosition_) {
+			translationMatrix_ = glm::translate(glm::mat4(1), position);
+			translationMatrixPosition_ = position;
+			isModelMatrixValid_ = false;
 		}
 
-		return modelMatrix_;
-	}
-
-	template<typename T>
-	const glm::mat4& Transform<T>::getRotationScaleMatrix_()
-	{
 		if (!isRotationScaleMatrixValid_) {
 			rotationScaleMatrix_ = getRotationMatrix() * getScaleMatrix();
 			isRotationScaleMatrixValid_ = true;
+			isModelMatrixValid_ = false;
 		}
 
-		return rotationScaleMatrix_;
+		if (!isModelMatrixValid_) {
+			modelMatrix_ = translationMatrix_ * rotationScaleMatrix_;
+			isModelMatrixValid_ = true;
+		}
+
+		return modelMatrix_;
 	}
 }

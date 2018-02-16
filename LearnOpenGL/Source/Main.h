@@ -123,7 +123,7 @@ namespace Game
 
 		void onMouseMove(int x, int y)
 		{
-			float sensitivity = 10 * graphics.getDeltaSeconds();
+			float sensitivity = 0.05f;
 
 			camera.transform.yaw(sensitivity * x);
 			camera.transform.pitch(sensitivity * y);

@@ -44,7 +44,7 @@ namespace Game
 #endif
 
 		float r = (float)rand() / RAND_MAX;
-		int numberOfPlanets = (int)(10 * r * r);
+		int numberOfPlanets = (int)(10 * r);
 
 		for (int i = 0; i < numberOfPlanets; i++) {
 			float r = (float)rand() / RAND_MAX;

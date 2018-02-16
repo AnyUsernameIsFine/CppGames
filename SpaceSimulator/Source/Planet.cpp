@@ -41,7 +41,7 @@ namespace Game
 #endif
 
 		float r = (float)rand() / RAND_MAX;
-		int numberOfMoons = (int)(5 * r * r);
+		int numberOfMoons = (int)(5 * r);
 
 		for (int i = 0; i < numberOfMoons; i++) {
 			float r = (float)rand() / RAND_MAX;
