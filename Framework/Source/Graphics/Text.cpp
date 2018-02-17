@@ -78,6 +78,7 @@ namespace Framework
 			program_->use();
 
 			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, font_->getTextureId());
 
 			glBindVertexArray(vao_);
 			glBindBuffer(GL_ARRAY_BUFFER, vbo_->getId());
@@ -94,16 +95,20 @@ namespace Framework
 					float xpos = lineX + glyph->left;
 					float ypos = glyph->top - lineY - glyph->height;
 
+					float textureLeft = glyph->textureX / 1024.0f;
+					float textureTop = glyph->textureY / 1024.0f;
+					float textureRight = textureLeft + glyph->width / 1024.0f;
+					float textureBottom = textureTop + glyph->height / 1024.0f;
+
 					float vertices[] = {
-						xpos, ypos,									0, 1,
-						xpos + glyph->width, ypos,					1, 1,
-						xpos, ypos + glyph->height,					0, 0,
-						xpos + glyph->width, ypos + glyph->height,	1, 0,
-						xpos, ypos + glyph->height,					0, 0,
-						xpos + glyph->width, ypos,					1, 1,
+						xpos, ypos,									textureLeft, textureBottom,
+						xpos + glyph->width, ypos,					textureRight, textureBottom,
+						xpos, ypos + glyph->height,					textureLeft, textureTop,
+						xpos + glyph->width, ypos + glyph->height,	textureRight, textureTop,
+						xpos, ypos + glyph->height,					textureLeft, textureTop,
+						xpos + glyph->width, ypos,					textureRight, textureBottom,
 					};
 
-					glBindTexture(GL_TEXTURE_2D, glyph->texture);
 					glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 					glDrawArrays(GL_TRIANGLES, 0, 6);
 

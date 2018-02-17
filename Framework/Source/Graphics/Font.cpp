@@ -67,6 +67,11 @@ namespace Framework
 		return glyph;
 	}
 
+	GLuint Font::getTextureId() const
+	{
+		return fontSize_->getTextureId();
+	}
+
 	FontSize* Font::findFontSize_(int size) const
 	{
 		bool found = false;

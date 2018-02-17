@@ -11,7 +11,8 @@ namespace Framework
 	struct Glyph
 	{
 		char character;
-		GLuint texture;
+		int textureX;
+		int textureY;
 		unsigned int width;
 		unsigned int height;
 		FT_Int left;
@@ -25,11 +26,13 @@ namespace Framework
 		FontSize(int size);
 		~FontSize();
 		int getSize() const;
+		GLuint getTextureId() const;
 		const Glyph* getGlyph(char character);
 		const Glyph* addGlyph(char character, FT_GlyphSlot glyph);
 
 	private:
 		int size_;
 		std::vector<Glyph> glyphs_;
+		GLuint textureId_;
 	};
 }

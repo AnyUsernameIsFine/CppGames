@@ -7,6 +7,30 @@ namespace Framework
 	FontSize::FontSize(int size)
 	{
 		size_ = size;
+
+		// Generate texture
+		glActiveTexture(GL_TEXTURE0);
+		glGenTextures(1, &textureId_);
+		glBindTexture(GL_TEXTURE_2D, textureId_);
+		glTexImage2D(
+			GL_TEXTURE_2D,
+			0,
+			GL_RED,
+			1024,
+			1024,
+			0,
+			GL_RED,
+			GL_UNSIGNED_BYTE,
+			nullptr
+		);
+
+		// Set texture options
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	FontSize::~FontSize()
@@ -16,6 +40,11 @@ namespace Framework
 	int FontSize::getSize() const
 	{
 		return size_;
+	}
+
+	GLuint FontSize::getTextureId() const
+	{
+		return textureId_;
 	}
 
 	const Glyph* FontSize::getGlyph(char character)
@@ -35,44 +64,38 @@ namespace Framework
 
 	const Glyph* FontSize::addGlyph(char character, FT_GlyphSlot glyph)
 	{
+		glActiveTexture(GL_TEXTURE0);
+
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-		// Generate texture
-		GLuint texture;
-		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, texture);
-		glTexImage2D(
-			GL_TEXTURE_2D,
+		int textureX = ((unsigned char)character % 16) * (1024 / 16.0f);
+		int textureY = ((unsigned char)character / 16) * (1024 / 16.0f);
+
+		glTextureSubImage2D(
+			textureId_,
 			0,
-			GL_RED,
+			textureX,
+			textureY,
 			glyph->bitmap.width,
 			glyph->bitmap.rows,
-			0,
 			GL_RED,
 			GL_UNSIGNED_BYTE,
 			glyph->bitmap.buffer
 		);
 
-		// Set texture options
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
 		// Now store character for later use
 		glyphs_.push_back({
 			character,
-			texture,
+			textureX,
+			textureY,
 			glyph->bitmap.width,
 			glyph->bitmap.rows,
 			glyph->bitmap_left,
 			glyph->bitmap_top,
 			glyph->advance.x >> 6,
 		});
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
 		return &glyphs_.back();
 	}

@@ -16,6 +16,7 @@ namespace Framework
 		FT_String* getFamilyName() const;
 		FT_Pos getLineHeight() const;
 		const Glyph* getGlyph(char character) const;
+		GLuint getTextureId() const;
 
 	private:
 		FT_Library freeType_;
