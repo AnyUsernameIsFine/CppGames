@@ -5,7 +5,6 @@ namespace Game
 	void CoordinateSystem::drawRecursively_(
 		std::vector<DrawConfiguration>& map,
 		const glm::mat4& pr,									// camera projection matrix * camera rotation matrix
-		const glm::mat4& pv,									// camera projection matrix * camera view matrix
 		const std::vector<CameraHierarchyLevel>& hierarchy,		// list of the camera's positions and rotations relative to all its coordinate system's ancestors from inside to outside
 		int hierarchyIndex,										// which level of the camera hierarchy should we use for inverse rotations
 		int numberOfSubLevelsToDraw,
@@ -26,7 +25,13 @@ namespace Game
 			// actual view matrix in stead of just its rotation,
 			// except when this is the universe
 			if (hierarchyIndex == -1) {
-				m = hierarchy.size() == 1 ? pr : pv;
+				m = pr;
+
+				if (parent) {
+					float r = scale / ((CoordinateSystem*)parent)->scale;
+					glm::vec3 v = -hierarchy[hierarchyIndex + 1].position.toVec3() * r;
+					m = glm::translate(m, v);
+				}
 
 				numberOfSubLevelsToDraw = 2;
 			}
@@ -103,7 +108,6 @@ namespace Game
 				cs->drawRecursively_(
 					map,
 					pr,
-					pv,
 					hierarchy,
 					hierarchyIndex,
 					numberOfSubLevelsToDraw - 1,

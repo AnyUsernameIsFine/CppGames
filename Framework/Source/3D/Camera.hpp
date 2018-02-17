@@ -88,11 +88,7 @@ namespace Framework
 			return rotation;
 		}
 		else {
-			// TODO: something about loss of precision?
-			Vector3<T> position = transform.getPosition();
-			glm::vec3 positionVec3 = { position.x, position.y, position.z };
-
-			return glm::translate(rotation, -positionVec3);
+			return glm::translate(rotation, -transform.getPosition().toVec3());
 		}
 	}
 

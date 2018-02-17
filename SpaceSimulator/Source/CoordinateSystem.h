@@ -43,8 +43,7 @@ namespace Game
 
 		void drawRecursively_(
 			std::vector<DrawConfiguration>& map,
-			const glm::mat4& pv,
-			const glm::mat4& pv2,
+			const glm::mat4& pr,
 			const std::vector<CameraHierarchyLevel>& cameraHierarchy,
 			int hierarchyIndex,
 			int numberOfSubLevelsToDraw = 1,

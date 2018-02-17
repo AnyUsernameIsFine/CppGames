@@ -94,14 +94,12 @@ namespace Game
 		// save projection and view matrices
 		glm::mat4 p = camera.getProjectionMatrix();
 		glm::mat4 pr = p * camera.getViewMatrix(true);
-		glm::mat4 pv = p * camera.getViewMatrix();
 
 		// draw the universe
 		std::vector<DrawConfiguration> map;
 		drawRecursively_(
 			map,
 			glm::scale(pr, s),
-			glm::scale(pv, s),
 			hierarchy,
 			hierarchy.size() - 1
 		);
