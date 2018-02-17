@@ -6,6 +6,11 @@
 
 namespace Framework
 {
+	Text::~Text()
+	{
+		delete[] vertices_;
+	}
+
 	void Text::loadFont(const std::string& filename)
 	{
 		auto font = std::make_shared<Font>(filename);
@@ -58,35 +63,12 @@ namespace Framework
 	void Text::draw(float x, float y, const std::string& text) const
 	{
 		if (font_) {
-			GLboolean depthTest;
-			glGetBooleanv(GL_DEPTH_TEST, &depthTest);
-			glDisable(GL_DEPTH_TEST);
-
-			GLboolean depthMask;
-			glGetBooleanv(GL_DEPTH_WRITEMASK, &depthMask);
-			glDepthMask(false);
-
-			GLboolean blend;
-			glGetBooleanv(GL_BLEND, &blend);
-			glEnable(GL_BLEND);
-
-			GLint blendSrcAlpha, blendDstAlpha;
-			glGetIntegerv(GL_BLEND_SRC_ALPHA, &blendSrcAlpha);
-			glGetIntegerv(GL_BLEND_DST_ALPHA, &blendDstAlpha);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-			program_->use();
-
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, font_->getTextureId());
-
-			glBindVertexArray(vao_);
-			glBindBuffer(GL_ARRAY_BUFFER, vbo_->getId());
-
 			FT_Pos lineHeight = font_->getLineHeight();
 
 			float lineX = x;
 			float lineY = y + lineHeight;
+
+			int numberOfGlyphs = 0;
 
 			for (auto c : text) {
 				if (c != '\n') {
@@ -100,17 +82,16 @@ namespace Framework
 					float textureRight = textureLeft + glyph->width / 1024.0f;
 					float textureBottom = textureTop + glyph->height / 1024.0f;
 
-					float vertices[] = {
+					vertices_[numberOfGlyphs] = {
 						xpos, ypos,									textureLeft, textureBottom,
 						xpos + glyph->width, ypos,					textureRight, textureBottom,
 						xpos, ypos + glyph->height,					textureLeft, textureTop,
 						xpos + glyph->width, ypos + glyph->height,	textureRight, textureTop,
 						xpos, ypos + glyph->height,					textureLeft, textureTop,
 						xpos + glyph->width, ypos,					textureRight, textureBottom,
-					};
+					};	
 
-					glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-					glDrawArrays(GL_TRIANGLES, 0, 6);
+					numberOfGlyphs++;
 
 					lineX += glyph->advanceX;
 				}
@@ -119,17 +100,53 @@ namespace Framework
 					lineY += lineHeight;
 				}
 			}
+			
+			// disable depth testing
+			GLboolean depthTest;
+			glGetBooleanv(GL_DEPTH_TEST, &depthTest);
+			glDisable(GL_DEPTH_TEST);
 
+			// disable depth writing
+			GLboolean depthMask;
+			glGetBooleanv(GL_DEPTH_WRITEMASK, &depthMask);
+			glDepthMask(false);
+
+			// enable blending
+			GLboolean blend;
+			glGetBooleanv(GL_BLEND, &blend);
+			glEnable(GL_BLEND);
+
+			// set correct alpha blending
+			GLint blendSrcAlpha, blendDstAlpha;
+			glGetIntegerv(GL_BLEND_SRC_ALPHA, &blendSrcAlpha);
+			glGetIntegerv(GL_BLEND_DST_ALPHA, &blendDstAlpha);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+			program_->use();
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, font_->getTextureId());
+
+			glBindVertexArray(vao_);
+			glBindBuffer(GL_ARRAY_BUFFER, vbo_->getId());
+
+			glBufferSubData(GL_ARRAY_BUFFER, 0, 96 * numberOfGlyphs, &vertices_[0]);
+			glDrawArrays(GL_TRIANGLES, 0, 6 * numberOfGlyphs);
+
+			// enable depth testing if it was enabled
 			if (depthTest == GL_TRUE) {
 				glEnable(GL_DEPTH_TEST);
 			}
 
+			// restore the previous depth mask
 			glDepthMask(depthMask);
 
+			// disable blending if it was disabled
 			if (blend == GL_FALSE) {
 				glDisable(GL_BLEND);
 			}
 
+			// reset alpha blending to the previous setting
 			glBlendFunc(blendSrcAlpha, blendDstAlpha);
 		}
 		else {
@@ -180,7 +197,8 @@ namespace Framework
 
 		glGenVertexArrays(1, &vao_);
 		glBindVertexArray(vao_);
-		vbo_ = new VertexBufferObject({ 4 }, 6);
+		vertices_ = new GlyphQuad[MAX_STRING_LENGTH_];
+		vbo_ = new VertexBufferObject({ 4 }, 6 * MAX_STRING_LENGTH_);
 		glBindVertexArray(0);
 	}
 

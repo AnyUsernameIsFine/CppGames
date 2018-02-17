@@ -4,13 +4,12 @@
 #include FT_FREETYPE_H
 #include <GL\glew.h>
 
-#include <vector>
+#include <map>
 
 namespace Framework
 {
 	struct Glyph
 	{
-		char character;
 		int textureX;
 		int textureY;
 		unsigned int width;
@@ -32,7 +31,7 @@ namespace Framework
 
 	private:
 		int size_;
-		std::vector<Glyph> glyphs_;
+		std::map<char, Glyph> glyphs_;
 		GLuint textureId_;
 	};
 }

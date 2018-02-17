@@ -49,17 +49,14 @@ namespace Framework
 
 	const Glyph* FontSize::getGlyph(char character)
 	{
-		bool found = false;
-		const Glyph* result = nullptr;
+		auto glyph = glyphs_.find(character);
 
-		for (auto i = glyphs_.begin(); i != glyphs_.end() && !found; i++) {
-			if (i->character == character) {
-				found = true;
-				result = &(*i);
-			}
+		if (glyph != glyphs_.end()) {
+			return &glyph->second;
 		}
-
-		return result;
+		else {
+			return nullptr;
+		}
 	}
 
 	const Glyph* FontSize::addGlyph(char character, FT_GlyphSlot glyph)
@@ -86,8 +83,7 @@ namespace Framework
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
 		// Now store character for later use
-		glyphs_.push_back({
-			character,
+		glyphs_.insert({ character, {
 			textureX,
 			textureY,
 			glyph->bitmap.width,
@@ -95,8 +91,8 @@ namespace Framework
 			glyph->bitmap_left,
 			glyph->bitmap_top,
 			glyph->advance.x >> 6,
-		});
+		} });
 
-		return &glyphs_.back();
+		return &glyphs_.at(character);
 	}
 }

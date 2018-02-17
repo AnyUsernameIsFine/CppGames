@@ -9,6 +9,7 @@ namespace Framework
 	class Text
 	{
 	public:
+		~Text();
 		void loadFont(const std::string& filename);
 		void setFontFamily(const std::string& family);
 		void setFontSize(int size);
@@ -19,10 +20,18 @@ namespace Framework
 	private:
 		friend class Graphics;
 
+		struct GlyphQuad
+		{
+			GLfloat data[24];
+		};
+
+		const int MAX_STRING_LENGTH_ = 1 << 16;
+
 		ShaderProgram* program_;
 		int windowWidth_;
 		int windowHeight_;
 		GLuint vao_;
+		GlyphQuad* vertices_;
 		VertexBufferObject* vbo_;
 
 		std::vector<std::shared_ptr<Font>> fonts_;

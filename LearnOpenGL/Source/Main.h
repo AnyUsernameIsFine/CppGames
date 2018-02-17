@@ -37,7 +37,7 @@ namespace Game
 			srand((int)time(nullptr));
 
 			graphics.text.loadFont("Resources/consola.ttf");
-			graphics.text.setFontFamily("Consolas");
+			graphics.text.setFont("Consolas", 16);
 
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
 			camera.transform.moveZ(10);
@@ -212,23 +212,6 @@ namespace Game
 			std::string orientatonString = "yaw: " + std::to_string(o.y) + "° pitch: " + std::to_string(o.x) + "° roll: " + std::to_string(o.z) + "°";
 
 			graphics.text.draw(0, 0, fpsString + "\n" + positionString + "\n" + orientatonString);
-			//graphics.text.draw(0, 100,
-				//"This field represents a default line spacing (i.e., the baseline-to-baseline distance)\n"
-				//"when writing text with this font. Note that it usually is larger than the sum of the\n"
-				//"ascender and descender taken as absolute values. There is also no guarantee that no\n"
-				//"glyphs extend above or below subsequent baselines when using this distance – think of\n"
-				//"it as a value the designer of the font finds appropriate.\n"
-				//"This field represents a default line spacing (i.e., the baseline-to-baseline distance)\n"
-				//"when writing text with this font. Note that it usually is larger than the sum of the\n"
-				//"ascender and descender taken as absolute values. There is also no guarantee that no\n"
-				//"glyphs extend above or below subsequent baselines when using this distance – think of\n"
-				//"it as a value the designer of the font finds appropriate.\n"
-				//"This field represents a default line spacing (i.e., the baseline-to-baseline distance)\n"
-				//"when writing text with this font. Note that it usually is larger than the sum of the\n"
-				//"ascender and descender taken as absolute values. There is also no guarantee that no\n"
-				//"glyphs extend above or below subsequent baselines when using this distance – think of\n"
-				//"it as a value the designer of the font finds appropriate.\n"
-			//);
 		}
 	};
 }
