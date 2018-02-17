@@ -9,7 +9,7 @@ namespace Game
 	class Camera : public Framework::Camera<Coordinate>
 	{
 	public:
-		CoordinateSystem* coordinateSystem;
+		CoordinateSystem * coordinateSystem;
 
 		void move(const glm::vec3& vector);
 		void move(float x, float y, float z);

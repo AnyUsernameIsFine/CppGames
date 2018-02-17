@@ -67,12 +67,14 @@ namespace Game
 
 		CoordinateSystem* parentCs = (CoordinateSystem*)ch.coordinateSystem->parent;
 
-		// determine initial scale ratio (inverse of the camera's coordinate system's scale to its parent's)
+		// create and set the projection-view matrix
 		float r = 1.0f;
 		if (parentCs) {
 			r = parentCs->scale / ch.coordinateSystem->scale;
 		}
-		glm::vec3 s = { r, r, r };
+		glm::mat4 projectionViewMatrix = glm::scale(camera.getProjectionMatrix() * camera.getViewMatrix(true), { r, r, r });
+		shaderProgram_->use();
+		shaderProgram_->setUniform("projectionViewMatrix", projectionViewMatrix);
 
 		// determine camera coordinate system hierarchy
 		while (parentCs) {
@@ -91,18 +93,9 @@ namespace Game
 			parentCs = (CoordinateSystem*)parentCs->parent;
 		}
 
-		// save projection and view matrices
-		glm::mat4 p = camera.getProjectionMatrix();
-		glm::mat4 pr = p * camera.getViewMatrix(true);
-
 		// draw the universe
-		std::vector<DrawConfiguration> map;
-		drawRecursively_(
-			map,
-			glm::scale(pr, s),
-			hierarchy,
-			hierarchy.size() - 1
-		);
-		draw_(map);
+		std::vector<DrawConfiguration> toDrawList;
+		drawRecursively_(toDrawList, hierarchy, hierarchy.size() - 1);
+		draw_(toDrawList);
 	}
 }

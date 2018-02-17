@@ -39,11 +39,11 @@ namespace Game
 		};
 
 		static GLuint vao_;
+		static GLuint instanceBuffer_;
 		static ShaderProgram* shaderProgram_;
 
 		void drawRecursively_(
-			std::vector<DrawConfiguration>& map,
-			const glm::mat4& pr,
+			std::vector<DrawConfiguration>& toDrawList,
 			const std::vector<CameraHierarchyLevel>& cameraHierarchy,
 			int hierarchyIndex,
 			int numberOfSubLevelsToDraw = 1,
@@ -51,6 +51,6 @@ namespace Game
 			glm::vec3 camPos = glm::vec3(1),
 			bool useHighRes = true
 		);
-		static void draw_(std::vector<DrawConfiguration> drawConfigurations);
+		static void draw_(const std::vector<DrawConfiguration>& drawConfigurations);
 	};
 }

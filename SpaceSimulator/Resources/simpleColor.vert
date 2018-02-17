@@ -6,8 +6,10 @@ layout (location = 5) in vec4 instColor;
 
 out vec4 fragColor;
 
+uniform mat4 projectionViewMatrix;
+
 void main()
 {
-	gl_Position = instMatrix * vec4(vertPosition, 1.0f);
+	gl_Position = projectionViewMatrix * instMatrix * vec4(vertPosition, 1.0f);
 	fragColor = instColor;
 }

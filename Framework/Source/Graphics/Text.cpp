@@ -89,7 +89,7 @@ namespace Framework
 						xpos + glyph->width, ypos + glyph->height,	textureRight, textureTop,
 						xpos, ypos + glyph->height,					textureLeft, textureTop,
 						xpos + glyph->width, ypos,					textureRight, textureBottom,
-					};	
+					};
 
 					numberOfGlyphs++;
 
@@ -100,7 +100,7 @@ namespace Framework
 					lineY += lineHeight;
 				}
 			}
-			
+
 			// disable depth testing
 			GLboolean depthTest;
 			glGetBooleanv(GL_DEPTH_TEST, &depthTest);

@@ -7,7 +7,7 @@ namespace Game
 	class GameObject
 	{
 	public:
-		GameObject* parent = nullptr;
+		GameObject * parent = nullptr;
 		Transform transform;
 	};
 }
