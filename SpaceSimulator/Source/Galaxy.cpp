@@ -4,17 +4,21 @@
 
 namespace Game
 {
-	namespace
-	{
 #ifdef USE_REALISTIC_SCALE
-		const float SCALE = (int_least32_t)1 << 15; // 32,768 meters per unit.
-		// Allows for galaxies with a radius of up to nearly 16 million light-years
-		// when using 64-bit integers.
-#else
-		const float SCALE = (int_least64_t)1 << 7;
-#endif
-	}
+	// 32,768 meters per unit.
+	// Allows for galaxies with a radius of up to nearly 16 million light-years
+	// when using 64-bit integers.
+	const float Galaxy::SCALE = 1 << 15;
 
+	// Abell 2029, the largest known galaxy (cluster)
+	// has a maximum radius of about 4 million light-years.
+	// Let's make that fit in twice for some wiggle room.
+	const float Galaxy::MAXIMUM_RADIUS = 9460730472580800 / SCALE * 4000000 * 2;
+#else
+	const float Galaxy::SCALE = (int_least64_t)1 << 7;
+	const float Galaxy::MAXIMUM_RADIUS = (int_least64_t)1 << 62;
+#endif
+	const glm::vec4 Galaxy::COLOR = { 0, 0, 1, 1 };
 	int Galaxy::counter_ = 1;
 
 	Galaxy::Galaxy(CoordinateSystem* parent, float radius)
@@ -24,19 +28,22 @@ namespace Game
 		this->name = "Galaxy #" + std::to_string(counter_++);
 		this->scale = SCALE;
 
-		addStars_();
+		//addStars_();
+	}
+
+	glm::vec4 Galaxy::getColor() const
+	{
+		return COLOR;
+	}
+
+	const std::vector<std::unique_ptr<CoordinateSystem>>& Galaxy::getChildren() const
+	{
+		return stars_;
 	}
 
 	void Galaxy::addStars_()
 	{
-#ifdef USE_REALISTIC_SCALE
-		// The Oort cloud (the outer edge of our Solar System)
-		// has a radius as much as 200,000 AU. One AU is 149,597,870,700 meters.
-		// Let's make that fit in twice for some wiggle room.
-		float maxRadius = 149597870700 / SCALE * 400000;
-#else
-		float maxRadius = (int_least64_t)1 << 55;
-#endif
+		float maxRadius = Star::MAXIMUM_RADIUS * (Star::SCALE / SCALE);
 
 		int numberOfStars = 10 + rand() % 11;
 		float r = (float)rand() / RAND_MAX;
@@ -46,9 +53,9 @@ namespace Game
 			float r = (float)rand() / RAND_MAX;
 			float starRadius = maxRadius * (0.25f + 0.75f * r * r);
 
-			children.push_back(std::make_unique<Star>(this, starRadius));
+			stars_.push_back(std::make_unique<Star>(this, starRadius));
 
-			Star* star = (Star*)children.back().get();
+			Star* star = (Star*)stars_.back().get();
 
 			glm::vec3 v = glm::ballRand(0.5f * radius * ((CoordinateSystem*)parent)->scale / scale);
 			star->transform.setPosition({ (Coordinate)v.x, (Coordinate)(v.y * roundness), (Coordinate)v.z });

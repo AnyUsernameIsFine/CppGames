@@ -1,5 +1,6 @@
 #include "Camera.h"
-#include "CoordinateSystem.h"
+//#include "CoordinateSystem.h"
+#include "Universe.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm\gtx\norm.hpp>
@@ -53,22 +54,18 @@ namespace Game
 
 			// the maximum speed when moving through the universe
 			else {
-#ifdef USE_REALISTIC_SCALE
-				speed = 200000000.0f;
-#else
-				speed = ((int_least64_t)1 << 62);
-#endif
+				speed = ((int_least64_t)1 << 7) * Galaxy::MAXIMUM_RADIUS * (Galaxy::SCALE / Universe::SCALE);
 			}
 
 			// if there are any children in this coordinate system,
 			// we need to move slower when close to one
-			if (!cs->children.empty()) {
+			if (!cs->getChildren().empty()) {
 				Vector3 p = transform.getPosition();
 
 				// determine the distance to the edge of the closest child coordinate system
 				CoordinateSystem* childCs = nullptr;
 				float smallestDistance = std::numeric_limits<float>::max();
-				for (auto& child : cs->children) {
+				for (auto& child : cs->getChildren()) {
 					Vector3 position = p - child->transform.getPosition();
 					float distance = position.length() - child->radius;
 					if (distance < smallestDistance) {
@@ -121,7 +118,7 @@ namespace Game
 
 	std::string Camera::getSpeedString() const
 	{
-		float perHour = getSpeed() / 3600.0f;
+		double perHour = getSpeed() / 3600;
 
 		std::string units;
 
@@ -196,10 +193,10 @@ namespace Game
 		}
 
 		// go to child
-		else if (!cs->children.empty()) {
+		else if (!cs->getChildren().empty()) {
 			CoordinateSystem* childCs = nullptr;
 
-			for (auto& child : cs->children) {
+			for (auto& child : cs->getChildren()) {
 				Vector3 position = p - child->transform.getPosition();
 				if (position.length() < child->radius * 0.98f) {
 					childCs = child.get();

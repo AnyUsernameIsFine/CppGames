@@ -2,7 +2,7 @@
 
 #include <Framework.hpp>
 
-//#define USE_REALISTIC_SCALE
+#define USE_REALISTIC_SCALE
 
 #include "GameObject.h"
 #include "Camera.h"
@@ -19,10 +19,10 @@ namespace Game
 		std::string name;
 		float scale;
 		float radius;
-		std::vector<std::unique_ptr<CoordinateSystem>> children;
 
-		static void createMesh();
 		virtual glm::vec4 getColor() const = 0;
+		virtual const std::vector<std::unique_ptr<CoordinateSystem>>& getChildren() const = 0;
+		static void createMesh();
 
 	protected:
 		struct DrawConfiguration
@@ -46,10 +46,10 @@ namespace Game
 			std::vector<DrawConfiguration>& toDrawList,
 			const std::vector<CameraHierarchyLevel>& cameraHierarchy,
 			int hierarchyIndex,
-			int numberOfSubLevelsToDraw = 1,
 			glm::mat4 rotations = glm::mat4(1),
 			glm::vec3 camPos = glm::vec3(1),
-			bool useHighRes = true
+			bool useHighRes = true,
+			int numberOfSubLevelsToDraw = 1
 		);
 		static void draw_(const std::vector<DrawConfiguration>& drawConfigurations);
 	};

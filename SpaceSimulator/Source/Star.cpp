@@ -4,21 +4,25 @@
 
 namespace Game
 {
-	namespace
-	{
 #ifdef USE_REALISTIC_SCALE
-		const float SCALE = 1.0f / (1 << 6); // About 1.6 centimers per unit.
-		// Allows for stars (and their planetary systems) with a radius of over 480,000 AU
-		// or about 7.6 light-years when using 64-bit integers.
-		// One AU is the distance from the Earth to the Sun,
-		// which is 150 million kilometers, or 8 light-minutes.
-		// The largest estimate of the size of the Oort cloud,
-		// considered the ultimate edge of our Solar System, is 200,000 AU.
-#else
-		const float SCALE = 1.0f;
-#endif
-	}
+	// About 1.6 centimers per unit.
+	// Allows for stars (and their planetary systems) with a radius of over 480,000 AU
+	// or about 7.6 light-years when using 64-bit integers.
+	// One AU is the distance from the Earth to the Sun,
+	// which is 150 million kilometers, or 8 light-minutes.
+	// The largest estimate of the size of the Oort cloud,
+	// considered the ultimate edge of our Solar System, is 200,000 AU.
+	const float Star::SCALE = 1.0f / (1 << 6);
 
+	// The Oort cloud (the outer edge of our Solar System)
+	// has a radius as much as 200,000 AU. One AU is 149,597,870,700 meters.
+	// Let's make that fit in twice for some wiggle room.
+	const float Star::MAXIMUM_RADIUS = 149597870700 / SCALE * 200000 * 2;
+#else
+	const float Star::SCALE = 1.0f;
+	const float Star::MAXIMUM_RADIUS = (int_least64_t)1 << 62;
+#endif
+	const glm::vec4 Star::COLOR = { 1, 0, 0, 1 };
 	int Star::counter_ = 1;
 
 	Star::Star(CoordinateSystem* parent, float radius)
@@ -31,17 +35,19 @@ namespace Game
 		addPlanets_();
 	}
 
+	glm::vec4 Star::getColor() const
+	{
+		return COLOR;
+	}
+
+	const std::vector<std::unique_ptr<CoordinateSystem>>& Star::getChildren() const
+	{
+		return planets_;
+	}
+
 	void Star::addPlanets_()
 	{
-#ifdef USE_REALISTIC_SCALE
-		// Neso, a small moon of Neptune, which has the highest distance
-		// from its planet of any natural satellites in our Solar System
-		// can be almost 50 million kilometers from Neptune.
-		// Let's make its orbit fit in twice for some wiggle room.
-		float maxRadius = 1000 / SCALE * 100000000;
-#else
-		float maxRadius = (int_least64_t)1 << 55;
-#endif
+		float maxRadius = Planet::MAXIMUM_RADIUS * (Planet::SCALE / SCALE);
 
 		float r = (float)rand() / RAND_MAX;
 		int numberOfPlanets = (int)(10 * r);
@@ -50,9 +56,9 @@ namespace Game
 			float r = (float)rand() / RAND_MAX;
 			float planetRadius = maxRadius * (0.25f + 0.75f * r * r);
 
-			children.push_back(std::make_unique<Planet>(this, planetRadius));
+			planets_.push_back(std::make_unique<Planet>(this, planetRadius));
 
-			Planet* planet = (Planet*)children.back().get();
+			Planet* planet = (Planet*)planets_.back().get();
 
 			glm::vec2 v = glm::diskRand(0.5f * radius * ((CoordinateSystem*)parent)->scale / scale);
 			planet->transform.setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });

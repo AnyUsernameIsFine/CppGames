@@ -209,13 +209,11 @@ namespace Framework
 		glm::quat rotation = glm::angleAxis(glm::radians(angle), axis);
 
 		if (useModelAxes_) {
-			orientation_ = rotation * orientation_;
+			setOrientation(glm::normalize(rotation * orientation_));
 		}
 		else {
-			orientation_ *= rotation;
+			setOrientation(glm::normalize(orientation_ * rotation));
 		}
-
-		setOrientation(glm::normalize(orientation_));
 	}
 
 	template<typename T>

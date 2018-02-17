@@ -6,16 +6,15 @@
 
 namespace Game
 {
-	namespace
-	{
 #ifdef USE_REALISTIC_SCALE
-		const float SCALE = (int_least64_t)1 << 54; // About 1.9 light-years per unit.
-		// Gives a universe with a radius of over 17.5 million million million light-years
-		// when using 64 bit integers. One light-year is 9,460,730,472,580,800 meters.
+	// About 1.9 light-years per unit.
+	// Gives a universe with a radius of over 17.5 million million million light-years
+	// when using 64 bit integers. One light-year is 9,460,730,472,580,800 meters.
+	const float Universe::SCALE = (int_least64_t)1 << 54;
 #else
-		const float SCALE = (int_least64_t)1 << 14;
+	const float Universe::SCALE = (int_least64_t)1 << 20;
 #endif
-	}
+	const glm::vec4 Universe::COLOR = { 0, 1, 0, 1 };
 
 	Universe::Universe()
 	{
@@ -28,30 +27,14 @@ namespace Game
 		addGalaxies_();
 	}
 
-	void Universe::addGalaxies_()
+	glm::vec4 Universe::getColor() const
 	{
-#ifdef USE_REALISTIC_SCALE
-		// Abell 2029, the largest known galaxy (cluster)
-		// has a maximum diameter of about 8 million light-years.
-		// Let's make that fit in twice for some wiggle room.
-		float maxRadius = 9460730472580800 / SCALE * 8000000;
-#else
-		float maxRadius = (int_least64_t)1 << 55;
-#endif
+		return COLOR;
+	}
 
-		for (int i = 0; i < 10; i++) {
-			float r = (float)rand() / RAND_MAX;
-			float galaxyRadius = maxRadius * (0.25f + 0.75f * r * r);
-
-			children.push_back(std::make_unique<Galaxy>(this, galaxyRadius));
-
-			Galaxy* galaxy = (Galaxy*)children.back().get();
-
-			glm::vec3 v = glm::ballRand(maxRadius * 100);
-			galaxy->transform.setPosition({ (Coordinate)v.x, (Coordinate)v.y, (Coordinate)v.z });
-			r = (float)rand() / RAND_MAX;
-			galaxy->transform.rotate(360 * r, glm::sphericalRand(1.0f));
-		}
+	const std::vector<std::unique_ptr<CoordinateSystem>>& Universe::getChildren() const
+	{
+		return galaxies_;
 	}
 
 	void Universe::draw(const Camera& camera)
@@ -97,5 +80,36 @@ namespace Game
 		std::vector<DrawConfiguration> toDrawList;
 		drawRecursively_(toDrawList, hierarchy, hierarchy.size() - 1);
 		draw_(toDrawList);
+	}
+
+	void Universe::addGalaxies_()
+	{
+		float maxRadius = Galaxy::MAXIMUM_RADIUS * Galaxy::SCALE / SCALE;
+
+		int foo = 2;
+
+		for (int z = -foo; z <= foo; z++) {
+			for (int y = -foo; y <= foo; y++) {
+				for (int x = -foo; x <= foo; x++) {
+					if ((float)rand() / RAND_MAX < 0.5f) {
+						float r = (float)rand() / RAND_MAX;
+						float galaxyRadius = maxRadius * (0.25f + 0.75f * r * r);
+
+						galaxies_.push_back(std::make_unique<Galaxy>(this, galaxyRadius));
+
+						Galaxy* galaxy = (Galaxy*)galaxies_.back().get();
+
+						galaxy->transform.setPosition(
+							(Coordinate)((x + 0.75 * ((float)rand() / RAND_MAX - 0.5)) * maxRadius * 100),
+							(Coordinate)((y + 0.75 * ((float)rand() / RAND_MAX - 0.5)) * maxRadius * 100),
+							(Coordinate)((z + 0.75 * ((float)rand() / RAND_MAX - 0.5)) * maxRadius * 100)
+						);
+
+						r = (float)rand() / RAND_MAX;
+						galaxy->transform.rotate(360 * r, glm::sphericalRand(1.0f));
+					}
+				}
+			}
+		}
 	}
 }

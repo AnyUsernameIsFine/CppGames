@@ -19,7 +19,7 @@ namespace Game
 			graphics.window.setTitle("SpaceSimulator");
 			graphics.window.setSize(960, 540);
 			graphics.window.hideCursor();
-			//graphics.window.enableVSync();
+			graphics.window.enableVSync();
 		}
 
 		void start()
@@ -34,7 +34,8 @@ namespace Game
 			CoordinateSystem::createMesh();
 
 			camera.coordinateSystem = &universe;
-			CoordinateSystem* toPutCameraNextTo = camera.coordinateSystem->children[1].get();
+			auto children = &camera.coordinateSystem->getChildren();
+			CoordinateSystem* toPutCameraNextTo = children->at(children->size() / 2).get();
 			camera.transform.setPosition(toPutCameraNextTo->transform.getPosition());
 			camera.transform.moveZ(5 * toPutCameraNextTo->radius);
 		}
