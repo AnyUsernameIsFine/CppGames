@@ -130,6 +130,27 @@
       <Project>{833d7df2-0746-4da6-87d3-8a5c6953103a}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Camera.h" />
+    <ClInclude Include="Source\CoordinateSystem.h" />
+    <ClInclude Include="Source\Galaxy.h" />
+    <ClInclude Include="Source\Main.h" />
+    <ClInclude Include="Source\Moon.h" />
+    <ClInclude Include="Source\Planet.h" />
+    <ClInclude Include="Source\Star.h" />
+    <ClInclude Include="Source\Transform.h" />
+    <ClInclude Include="Source\Universe.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Camera.cpp" />
+    <ClCompile Include="Source\CoordinateSystem.cpp" />
+    <ClCompile Include="Source\Galaxy.cpp" />
+    <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\Moon.cpp" />
+    <ClCompile Include="Source\Planet.cpp" />
+    <ClCompile Include="Source\Star.cpp" />
+    <ClCompile Include="Source\Universe.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

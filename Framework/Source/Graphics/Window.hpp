@@ -15,12 +15,14 @@ namespace Framework
 		const int HEIGHT = 480;
 		const bool HIDE_CURSOR = false;
 		const bool ENABLE_VSYNC = false;
+		const bool SET_FULLSCREEN = false;
 
 	public:
 		void setTitle(const std::string& title);
 		void setSize(int width, int height);
 		void hideCursor(bool hide = true);
 		void enableVSync(bool enable = true);
+		void setFullscreen(bool set = true);
 		int getWidth() const;
 		int getHeight() const;
 
@@ -33,6 +35,7 @@ namespace Framework
 		int height_ = HEIGHT;
 		bool hideCursor_ = HIDE_CURSOR;
 		bool enableVSync_ = ENABLE_VSYNC;
+		bool setFullscreen_ = SET_FULLSCREEN;
 		bool hidden_ = true;
 
 		int open_();

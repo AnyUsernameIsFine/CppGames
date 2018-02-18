@@ -26,6 +26,8 @@ namespace Framework
 		Vector3<T> operator*(const glm::quat& q) const;
 		Vector3<T> operator*(float f) const;
 		Vector3<T> operator*(double d) const;
+		bool operator==(const Vector3& v) const;
+		bool operator!=(const Vector3& v) const;
 		glm::vec3 toVec3() const;
 		float length() const;
 		float dot(const Vector3& v) const;
@@ -187,6 +189,18 @@ namespace Framework
 			static_cast<T>(y * d),
 			static_cast<T>(z * d),
 		};
+	}
+
+	template<typename T>
+	bool Vector3<T>::operator==(const Vector3& v) const
+	{
+		return x == v.x && y == v.x && z == v.z;
+	}
+
+	template<typename T>
+	bool Vector3<T>::operator!=(const Vector3& v) const
+	{
+		return x != v.x || y != v.y || z != v.z;
 	}
 
 	template<typename T>

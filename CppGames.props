@@ -20,17 +20,4 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup />
-  <ItemGroup>
-    <ClInclude Include="Source\**\*.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\**\*.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\**\*.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
 </Project>

@@ -18,6 +18,7 @@ namespace Game
 		{
 			graphics.window.setTitle("SpaceSimulator");
 			graphics.window.setSize(960, 540);
+			//graphics.window.setFullscreen(true);
 			graphics.window.hideCursor();
 			graphics.window.enableVSync();
 		}
@@ -35,13 +36,14 @@ namespace Game
 
 			srand((int)time(nullptr));
 
-			universe.update(camera);
+			camera.setCoordinateSystem(&universe);
 
-			camera.coordinateSystem = &universe;
-			auto children = &camera.coordinateSystem->getChildren();
-			CoordinateSystem* toPutCameraNextTo = children->at(children->size() / 2).get();
-			camera.transform.setPosition(toPutCameraNextTo->transform.getPosition());
-			camera.transform.moveZ(5 * toPutCameraNextTo->getRadius());
+			universe.create(camera);
+
+			//auto children = &camera.getCoordinateSystem()->getChildren();
+			//CoordinateSystem* toPutCameraNextTo = children->at(children->size() / 2).get();
+			//Vector3 p = toPutCameraNextTo->transform.getPosition() + Vector3(0, 0, 5 * toPutCameraNextTo->getRadius());
+			//camera.setPosition(p);
 		}
 
 		void onMouseMove(int x, int y)
@@ -66,6 +68,8 @@ namespace Game
 			camera.transform.roll(rollSensitivity * (input.isKeyDown(SDLK_e) - input.isKeyDown(SDLK_q)));
 
 			camera.update(deltaSeconds);
+
+			universe.update(camera);
 		}
 
 		void draw()
@@ -79,7 +83,7 @@ namespace Game
 			glm::ivec3 o = camera.transform.getEulerAngles();
 
 			std::string fpsString = std::to_string(fps) + " fps";
-			std::string csString = camera.coordinateSystem->getName();
+			std::string csString = camera.getCoordinateSystem()->getName();
 			std::string speedString = camera.getSpeedString();
 			std::string positionString = "x: " + std::to_string(position.x) + " y: " + std::to_string(position.y) + " z: " + std::to_string(position.z);
 			std::string orientatonString = "yaw: " + std::to_string(o.y) + " pitch: " + std::to_string(o.x) + " roll: " + std::to_string(o.z);

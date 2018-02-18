@@ -16,23 +16,29 @@ namespace Game
 			Vector3 position;
 		};
 
-		CoordinateSystem* coordinateSystem;
-
+		void setCoordinateSystem(CoordinateSystem* coordinateSystem);
+		CoordinateSystem* getCoordinateSystem() const;
+		void setPosition(const Vector3& position);
+		void setPosition(Coordinate x, Coordinate y, Coordinate z);
 		void move(const glm::vec3& vector);
 		void move(float x, float y, float z);
 		void moveX(float distance);
 		void moveY(float distance);
 		void moveZ(float distance);
 		void update(float deltaSeconds);
-		std::vector<CameraHierarchyLevel> getHierarchy() const;
+		const std::vector<CameraHierarchyLevel>& getHierarchy() const;
 		float getSpeed() const;
 		std::string getSpeedString() const;
 
 	private:
+		CoordinateSystem* coordinateSystem_;
 		glm::vec3 velocity_;
 		glm::vec3 maxVelocity_;
 		glm::vec3 acceleration_;
 
+		std::vector<CameraHierarchyLevel> hierarchy_;
+
 		void setCorrectCoordinateSystem_();
+		void createHierarchy_();
 	};
 }

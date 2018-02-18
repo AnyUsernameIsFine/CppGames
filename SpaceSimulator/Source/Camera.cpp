@@ -11,6 +11,30 @@
 
 namespace Game
 {
+	void Camera::setCoordinateSystem(CoordinateSystem* coordinateSystem)
+	{
+		if (coordinateSystem != coordinateSystem_) {
+			coordinateSystem_ = coordinateSystem;
+			createHierarchy_();
+		}
+	}
+
+	CoordinateSystem* Camera::getCoordinateSystem() const
+	{
+		return coordinateSystem_;
+	}
+
+	void Camera::setPosition(const Vector3& position)
+	{
+		transform.setPosition(position);
+		createHierarchy_();
+	}
+
+	void Camera::setPosition(Coordinate x, Coordinate y, Coordinate z)
+	{
+		setPosition({ x, y, z });
+	}
+
 	void Camera::move(const glm::vec3& vector)
 	{
 		acceleration_ += vector;
@@ -36,46 +60,20 @@ namespace Game
 		move(0, 0, distance);
 	}
 
-	std::vector<Camera::CameraHierarchyLevel> Camera::getHierarchy() const
+	const std::vector<Camera::CameraHierarchyLevel>& Camera::getHierarchy() const
 	{
-		CameraHierarchyLevel ch{
-			coordinateSystem,
-			glm::mat4(1),
-			transform.getPosition(),
-		};
-
-		std::vector<Camera::CameraHierarchyLevel> hierarchy = { ch };
-
-		CoordinateSystem* parentCs = coordinateSystem->getParent();
-
-		while (parentCs) {
-			glm::quat q = ch.coordinateSystem->transform.getOrientation();
-			ch.rotation *= glm::mat4_cast(q);
-
-			// TODO: add more precision?
-			ch.position *= q;
-			ch.position *= ch.coordinateSystem->getScale() / parentCs->getScale();
-			ch.position += ch.coordinateSystem->transform.getPosition();
-
-			ch.coordinateSystem = parentCs;
-
-			hierarchy.push_back(ch);
-
-			parentCs = parentCs->getParent();
-		}
-
-		return hierarchy;
+		return hierarchy_;
 	}
 
 	float Camera::getSpeed() const
 	{
-		return glm::length(velocity_) * coordinateSystem->getScale();
+		return glm::length(velocity_) * coordinateSystem_->getScale();
 	}
 
 	void Camera::update(float deltaSeconds)
 	{
 		if (glm::length2(velocity_) > FLT_EPSILON || glm::length2(acceleration_) > FLT_EPSILON) {
-			CoordinateSystem* parentCs = coordinateSystem->getParent();
+			CoordinateSystem* parentCs = coordinateSystem_->getParent();
 
 			// determine the maximum speed
 			float speed;
@@ -83,7 +81,7 @@ namespace Game
 			// if we are inside a descendant coordinate system of the universe,
 			// we move through it at max speed in four seconds (2 for its radius)
 			if (parentCs) {
-				speed = coordinateSystem->getRadius() * parentCs->getScale() / coordinateSystem->getScale() / 2;
+				speed = coordinateSystem_->getRadius() * parentCs->getScale() / coordinateSystem_->getScale() / 2;
 			}
 
 			// the maximum speed when moving through the universe
@@ -93,13 +91,13 @@ namespace Game
 
 			// if there are any children in this coordinate system,
 			// we need to move slower when close to one
-			if (!coordinateSystem->getChildren().empty()) {
+			if (!coordinateSystem_->getChildren().empty()) {
 				Vector3 p = transform.getPosition();
 
 				// determine the distance to the edge of the closest child coordinate system
 				CoordinateSystem* childCs = nullptr;
 				float smallestDistance = std::numeric_limits<float>::max();
-				for (auto& child : coordinateSystem->getChildren()) {
+				for (auto& child : coordinateSystem_->getChildren()) {
 					Vector3 position = p - child->transform.getPosition();
 					float distance = position.length() - child->getRadius();
 					if (distance < smallestDistance) {
@@ -109,7 +107,7 @@ namespace Game
 				}
 
 				if (parentCs) {
-					smallestDistance *= 5.0f * coordinateSystem->getScale() / (parentCs->getScale() * coordinateSystem->getRadius());
+					smallestDistance *= 5.0f * coordinateSystem_->getScale() / (parentCs->getScale() * coordinateSystem_->getRadius());
 				}
 				else {
 					smallestDistance *= 0.02f / childCs->getRadius();
@@ -130,15 +128,13 @@ namespace Game
 			else if (glm::length2(velocity_) > speed * speed) {
 				velocity_ = (velocity_ + glm::normalize(velocity_) * speed) * 0.5f;
 			}
-		}
 
-		if (glm::length2(velocity_) > FLT_EPSILON) {
 			transform.move(velocity_ * deltaSeconds);
 
 			velocity_ *= powf(0.5f, deltaSeconds * 10);
 
 			if (glm::length2(velocity_) < glm::length2(maxVelocity_) * 0.00001f) {
-				velocity_ = { 0 };
+				velocity_ = glm::vec3(0);
 			}
 
 			setCorrectCoordinateSystem_();
@@ -197,34 +193,34 @@ namespace Game
 
 	void Camera::setCorrectCoordinateSystem_()
 	{
-		CoordinateSystem* parentCs = coordinateSystem->getParent();
+		CoordinateSystem* parentCs = coordinateSystem_->getParent();
 		Vector3 p = transform.getPosition();
 
 		// go to parent
-		if (parentCs && p.length() > coordinateSystem->getRadius() * (parentCs->getScale() / coordinateSystem->getScale()) * 0.99f) {
-			glm::quat q = coordinateSystem->transform.getOrientation();
+		if (parentCs && p.length() > coordinateSystem_->getRadius() * (parentCs->getScale() / coordinateSystem_->getScale()) * 0.99f) {
+			glm::quat q = coordinateSystem_->transform.getOrientation();
 
 			// TODO: add more precision?
 			p *= q;
-			p *= coordinateSystem->getScale() / parentCs->getScale();
-			p += coordinateSystem->transform.getPosition();
+			p *= coordinateSystem_->getScale() / parentCs->getScale();
+			p += coordinateSystem_->transform.getPosition();
 			transform.setPosition(p);
 
 			glm::quat o = transform.getOrientation() * q;
 			transform.setOrientation(transform.getOrientation() * q);
 
-			velocity_ *= coordinateSystem->getScale() / parentCs->getScale();
+			velocity_ *= coordinateSystem_->getScale() / parentCs->getScale();
 
-			coordinateSystem = parentCs;
+			coordinateSystem_ = parentCs;
 
 			setCorrectCoordinateSystem_();
 		}
 
 		// go to child
-		else if (!coordinateSystem->getChildren().empty()) {
+		else if (!coordinateSystem_->getChildren().empty()) {
 			CoordinateSystem* childCs = nullptr;
 
-			for (auto& child : coordinateSystem->getChildren()) {
+			for (auto& child : coordinateSystem_->getChildren()) {
 				Vector3 position = p - child->transform.getPosition();
 				if (position.length() < child->getRadius() * 0.98f) {
 					childCs = child.get();
@@ -237,17 +233,53 @@ namespace Game
 				// TODO: add more precision?
 				p -= childCs->transform.getPosition();
 				p *= q;
-				p *= coordinateSystem->getScale() / childCs->getScale();
+				p *= coordinateSystem_->getScale() / childCs->getScale();
 				transform.setPosition(p);
 
 				transform.setOrientation(transform.getOrientation() * q);
 
-				velocity_ *= coordinateSystem->getScale() / childCs->getScale();
+				velocity_ *= coordinateSystem_->getScale() / childCs->getScale();
 
-				coordinateSystem = childCs;
+				coordinateSystem_ = childCs;
 
 				setCorrectCoordinateSystem_();
 			}
+			else {
+				createHierarchy_();
+			}
+		}
+
+		else {
+			createHierarchy_();
+		}
+	}
+
+	void Camera::createHierarchy_()
+	{
+		CameraHierarchyLevel ch = {
+		coordinateSystem_,
+		glm::mat4(1),
+		transform.getPosition(),
+		};
+
+		hierarchy_ = { ch };
+
+		CoordinateSystem* parentCs = coordinateSystem_->getParent();
+
+		while (parentCs) {
+			glm::quat q = ch.coordinateSystem->transform.getOrientation();
+			ch.rotation *= glm::mat4_cast(q);
+
+			// TODO: add more precision?
+			ch.position *= q;
+			ch.position *= ch.coordinateSystem->getScale() / parentCs->getScale();
+			ch.position += ch.coordinateSystem->transform.getPosition();
+
+			ch.coordinateSystem = parentCs;
+
+			hierarchy_.push_back(ch);
+
+			parentCs = parentCs->getParent();
 		}
 	}
 }

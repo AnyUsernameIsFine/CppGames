@@ -43,6 +43,15 @@ namespace Framework
 		}
 	}
 
+	void Window::setFullscreen(bool set)
+	{
+		setFullscreen_ = set;
+
+		if (window_) {
+			sdlCheck(SDL_SetWindowFullscreen(window_, set ? SDL_WINDOW_FULLSCREEN : 0));
+		}
+	}
+
 	int Window::getWidth() const
 	{
 		int width;
@@ -71,7 +80,7 @@ namespace Framework
 			SDL_WINDOWPOS_UNDEFINED,
 			width_,
 			height_,
-			SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL
+			SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL | (setFullscreen_ ? SDL_WINDOW_FULLSCREEN : 0)
 		));
 
 		if (window_ == NULL) {

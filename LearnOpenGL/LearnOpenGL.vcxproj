@@ -136,6 +136,12 @@
     <Image Include="Resources\flow.jpg" />
     <Image Include="Resources\journey.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Main.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Main.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

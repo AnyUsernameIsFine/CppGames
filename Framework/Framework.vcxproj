@@ -18,6 +18,45 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\3D\Camera.hpp" />
+    <ClInclude Include="Source\3D\Transform.hpp" />
+    <ClInclude Include="Source\3D\Vector3.hpp" />
+    <ClInclude Include="Source\Framework.hpp" />
+    <ClInclude Include="Source\Graphics\Font.hpp" />
+    <ClInclude Include="Source\Graphics\FontSize.hpp" />
+    <ClInclude Include="Source\Graphics\Graphics.hpp" />
+    <ClInclude Include="Source\Graphics\Text.hpp" />
+    <ClInclude Include="Source\Graphics\Window.hpp" />
+    <ClInclude Include="Source\Input\Input.hpp" />
+    <ClInclude Include="Source\OpenGL\FragmentShader.hpp" />
+    <ClInclude Include="Source\OpenGL\IndexBufferObject.hpp" />
+    <ClInclude Include="Source\OpenGL\OpenGLObject.hpp" />
+    <ClInclude Include="Source\OpenGL\Shader.hpp" />
+    <ClInclude Include="Source\OpenGL\ShaderProgram.hpp" />
+    <ClInclude Include="Source\OpenGL\Texture2D.hpp" />
+    <ClInclude Include="Source\OpenGL\VertexBufferObject.hpp" />
+    <ClInclude Include="Source\OpenGL\VertexShader.hpp" />
+    <ClInclude Include="Source\System\Error.hpp" />
+    <ClInclude Include="Source\System\Game.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Graphics\Font.cpp" />
+    <ClCompile Include="Source\Graphics\FontSize.cpp" />
+    <ClCompile Include="Source\Graphics\Graphics.cpp" />
+    <ClCompile Include="Source\Graphics\Text.cpp" />
+    <ClCompile Include="Source\Graphics\Window.cpp" />
+    <ClCompile Include="Source\Input\Input.cpp" />
+    <ClCompile Include="Source\OpenGL\FragmentShader.cpp" />
+    <ClCompile Include="Source\OpenGL\IndexBufferObject.cpp" />
+    <ClCompile Include="Source\OpenGL\OpenGLObject.cpp" />
+    <ClCompile Include="Source\OpenGL\Shader.cpp" />
+    <ClCompile Include="Source\OpenGL\ShaderProgram.cpp" />
+    <ClCompile Include="Source\OpenGL\Texture2D.cpp" />
+    <ClCompile Include="Source\OpenGL\VertexBufferObject.cpp" />
+    <ClCompile Include="Source\OpenGL\VertexShader.cpp" />
+    <ClCompile Include="Source\System\Game.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{833D7DF2-0746-4DA6-87D3-8A5C6953103A}</ProjectGuid>
