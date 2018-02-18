@@ -27,22 +27,21 @@ namespace Game
 
 	Star::Star(CoordinateSystem* parent, float radius)
 	{
-		this->parent = parent;
-		this->radius = radius;
-		this->name = "Star #" + std::to_string(counter_++);
-		this->scale = SCALE;
+		this->parent_ = parent;
+		this->radius_ = radius;
+		this->name_ = "Star #" + std::to_string(counter_++);
 
 		addPlanets_();
 	}
 
-	glm::vec4 Star::getColor() const
+	float Star::getScale() const
 	{
-		return COLOR;
+		return SCALE;
 	}
 
-	const std::vector<std::unique_ptr<CoordinateSystem>>& Star::getChildren() const
+	const glm::vec4& Star::getColor() const
 	{
-		return planets_;
+		return COLOR;
 	}
 
 	void Star::addPlanets_()
@@ -56,11 +55,11 @@ namespace Game
 			float r = (float)rand() / RAND_MAX;
 			float planetRadius = maxRadius * (0.25f + 0.75f * r * r);
 
-			planets_.push_back(std::make_unique<Planet>(this, planetRadius));
+			children_.push_back(std::make_unique<Planet>(this, planetRadius));
 
-			Planet* planet = (Planet*)planets_.back().get();
+			Planet* planet = (Planet*)children_.back().get();
 
-			glm::vec2 v = glm::diskRand(0.5f * radius * ((CoordinateSystem*)parent)->scale / scale);
+			glm::vec2 v = glm::diskRand(0.5f * radius_ * parent_->getScale() / getScale());
 			planet->transform.setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });
 			r = (float)rand() / RAND_MAX;
 			planet->transform.rotate(45.0f * r * r, glm::sphericalRand(1.0f));

@@ -219,8 +219,6 @@ namespace Framework
 	template<typename T>
 	void Transform<T>::yaw(float angle)
 	{
-		//glm::quat q = glm::angleAxis(glm::radians(angle), orientation_ * glm::vec3(0, 1, 0));
-		//rotate(q);
 		rotate(angle, { 0, 1, 0 });
 	}
 

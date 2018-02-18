@@ -18,63 +18,41 @@ namespace Game
 
 	Universe::Universe()
 	{
-		this->radius = 1;
-		this->name = "Universe";
-		this->scale = SCALE;
-
-		srand((int)time(nullptr));
-
-		addGalaxies_();
+		this->name_ = "Universe";
+		this->radius_ = 1;
 	}
 
-	glm::vec4 Universe::getColor() const
+	float Universe::getScale() const
+	{
+		return SCALE;
+	}
+
+	const glm::vec4& Universe::getColor() const
 	{
 		return COLOR;
 	}
 
-	const std::vector<std::unique_ptr<CoordinateSystem>>& Universe::getChildren() const
+	void Universe::update(const Camera& camera)
 	{
-		return galaxies_;
+		addGalaxies_();
 	}
 
 	void Universe::draw(const Camera& camera)
 	{
-		// initialize some variables
-		CameraHierarchyLevel ch{
-			camera.coordinateSystem,
-			glm::mat4(1),
-			camera.transform.getPosition(),
-		};
+		CoordinateSystem* cs = camera.coordinateSystem;
 
-		std::vector<CameraHierarchyLevel> hierarchy = { ch };
-
-		CoordinateSystem* parentCs = (CoordinateSystem*)ch.coordinateSystem->parent;
+		CoordinateSystem* parentCs = cs->getParent();
 
 		// create and set the projection-view matrix
 		float r = 1.0f;
 		if (parentCs) {
-			r = parentCs->scale / ch.coordinateSystem->scale;
+			r = parentCs->getScale() / cs->getScale();
 		}
 		glm::mat4 projectionViewMatrix = glm::scale(camera.getProjectionMatrix() * camera.getViewMatrix(true), { r, r, r });
 		shaderProgram_->use();
 		shaderProgram_->setUniform("projectionViewMatrix", projectionViewMatrix);
 
-		// determine camera coordinate system hierarchy
-		while (parentCs) {
-			glm::quat q = ch.coordinateSystem->transform.getOrientation();
-			ch.rotation *= glm::mat4_cast(q);
-
-			// TODO: add more precision?
-			ch.position *= q;
-			ch.position *= ch.coordinateSystem->scale / parentCs->scale;
-			ch.position += ch.coordinateSystem->transform.getPosition();
-
-			ch.coordinateSystem = parentCs;
-
-			hierarchy.push_back(ch);
-
-			parentCs = (CoordinateSystem*)parentCs->parent;
-		}
+		auto hierarchy = camera.getHierarchy();
 
 		// draw the universe
 		std::vector<DrawConfiguration> toDrawList;
@@ -95,9 +73,9 @@ namespace Game
 						float r = (float)rand() / RAND_MAX;
 						float galaxyRadius = maxRadius * (0.25f + 0.75f * r * r);
 
-						galaxies_.push_back(std::make_unique<Galaxy>(this, galaxyRadius));
+						children_.push_back(std::make_unique<Galaxy>(this, galaxyRadius));
 
-						Galaxy* galaxy = (Galaxy*)galaxies_.back().get();
+						Galaxy* galaxy = (Galaxy*)children_.back().get();
 
 						galaxy->transform.setPosition(
 							(Coordinate)((x + 0.75 * ((float)rand() / RAND_MAX - 0.5)) * maxRadius * 100),

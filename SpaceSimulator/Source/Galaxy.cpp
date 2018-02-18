@@ -23,22 +23,21 @@ namespace Game
 
 	Galaxy::Galaxy(CoordinateSystem* parent, float radius)
 	{
-		this->parent = parent;
-		this->radius = radius;
-		this->name = "Galaxy #" + std::to_string(counter_++);
-		this->scale = SCALE;
+		this->parent_ = parent;
+		this->radius_ = radius;
+		this->name_ = "Galaxy #" + std::to_string(counter_++);
 
 		//addStars_();
 	}
 
-	glm::vec4 Galaxy::getColor() const
+	float Galaxy::getScale() const
 	{
-		return COLOR;
+		return SCALE;
 	}
 
-	const std::vector<std::unique_ptr<CoordinateSystem>>& Galaxy::getChildren() const
+	const glm::vec4& Galaxy::getColor() const
 	{
-		return stars_;
+		return COLOR;
 	}
 
 	void Galaxy::addStars_()
@@ -53,11 +52,11 @@ namespace Game
 			float r = (float)rand() / RAND_MAX;
 			float starRadius = maxRadius * (0.25f + 0.75f * r * r);
 
-			stars_.push_back(std::make_unique<Star>(this, starRadius));
+			children_.push_back(std::make_unique<Star>(this, starRadius));
 
-			Star* star = (Star*)stars_.back().get();
+			Star* star = (Star*)children_.back().get();
 
-			glm::vec3 v = glm::ballRand(0.5f * radius * ((CoordinateSystem*)parent)->scale / scale);
+			glm::vec3 v = glm::ballRand(0.5f * radius_ * parent_->getScale() / getScale());
 			star->transform.setPosition({ (Coordinate)v.x, (Coordinate)(v.y * roundness), (Coordinate)v.z });
 			r = (float)rand() / RAND_MAX;
 			star->transform.rotate(360 * r, glm::sphericalRand(1.0f));

@@ -33,11 +33,15 @@ namespace Game
 
 			CoordinateSystem::createMesh();
 
+			srand((int)time(nullptr));
+
+			universe.update(camera);
+
 			camera.coordinateSystem = &universe;
 			auto children = &camera.coordinateSystem->getChildren();
 			CoordinateSystem* toPutCameraNextTo = children->at(children->size() / 2).get();
 			camera.transform.setPosition(toPutCameraNextTo->transform.getPosition());
-			camera.transform.moveZ(5 * toPutCameraNextTo->radius);
+			camera.transform.moveZ(5 * toPutCameraNextTo->getRadius());
 		}
 
 		void onMouseMove(int x, int y)
@@ -75,7 +79,7 @@ namespace Game
 			glm::ivec3 o = camera.transform.getEulerAngles();
 
 			std::string fpsString = std::to_string(fps) + " fps";
-			std::string csString = camera.coordinateSystem->name;
+			std::string csString = camera.coordinateSystem->getName();
 			std::string speedString = camera.getSpeedString();
 			std::string positionString = "x: " + std::to_string(position.x) + " y: " + std::to_string(position.y) + " z: " + std::to_string(position.z);
 			std::string orientatonString = "yaw: " + std::to_string(o.y) + " pitch: " + std::to_string(o.x) + " roll: " + std::to_string(o.z);

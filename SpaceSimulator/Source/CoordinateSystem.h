@@ -4,7 +4,6 @@
 
 #define USE_REALISTIC_SCALE
 
-#include "GameObject.h"
 #include "Camera.h"
 
 #include <memory>
@@ -13,16 +12,19 @@ namespace Game
 {
 	using namespace Framework;
 
-	class CoordinateSystem abstract : public GameObject
+	class CoordinateSystem abstract
 	{
 	public:
-		std::string name;
-		float scale;
-		float radius;
+		Transform transform;
 
-		virtual glm::vec4 getColor() const = 0;
-		virtual const std::vector<std::unique_ptr<CoordinateSystem>>& getChildren() const = 0;
 		static void createMesh();
+
+		CoordinateSystem* getParent() const;
+		const std::vector<std::unique_ptr<CoordinateSystem>>& getChildren() const;
+		const std::string& getName() const;
+		float getRadius() const;
+		virtual float getScale() const = 0;
+		virtual const glm::vec4& getColor() const = 0;
 
 	protected:
 		struct DrawConfiguration
@@ -31,26 +33,25 @@ namespace Game
 			glm::vec4 color;
 		};
 
-		struct CameraHierarchyLevel
-		{
-			CoordinateSystem* coordinateSystem;
-			glm::mat4 rotation;
-			Vector3 position;
-		};
-
-		static GLuint vao_;
-		static GLuint instanceBuffer_;
-		static ShaderProgram* shaderProgram_;
+		CoordinateSystem* parent_;
+		std::vector<std::unique_ptr<CoordinateSystem>> children_;
+		std::string name_;
+		float radius_;
 
 		void drawRecursively_(
 			std::vector<DrawConfiguration>& toDrawList,
-			const std::vector<CameraHierarchyLevel>& cameraHierarchy,
+			const std::vector<Camera::CameraHierarchyLevel>& cameraHierarchy,
 			int hierarchyIndex,
 			glm::mat4 rotations = glm::mat4(1),
 			glm::vec3 camPos = glm::vec3(1),
 			bool useHighRes = true,
 			int numberOfSubLevelsToDraw = 1
 		);
+
+		static GLuint vao_;
+		static GLuint instanceBuffer_;
+		static ShaderProgram* shaderProgram_;
+
 		static void draw_(const std::vector<DrawConfiguration>& drawConfigurations);
 	};
 }

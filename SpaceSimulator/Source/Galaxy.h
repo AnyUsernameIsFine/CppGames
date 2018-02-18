@@ -12,13 +12,12 @@ namespace Game
 		static const glm::vec4 COLOR;
 
 		Galaxy(CoordinateSystem* parent, float radius);
-		glm::vec4 getColor() const;
-		const std::vector<std::unique_ptr<CoordinateSystem>>& getChildren() const;
+		float getScale() const;
+		const glm::vec4& getColor() const;
 
 	private:
-		static int counter_;
-		std::vector<std::unique_ptr<CoordinateSystem>> stars_;
-
 		void addStars_();
+
+		static int counter_;
 	};
 }

@@ -26,22 +26,21 @@ namespace Game
 
 	Planet::Planet(CoordinateSystem* parent, float radius)
 	{
-		this->parent = parent;
-		this->radius = radius;
-		this->name = "Planet #" + std::to_string(counter_++);
-		this->scale = SCALE;
+		this->parent_ = parent;
+		this->radius_ = radius;
+		this->name_ = "Planet #" + std::to_string(counter_++);
 
 		addMoons_();
 	}
 
-	glm::vec4 Planet::getColor() const
+	float Planet::getScale() const
 	{
-		return COLOR;
+		return SCALE;
 	}
 
-	const std::vector<std::unique_ptr<CoordinateSystem>>& Planet::getChildren() const
+	const glm::vec4& Planet::getColor() const
 	{
-		return moons_;
+		return COLOR;
 	}
 
 	void Planet::addMoons_()
@@ -55,11 +54,11 @@ namespace Game
 			float r = (float)rand() / RAND_MAX;
 			float moonRadius = maxRadius * (0.25f + 0.75f * r * r);
 
-			moons_.push_back(std::make_unique<Moon>(this, moonRadius));
+			children_.push_back(std::make_unique<Moon>(this, moonRadius));
 
-			Moon* moon = (Moon*)moons_.back().get();
+			Moon* moon = (Moon*)children_.back().get();
 
-			glm::vec2 v = glm::diskRand(0.5f * radius * ((CoordinateSystem*)parent)->scale / scale);
+			glm::vec2 v = glm::diskRand(0.5f * radius_ * parent_->getScale() / getScale());
 			moon->transform.setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });
 			r = (float)rand() / RAND_MAX;
 			moon->transform.rotate(45 * r * r, glm::sphericalRand(1.0f));

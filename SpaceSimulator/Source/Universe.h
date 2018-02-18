@@ -11,13 +11,12 @@ namespace Game
 		static const glm::vec4 COLOR;
 
 		Universe();
-		glm::vec4 getColor() const;
-		const std::vector<std::unique_ptr<CoordinateSystem>>& getChildren() const;
+		float getScale() const;
+		const glm::vec4& getColor() const;
+		void update(const Camera& camera);
 		void draw(const Camera& camera);
 
 	private:
-		std::vector<std::unique_ptr<CoordinateSystem>> galaxies_;
-
 		void addGalaxies_();
 	};
 }

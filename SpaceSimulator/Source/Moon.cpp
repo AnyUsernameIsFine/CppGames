@@ -21,19 +21,18 @@ namespace Game
 
 	Moon::Moon(CoordinateSystem* parent, float radius)
 	{
-		this->parent = parent;
-		this->radius = radius;
-		this->name = "Moon #" + std::to_string(counter_++);
-		this->scale = SCALE;
+		this->parent_ = parent;
+		this->radius_ = radius;
+		this->name_ = "Moon #" + std::to_string(counter_++);
 	}
 
-	glm::vec4 Moon::getColor() const
+	float Moon::getScale() const
+	{
+		return SCALE;
+	}
+
+	const glm::vec4& Moon::getColor() const
 	{
 		return COLOR;
-	}
-
-	const std::vector<std::unique_ptr<CoordinateSystem>>& Moon::getChildren() const
-	{
-		return {};
 	}
 }

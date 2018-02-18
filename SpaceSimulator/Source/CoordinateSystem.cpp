@@ -2,6 +2,26 @@
 
 namespace Game
 {
+	CoordinateSystem* CoordinateSystem::getParent() const
+	{
+		return parent_;
+	}
+
+	const std::vector<std::unique_ptr<CoordinateSystem>>& CoordinateSystem::getChildren() const
+	{
+		return children_;
+	}
+	
+	const std::string& CoordinateSystem::getName() const
+	{
+		return name_;
+	}
+
+	float CoordinateSystem::getRadius() const
+	{
+		return radius_;
+	}
+
 	void CoordinateSystem::createMesh()
 	{
 		float vertices[] = {
@@ -57,7 +77,7 @@ namespace Game
 
 	void CoordinateSystem::drawRecursively_(
 		std::vector<DrawConfiguration>& toDrawList,
-		const std::vector<CameraHierarchyLevel>& hierarchy,		// list of the camera's positions and rotations relative to all its coordinate system's ancestors from inside to outside
+		const std::vector<Camera::CameraHierarchyLevel>& hierarchy,		// list of the camera's positions and rotations relative to all its coordinate system's ancestors from inside to outside
 		int hierarchyIndex,										// which level of the camera hierarchy should we use for inverse rotations
 		glm::mat4 rotations,									// matrix of the combined rotations of all this coordinate system's ancestors
 		glm::vec3 camPos,										// camera position relative to this coordinate system's parent (we have to use floating point precision because this will be used for coordinate systems the camera is outside of)
@@ -88,8 +108,8 @@ namespace Game
 
 			// if this is not the universe, translate by
 			// the camera's position relative to this coordinate system
-			if (parent) {
-				float r = scale / ((CoordinateSystem*)parent)->scale;
+			if (parent_) {
+				float r = getScale() / parent_->getScale();
 				glm::vec3 v = -hierarchy[hierarchyIndex + 1].position.toVec3() * r;
 				m = glm::translate(m, v);
 			}
@@ -106,8 +126,8 @@ namespace Game
 			// rotate by the combined rotations of all this coordinate system's ancestors
 			// up to but exluding the first shared ancestor with the hierarchy of the camera's coordinate systems
 			float r = 1.0f;
-			if (parent->parent) {
-				r = ((CoordinateSystem*)parent)->scale / ((CoordinateSystem*)parent->parent)->scale;
+			if (parent_->parent_) {
+				r = parent_->getScale() / parent_->parent_->getScale();
 			}
 			m *= glm::scale(rotations, { r, r, r });
 
@@ -136,12 +156,12 @@ namespace Game
 
 				// calculate the camera position relative to this coordinate system
 				camPos = camPos * glm::conjugate(transform.getOrientation());
-				camPos *= (((CoordinateSystem*)parent)->scale / scale);
+				camPos *= parent_->getScale() / getScale();
 			}
 		}
 
 		// make a final scale adjustment according to the coordinate system's radius
-		m = glm::scale(m, { radius, radius, radius });
+		m = glm::scale(m, { radius_, radius_, radius_ });
 
 		// add it to the list of coordinate systems to draw
 		toDrawList.push_back({ m, this->getColor() });
