@@ -79,6 +79,8 @@ namespace Game
 	}
 
 	U32 Random::hashSeed_;
+	const int Random::ONE_ = 1;
+	const bool Random::LITTLE_ENDIAN_ = *(const char*)(&ONE_);
 	const U32 Random::PRIME_1_ = 2654435761U;
 	const U32 Random::PRIME_2_ = 2246822519U;
 	const U32 Random::PRIME_3_ = 3266489917U;

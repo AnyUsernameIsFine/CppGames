@@ -15,9 +15,6 @@ typedef		unsigned char	U32;
 
 namespace Game
 {
-	static const int one_ = 1;
-	static const bool LITTLE_ENDIAN_ = *(const char*)(&one_);
-
 	class Random
 	{
 	public:
@@ -29,6 +26,8 @@ namespace Game
 
 	private:
 		static U32 hashSeed_;
+		static const int ONE_;
+		static const bool LITTLE_ENDIAN_;
 		static const U32 PRIME_1_;
 		static const U32 PRIME_2_;
 		static const U32 PRIME_3_;
