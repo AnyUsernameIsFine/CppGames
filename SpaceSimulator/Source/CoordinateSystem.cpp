@@ -11,7 +11,7 @@ namespace Game
 	{
 		return children_;
 	}
-	
+
 	const std::string& CoordinateSystem::getName() const
 	{
 		return name_;
@@ -77,10 +77,10 @@ namespace Game
 
 	void CoordinateSystem::drawRecursively_(
 		std::vector<DrawConfiguration>& toDrawList,
-		const std::vector<Camera::CameraHierarchyLevel>& hierarchy,		// list of the camera's positions and rotations relative to all its coordinate system's ancestors from inside to outside
-		int hierarchyIndex,										// which level of the camera hierarchy should we use for inverse rotations
-		glm::mat4 rotations,									// matrix of the combined rotations of all this coordinate system's ancestors
-		glm::vec3 camPos,										// camera position relative to this coordinate system's parent (we have to use floating point precision because this will be used for coordinate systems the camera is outside of)
+		const std::vector<Camera::CameraHierarchyLevel>& hierarchy,	// list of the camera's positions and rotations relative to all its coordinate system's ancestors from inside to outside
+		int hierarchyIndex,											// which level of the camera hierarchy should we use for inverse rotations
+		glm::mat4 rotations,										// matrix of the combined rotations of all this coordinate system's ancestors
+		glm::vec3 camPos,											// camera position relative to this coordinate system's parent (we have to use floating point precision because this will be used for coordinate systems the camera is outside of)
 		bool useHighRes,
 		int descendantGenerationsToDraw
 	)
@@ -107,6 +107,9 @@ namespace Game
 				descendantGenerationsToDraw = 2;
 			}
 
+			// set the rotations for the descendants of this coordinate system
+			rotations = m;
+
 			// if this is not the universe, translate by the
 			// camera's position relative to this coordinate system
 			if (parent_) {
@@ -115,9 +118,8 @@ namespace Game
 				m = glm::translate(m, v);
 			}
 
-			// decrease the hierarchy index and set the rotations for the descendants of this coordinate system
+			// decrease the hierarchy index
 			hierarchyIndex--;
-			rotations = m;
 		}
 
 		// if this coordinate system is not in the hierarchy of the camera's coordinate systems
@@ -155,7 +157,7 @@ namespace Game
 
 			if (drawDescendants) {
 				// add the current coordinate system's rotation to the combined rotations to use by its descendants
-				rotations *= transform.getRotationMatrix();
+				rotations = glm::mat3(m); // use the rotation part of the matrix used for drawing
 
 				// calculate the camera position relative to this coordinate system
 				camPos = camPos * glm::conjugate(transform.getOrientation()) * parent_->getScale() / getScale();
