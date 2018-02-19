@@ -86,7 +86,7 @@ namespace Game
 	)
 	{
 		// define the matrix to be used for drawing
-		glm::mat4 m(1);
+		glm::mat4 m;
 
 		// don't draw descendants if there are none
 		bool drawDescendants = !children_.empty();
@@ -103,6 +103,7 @@ namespace Game
 
 			// if this is the camera's coordinate system, we draw the first two descendant generations
 			else {
+				m = glm::mat4(1);
 				descendantGenerationsToDraw = 2;
 			}
 
@@ -114,7 +115,9 @@ namespace Game
 				m = glm::translate(m, v);
 			}
 
+			// decrease the hierarchy index and set the rotations for the descendants of this coordinate system
 			hierarchyIndex--;
+			rotations = m;
 		}
 
 		// if this coordinate system is not in the hierarchy of the camera's coordinate systems
@@ -131,33 +134,19 @@ namespace Game
 			// rotate by the combined rotations of all this coordinate system's ancestors
 			// up to but exluding the first shared ancestor with the hierarchy
 			// of the camera's coordinate systems (which could be the camera's coordinate system)
-
-			// if this is not a descendant of the camera's coordinate system
-			if (hierarchyIndex >= 0) {
-				// use the camera's rotation relative to its coordinate systems and its ancestors
-				// up to but excluding the first shared ancestor with this coordinate system
-				m = hierarchy[hierarchyIndex + 1].rotation *
-					glm::scale(rotations, { r, r, r });
-			}
-
-			// if this is a descendant of the camera's coordinate system
-			else {
-				m = glm::scale(rotations, { r, r, r });
-			}
-
-			// rotate by this coordinate system's model matrix
+			// and then rotate by this coordinate system's model matrix
 			if (useHighRes) {
 				useHighRes = false;
 
 				Vector3 highResCamPos = hierarchy[hierarchyIndex + 1].position;
-				m *= transform.getModelMatrix(highResCamPos);
+				m = glm::scale(rotations, { r, r, r }) * transform.getModelMatrix(highResCamPos);
 
 				if (drawDescendants) {
 					camPos = (highResCamPos - transform.getPosition()).toVec3();
 				}
 			}
 			else {
-				m *= transform.getModelMatrix(camPos);
+				m = glm::scale(rotations, { r, r, r }) * transform.getModelMatrix(camPos);
 
 				if (drawDescendants) {
 					camPos -= transform.getPosition().toVec3();
@@ -169,8 +158,7 @@ namespace Game
 				rotations *= transform.getRotationMatrix();
 
 				// calculate the camera position relative to this coordinate system
-				camPos = camPos * glm::conjugate(transform.getOrientation());
-				camPos *= parent_->getScale() / getScale();
+				camPos = camPos * glm::conjugate(transform.getOrientation()) * parent_->getScale() / getScale();
 			}
 		}
 

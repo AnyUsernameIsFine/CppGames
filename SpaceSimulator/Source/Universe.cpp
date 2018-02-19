@@ -6,7 +6,7 @@
 
 namespace Game
 {
-	const int Universe::MAX_GALAXIES_IN_A_ROW_ = 4;
+	const int Universe::MAX_GALAXIES_IN_A_ROW_ = 12;
 	const float Universe::PERIOD_ = 100 * Galaxy::MAX_RADIUS * Galaxy::SCALE / Universe::SCALE;
 
 #ifdef USE_REALISTIC_SCALE
@@ -17,7 +17,7 @@ namespace Game
 #else
 	const float Universe::SCALE = (int_least64_t)1 << 20;
 #endif
-	const glm::vec4 Universe::COLOR = { 0, 1, 0, 1 };
+	const glm::vec4 Universe::COLOR = { 0, 0, 0, 1 };
 
 	Universe::Universe()
 	{

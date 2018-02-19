@@ -39,7 +39,7 @@ namespace Game
 
 	void Galaxy::create()
 	{
-		addStars_();
+		//addStars_();
 	}
 
 	void Galaxy::addStars_()

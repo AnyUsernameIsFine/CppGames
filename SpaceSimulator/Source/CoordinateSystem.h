@@ -2,7 +2,7 @@
 
 #include <Framework.hpp>
 
-//#define USE_REALISTIC_SCALE
+#define USE_REALISTIC_SCALE
 
 #include "Camera.h"
 
