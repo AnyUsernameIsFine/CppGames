@@ -82,54 +82,68 @@ namespace Game
 		glm::mat4 rotations,									// matrix of the combined rotations of all this coordinate system's ancestors
 		glm::vec3 camPos,										// camera position relative to this coordinate system's parent (we have to use floating point precision because this will be used for coordinate systems the camera is outside of)
 		bool useHighRes,
-		int numberOfSubLevelsToDraw
+		int descendantGenerationsToDraw
 	)
 	{
 		// define the matrix to be used for drawing
 		glm::mat4 m(1);
 
+		// don't draw descendants if there are none
+		bool drawDescendants = !children_.empty();
+
 		// if this coordinate system is in the hierarchy of the camera's coordinate systems
 		if (hierarchyIndex >= 0 && hierarchy[hierarchyIndex].coordinateSystem == this) {
-			hierarchyIndex--;
-
 			// if this coordinate system is an ancestor of the camera's coordinate system,
 			// use the camera's rotation relative to this coordinate system's ancestors
-			// and draw only the first sub level
-			if (hierarchyIndex >= 0) {
-				m = hierarchy[hierarchyIndex + 1].rotation;
-
-				numberOfSubLevelsToDraw = 1;
+			// and draw only the descendant generation
+			if (hierarchyIndex > 0) {
+				m = hierarchy[hierarchyIndex].rotation;
+				descendantGenerationsToDraw = 1;
 			}
 
-			// if this is the camera's coordinate system, we draw the first two sub levels
+			// if this is the camera's coordinate system, we draw the first two descendant generations
 			else {
-				numberOfSubLevelsToDraw = 2;
+				descendantGenerationsToDraw = 2;
 			}
 
 			// if this is not the universe, translate by
 			// the camera's position relative to this coordinate system
 			if (parent_) {
 				float r = getScale() / parent_->getScale();
-				glm::vec3 v = -hierarchy[hierarchyIndex + 1].position.toVec3() * r;
+				glm::vec3 v = -hierarchy[hierarchyIndex].position.toVec3() * r;
 				m = glm::translate(m, v);
 			}
+
+			hierarchyIndex--;
 		}
 
 		// if this coordinate system is not in the hierarchy of the camera's coordinate systems
 		else {
-			// use the camera's rotation relative to its coordinate systems and its ancestors
-			// up to but excluding the first shared ancestor with this coordinate system
-			if (hierarchyIndex >= 0) {
-				m = hierarchy[hierarchyIndex + 1].rotation;
-			}
+			// only draw descendants if we're told to
+			drawDescendants &= descendantGenerationsToDraw > 0;
 
-			// rotate by the combined rotations of all this coordinate system's ancestors
-			// up to but exluding the first shared ancestor with the hierarchy of the camera's coordinate systems
+			// calculate the relative scale of this coordinate system's direct ancestors
 			float r = 1.0f;
 			if (parent_->parent_) {
 				r = parent_->getScale() / parent_->parent_->getScale();
 			}
-			m *= glm::scale(rotations, { r, r, r });
+
+			// rotate by the combined rotations of all this coordinate system's ancestors
+			// up to but exluding the first shared ancestor with the hierarchy
+			// of the camera's coordinate systems (which could be the camera's coordinate system)
+
+			// if this is not a descendant of the camera's coordinate system
+			if (hierarchyIndex >= 0) {
+				// use the camera's rotation relative to its coordinate systems and its ancestors
+				// up to but excluding the first shared ancestor with this coordinate system
+				m = hierarchy[hierarchyIndex + 1].rotation *
+					glm::scale(rotations, { r, r, r });
+			}
+
+			// if this is a descendant of the camera's coordinate system
+			else {
+				m = glm::scale(rotations, { r, r, r });
+			}
 
 			// rotate by this coordinate system's model matrix
 			if (useHighRes) {
@@ -138,19 +152,19 @@ namespace Game
 				Vector3 highResCamPos = hierarchy[hierarchyIndex + 1].position;
 				m *= transform.getModelMatrix(highResCamPos);
 
-				if (numberOfSubLevelsToDraw > 0) {
+				if (drawDescendants) {
 					camPos = (highResCamPos - transform.getPosition()).toVec3();
 				}
 			}
 			else {
 				m *= transform.getModelMatrix(camPos);
 
-				if (numberOfSubLevelsToDraw > 0) {
+				if (drawDescendants) {
 					camPos -= transform.getPosition().toVec3();
 				}
 			}
 
-			if (numberOfSubLevelsToDraw > 0) {
+			if (drawDescendants) {
 				// add the current coordinate system's rotation to the combined rotations to use by its descendants
 				rotations *= transform.getRotationMatrix();
 
@@ -167,8 +181,8 @@ namespace Game
 		toDrawList.push_back({ m, this->getColor() });
 
 		// draw the coordinate system's descendants
-		if (numberOfSubLevelsToDraw > 0) {
-			for (auto& cs : getChildren()) {
+		if (drawDescendants) {
+			for (auto& cs : children_) {
 				cs->drawRecursively_(
 					toDrawList,
 					hierarchy,
@@ -176,7 +190,7 @@ namespace Game
 					rotations,
 					camPos,
 					useHighRes,
-					numberOfSubLevelsToDraw - 1
+					descendantGenerationsToDraw - 1
 				);
 			}
 		}

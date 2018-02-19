@@ -6,7 +6,7 @@
 
 namespace Game
 {
-	const int Universe::MAX_GALAXIES_IN_A_ROW_ = 9;
+	const int Universe::MAX_GALAXIES_IN_A_ROW_ = 4;
 	const float Universe::PERIOD_ = 100 * Galaxy::MAX_RADIUS * Galaxy::SCALE / Universe::SCALE;
 
 #ifdef USE_REALISTIC_SCALE
@@ -17,7 +17,7 @@ namespace Game
 #else
 	const float Universe::SCALE = (int_least64_t)1 << 20;
 #endif
-	const glm::vec4 Universe::COLOR = { 0, 0, 0, 1 };
+	const glm::vec4 Universe::COLOR = { 0, 1, 0, 1 };
 
 	Universe::Universe()
 	{
@@ -155,7 +155,7 @@ namespace Game
 
 	std::shared_ptr<Galaxy> Universe::createGalaxy_(const Vector3& offset)
 	{
-		srand(Random::u32FromByteArray(&(updateCameraPosition_ + offset), 24));
+		Random::setRandSeed(Random::u32FromByteArray(&(updateCameraPosition_ + offset), 24));
 
 		float r = Random::randFloat();
 		float maxRadius = Galaxy::MAX_RADIUS * Galaxy::SCALE / SCALE;
@@ -180,7 +180,6 @@ namespace Game
 	void Universe::draw(const Camera& camera)
 	{
 		CoordinateSystem* cs = camera.getCoordinateSystem();
-
 		CoordinateSystem* parentCs = cs->getParent();
 
 		// create and set the projection-view matrix
@@ -192,10 +191,9 @@ namespace Game
 		shaderProgram_->use();
 		shaderProgram_->setUniform("projectionViewMatrix", projectionViewMatrix);
 
-		auto hierarchy = camera.getHierarchy();
-
 		// draw the universe
 		std::vector<DrawConfiguration> toDrawList;
+		auto hierarchy = camera.getHierarchy();
 		drawRecursively_(toDrawList, hierarchy, hierarchy.size() - 1);
 		draw_(toDrawList);
 	}

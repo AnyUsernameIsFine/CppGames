@@ -7,7 +7,7 @@ namespace Game
 {
 	void Random::setRandSeed(U32 seed)
 	{
-		srand(seed);
+		rng_.seed(seed);
 	}
 
 	void Random::setHashSeed(U32 seed)
@@ -15,14 +15,16 @@ namespace Game
 		hashSeed_ = seed;
 	}
 
-	float Random::randFloat()
+	float Random::randFloat(float min, float max)
 	{
-		return rand() / ((float)RAND_MAX + 1);
+		std::uniform_real_distribution<float> distribution(min, max);
+		return distribution(rng_);
 	}
 
-	float Random::randFloat(float minInclusive, float maxExclusive)
+	int Random::randInt(int min, int max)
 	{
-		return minInclusive + randFloat() * (maxExclusive - minInclusive);
+		std::uniform_int_distribution<int> distribution(min, max);
+		return distribution(rng_);
 	}
 
 	U32 Random::u32FromByteArray(const void* byteArray, size_t length)
@@ -78,6 +80,7 @@ namespace Game
 		return h32;
 	}
 
+	Random::RNG Random::rng_;
 	U32 Random::hashSeed_;
 	const int Random::ONE_ = 1;
 	const bool Random::LITTLE_ENDIAN_ = *(const char*)(&ONE_);

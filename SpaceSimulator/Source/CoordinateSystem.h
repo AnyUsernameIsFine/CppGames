@@ -2,7 +2,7 @@
 
 #include <Framework.hpp>
 
-#define USE_REALISTIC_SCALE
+//#define USE_REALISTIC_SCALE
 
 #include "Camera.h"
 
@@ -45,7 +45,7 @@ namespace Game
 			glm::mat4 rotations = glm::mat4(1),
 			glm::vec3 camPos = glm::vec3(1),
 			bool useHighRes = true,
-			int numberOfSubLevelsToDraw = 1
+			int descendantGenerationsToDraw = 1
 		);
 
 		static GLuint vao_;

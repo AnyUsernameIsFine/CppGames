@@ -1,5 +1,7 @@
 #pragma once
 
+#include <random>
+
 #ifndef MEM_MODULE
 #	if !defined (__VMS) \
 	&& (defined (__cplusplus) \
@@ -17,14 +19,17 @@ namespace Game
 {
 	class Random
 	{
+		typedef std::mt19937 RNG;
+
 	public:
 		static void setRandSeed(U32 seed);
 		static void setHashSeed(U32 seed);
-		static float randFloat();
-		static float randFloat(float minInclusive, float maxExclusive);
+		static float randFloat(float min = 0, float max = 1);
+		static int randInt(int min, int max);
 		static U32 u32FromByteArray(const void* byteArray, size_t length);
 
 	private:
+		static RNG rng_;
 		static U32 hashSeed_;
 		static const int ONE_;
 		static const bool LITTLE_ENDIAN_;

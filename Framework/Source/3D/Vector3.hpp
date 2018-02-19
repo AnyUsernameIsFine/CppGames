@@ -125,18 +125,20 @@ namespace Framework
 	template<typename T>
 	Vector3<T>& Vector3<T>::operator/=(float f)
 	{
-		x = static_cast<T>(x / f);
-		y = static_cast<T>(y / f);
-		z = static_cast<T>(z / f);
+		f = 1 / f;
+		x = static_cast<T>(x * f);
+		y = static_cast<T>(y * f);
+		z = static_cast<T>(z * f);
 		return *this;
 	}
 
 	template<typename T>
 	Vector3<T>& Vector3<T>::operator/=(double d)
 	{
-		x = static_cast<T>(x / d);
-		y = static_cast<T>(y / d);
-		z = static_cast<T>(z / d);
+		d = 1 / d;
+		x = static_cast<T>(x * d);
+		y = static_cast<T>(y * d);
+		z = static_cast<T>(z * d);
 		return *this;
 	}
 
@@ -216,20 +218,22 @@ namespace Framework
 	template<typename T>
 	Vector3<T> Vector3<T>::operator/(float f) const
 	{
+		f = 1 / f;
 		return {
-			static_cast<T>(x / f),
-			static_cast<T>(y / f),
-			static_cast<T>(z / f),
+			static_cast<T>(x * f),
+			static_cast<T>(y * f),
+			static_cast<T>(z * f),
 		};
 	}
 
 	template<typename T>
 	Vector3<T> Vector3<T>::operator/(double d) const
 	{
+		d = 1 / d;
 		return {
-			static_cast<T>(x / d),
-			static_cast<T>(y / d),
-			static_cast<T>(z / d),
+			static_cast<T>(x * d),
+			static_cast<T>(y * d),
+			static_cast<T>(z * d),
 		};
 	}
 
