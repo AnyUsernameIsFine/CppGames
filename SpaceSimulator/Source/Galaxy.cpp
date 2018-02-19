@@ -46,7 +46,7 @@ namespace Game
 	{
 		float maxRadius = Star::MAX_RADIUS * (Star::SCALE / SCALE);
 
-		int numberOfStars = 10 + rand() % 11;
+		int numberOfStars = Random::randInt(10, 20);
 		float r = Random::randFloat();
 		float roundness = r * r * r;
 

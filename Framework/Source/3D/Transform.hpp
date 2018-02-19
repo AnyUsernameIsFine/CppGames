@@ -2,9 +2,8 @@
 
 #include "Vector3.hpp"
 
+#define GLM_FORCE_INLINE 
 #include <glm\gtc\quaternion.hpp>
-
-#define USE_POTENTIAL_SPEEDUP
 
 namespace Framework
 {
@@ -60,15 +59,8 @@ namespace Framework
 		glm::mat4 rotationMatrix_;
 		bool isModelMatrixValid_;
 		glm::mat4 modelMatrix_;
-#ifdef USE_POTENTIAL_SPEEDUP
 		glm::vec3 modelMatrixPosition_;
 		glm::vec3 modelMatrixPositionRotated_;
-#else
-		glm::vec3 translationMatrixPosition_;
-		glm::mat4 translationMatrix_ = glm::mat4(1);
-		bool isRotationScaleMatrixValid_;
-		glm::mat4 rotationScaleMatrix_;
-#endif // USE_POTENTIAL_SPEEDUP
 
 		const glm::mat4& getModelMatrix_(const glm::vec3& position);
 	};
@@ -114,11 +106,7 @@ namespace Framework
 		orientation_ = orientation;
 
 		isRotationMatrixValid_ = false;
-#ifdef USE_POTENTIAL_SPEEDUP
 		isModelMatrixValid_ = false;
-#else
-		isRotationScaleMatrixValid_ = false;
-#endif // USE_POTENTIAL_SPEEDUP
 	}
 
 	template<typename T>
@@ -138,11 +126,7 @@ namespace Framework
 	{
 		scale_ = scale;
 
-#ifdef USE_POTENTIAL_SPEEDUP
 		isModelMatrixValid_ = false;
-#else
-		isRotationScaleMatrixValid_ = false;
-#endif // USE_POTENTIAL_SPEEDUP
 	}
 
 	template<typename T>
@@ -318,14 +302,12 @@ namespace Framework
 			});
 	}
 
-#ifdef USE_POTENTIAL_SPEEDUP
 	template<typename T>
 	const glm::mat4& TransformType<T>::getModelMatrix_(const glm::vec3& position)
 	{
 		if (position != modelMatrixPosition_) {
 			modelMatrixPosition_ = position;
 			modelMatrixPositionRotated_ = orientation_ * position;
-
 			isModelMatrixValid_ = false;
 		}
 
@@ -336,27 +318,4 @@ namespace Framework
 
 		return modelMatrix_;
 	}
-#else
-	template<typename T>
-	const glm::mat4& TransformType<T>::getModelMatrix_(const glm::vec3& position)
-	{
-		if (position != translationMatrixPosition_) {
-			translationMatrix_ = glm::translate(glm::mat4(1), position);
-			translationMatrixPosition_ = position;
-		}
-
-		if (!isRotationScaleMatrixValid_) {
-			rotationScaleMatrix_ = glm::scale(getRotationMatrix(), scale_);
-			isRotationScaleMatrixValid_ = true;
-			isModelMatrixValid_ = false;
-		}
-
-		if (!isModelMatrixValid_) {
-			modelMatrix_ = translationMatrix_ * rotationScaleMatrix_;
-			isModelMatrixValid_ = true;
-		}
-
-		return modelMatrix_;
-	}
-#endif // USE_POTENTIAL_SPEEDUP
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#define GLM_FORCE_INLINE 
 #include <glm\vec3.hpp>
 
 namespace Framework

@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "Universe.h"
 
+#define GLM_FORCE_INLINE
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm\gtx\norm.hpp>
 

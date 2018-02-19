@@ -50,8 +50,7 @@ namespace Game
 	{
 		float maxRadius = Planet::MAX_RADIUS * (Planet::SCALE / SCALE);
 
-		float r = Random::randFloat();
-		int numberOfPlanets = (int)(10 * r);
+		int numberOfPlanets = Random::randInt(1, 10);
 
 		for (int i = 0; i < numberOfPlanets; i++) {
 			float r = Random::randFloat();

@@ -34,8 +34,6 @@ namespace Framework
 
 //#include "Camera.h"
 
-#include <glm\gtc\matrix_transform.hpp>
-
 namespace Framework
 {
 	template<typename T>

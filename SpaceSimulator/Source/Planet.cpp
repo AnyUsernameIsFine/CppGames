@@ -49,8 +49,7 @@ namespace Game
 	{
 		float maxRadius = Moon::MAX_RADIUS * (Moon::SCALE / SCALE);
 
-		float r = Random::randFloat();
-		int numberOfMoons = (int)(5 * r);
+		int numberOfMoons = Random::randInt(1, 4);
 
 		for (int i = 0; i < numberOfMoons; i++) {
 			float r = Random::randFloat();
