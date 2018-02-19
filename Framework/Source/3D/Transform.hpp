@@ -331,6 +331,7 @@ namespace Framework
 
 		if (!isModelMatrixValid_) {
 			modelMatrix_ = glm::scale(glm::translate(getRotationMatrix(), modelMatrixPositionRotated_), scale_);
+			isModelMatrixValid_ = true;
 		}
 
 		return modelMatrix_;
@@ -352,6 +353,7 @@ namespace Framework
 
 		if (!isModelMatrixValid_) {
 			modelMatrix_ = translationMatrix_ * rotationScaleMatrix_;
+			isModelMatrixValid_ = true;
 		}
 
 		return modelMatrix_;
