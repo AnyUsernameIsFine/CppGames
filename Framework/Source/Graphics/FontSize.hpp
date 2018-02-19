@@ -4,7 +4,7 @@
 #include FT_FREETYPE_H
 #include <GL\glew.h>
 
-#include <map>
+#include <unordered_map>
 
 namespace Framework
 {
@@ -31,7 +31,7 @@ namespace Framework
 
 	private:
 		int size_;
-		std::map<char, Glyph> glyphs_;
+		std::unordered_map<char, Glyph> glyphs_;
 		GLuint textureId_;
 	};
 }

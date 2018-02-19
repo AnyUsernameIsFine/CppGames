@@ -4,11 +4,11 @@
 
 namespace Framework
 {
-	template<typename T = float>
-	class Camera
+	template<typename T>
+	class CameraType
 	{
 	public:
-		Transform<T> transform;
+		TransformType<T> transform;
 
 		bool isPerspective() const;
 		float getFieldOfView() const;
@@ -28,6 +28,8 @@ namespace Framework
 		float far_ = 100.0f;
 		float size_ = 10.0f;
 	};
+
+	typedef CameraType<float> Camera;
 }
 
 //#include "Camera.h"
@@ -37,50 +39,50 @@ namespace Framework
 namespace Framework
 {
 	template<typename T>
-	bool Camera<T>::isPerspective() const
+	bool CameraType<T>::isPerspective() const
 	{
 		return perspective_;
 	}
 
 	template<typename T>
-	float Camera<T>::getFieldOfView() const
+	float CameraType<T>::getFieldOfView() const
 	{
 		return fov_;
 	}
 
 	template<typename T>
-	void Camera<T>::setPerspective(bool perspective)
+	void CameraType<T>::setPerspective(bool perspective)
 	{
 		perspective_ = perspective;
 	}
 
 	template<typename T>
-	void Camera<T>::setAspectRatio(float ratio)
+	void CameraType<T>::setAspectRatio(float ratio)
 	{
 		ratio_ = ratio;
 	}
 
 	template<typename T>
-	void Camera<T>::setFieldOfView(float fov)
+	void CameraType<T>::setFieldOfView(float fov)
 	{
 		fov_ = fov;
 	}
 
 	template<typename T>
-	void Camera<T>::setClippingPlanes(float near, float far)
+	void CameraType<T>::setClippingPlanes(float near, float far)
 	{
 		near_ = near;
 		far_ = far;
 	}
 
 	template<typename T>
-	void Camera<T>::setSize(float size)
+	void CameraType<T>::setSize(float size)
 	{
 		size_ = size;
 	}
 
 	template<typename T>
-	glm::mat4 Camera<T>::getViewMatrix(bool rotationOnly) const
+	glm::mat4 CameraType<T>::getViewMatrix(bool rotationOnly) const
 	{
 		glm::mat4 rotation = glm::mat4_cast(transform.getOrientation());
 
@@ -93,7 +95,7 @@ namespace Framework
 	}
 
 	template<typename T>
-	glm::mat4 Camera<T>::getProjectionMatrix() const
+	glm::mat4 CameraType<T>::getProjectionMatrix() const
 	{
 		if (perspective_) {
 			return glm::perspective(glm::radians(fov_), ratio_, near_, far_);

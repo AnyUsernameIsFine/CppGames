@@ -88,14 +88,14 @@ namespace Game
 		// define the matrix to be used for drawing
 		glm::mat4 m;
 
-		// don't draw descendants if there are none
+		// only draw descendants if there are any
 		bool drawDescendants = !children_.empty();
 
 		// if this coordinate system is in the hierarchy of the camera's coordinate systems
 		if (hierarchyIndex >= 0 && hierarchy[hierarchyIndex].coordinateSystem == this) {
 			// if this coordinate system is an ancestor of the camera's coordinate system,
 			// use the camera's rotation relative to this coordinate system's ancestors
-			// and draw only the descendant generation
+			// and draw only one descendant generation
 			if (hierarchyIndex > 0) {
 				m = hierarchy[hierarchyIndex].rotation;
 				descendantGenerationsToDraw = 1;
@@ -107,8 +107,8 @@ namespace Game
 				descendantGenerationsToDraw = 2;
 			}
 
-			// if this is not the universe, translate by
-			// the camera's position relative to this coordinate system
+			// if this is not the universe, translate by the
+			// camera's position relative to this coordinate system
 			if (parent_) {
 				float r = getScale() / parent_->getScale();
 				glm::vec3 v = -hierarchy[hierarchyIndex].position.toVec3() * r;
@@ -133,7 +133,7 @@ namespace Game
 
 			// rotate by the combined rotations of all this coordinate system's ancestors
 			// up to but exluding the first shared ancestor with the hierarchy
-			// of the camera's coordinate systems (which could be the camera's coordinate system)
+			// of the camera's coordinate systems (which could be the camera's coordinate system itself)
 			// and then rotate by this coordinate system's model matrix
 			if (useHighRes) {
 				useHighRes = false;

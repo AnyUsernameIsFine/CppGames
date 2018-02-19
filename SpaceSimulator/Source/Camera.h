@@ -6,7 +6,7 @@ namespace Game
 {
 	class CoordinateSystem;
 
-	class Camera : public Framework::Camera<Coordinate>
+	class Camera : public Framework::CameraType<Coordinate>
 	{
 	public:
 		struct CameraHierarchyLevel
