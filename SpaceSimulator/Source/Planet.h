@@ -18,7 +18,5 @@ namespace Game
 
 	private:
 		void addMoons_();
-
-		static int counter_;
 	};
 }

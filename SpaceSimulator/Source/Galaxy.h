@@ -18,7 +18,5 @@ namespace Game
 
 	private:
 		void addStars_();
-
-		static int counter_;
 	};
 }

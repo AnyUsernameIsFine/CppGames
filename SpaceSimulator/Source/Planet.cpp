@@ -22,13 +22,12 @@ namespace Game
 	const float Planet::MAX_RADIUS = (int_least64_t)1 << 62;
 #endif
 	const glm::vec4 Planet::COLOR = { 1, 1, 0, 1 };
-	int Planet::counter_ = 1;
 
 	Planet::Planet(CoordinateSystem* parent, float radius)
 	{
 		this->parent_ = parent;
 		this->radius_ = radius;
-		this->name_ = "Planet #" + std::to_string(counter_++);
+		this->name_ = "Planet";
 	}
 
 	float Planet::getScale() const

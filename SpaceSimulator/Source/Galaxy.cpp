@@ -19,13 +19,12 @@ namespace Game
 	const float Galaxy::MAX_RADIUS = (int_least64_t)1 << 62;
 #endif
 	const glm::vec4 Galaxy::COLOR = { 0, 0, 1, 1 };
-	int Galaxy::counter_ = 1;
 
 	Galaxy::Galaxy(CoordinateSystem* parent, float radius)
 	{
 		this->parent_ = parent;
 		this->radius_ = radius;
-		this->name_ = "Galaxy #" + std::to_string(counter_++);
+		this->name_ = "Galaxy";
 	}
 
 	float Galaxy::getScale() const

@@ -18,7 +18,5 @@ namespace Game
 
 	private:
 		void addPlanets_();
-
-		static int counter_;
 	};
 }

@@ -84,11 +84,10 @@ namespace Game
 			std::string csString = camera.getCoordinateSystem()->getName();
 			std::string speedString = camera.getSpeedString();
 			std::string positionString = std::to_string(position.x) + ", " + std::to_string(position.y) + ", " + std::to_string(position.z);
-			std::string orientatonString = "yaw: " + std::to_string(o.y) + " pitch: " + std::to_string(o.x) + " roll: " + std::to_string(o.z);
 
 			graphics.text.draw(2, -5, fpsString);
-			graphics.text.draw(2, -5 + graphics.window.getHeight() - 3 * graphics.text.getFontHeight(),
-				csString + "\n" + speedString + "\n" + positionString);// +"\n" + orientatonString);
+			graphics.text.draw(2, -5 + graphics.window.getHeight() - 3.0f * graphics.text.getFontHeight(),
+				csString + "\n" + speedString + "\n" + positionString);
 		}
 	};
 }

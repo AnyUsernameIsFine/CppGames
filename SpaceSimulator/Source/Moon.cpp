@@ -17,13 +17,12 @@ namespace Game
 	const float Moon::MAX_RADIUS = (int_least64_t)1 << 62;
 #endif
 	const glm::vec4 Moon::COLOR = { 1, 0, 1, 1 };
-	int Moon::counter_ = 1;
 
 	Moon::Moon(CoordinateSystem* parent, float radius)
 	{
 		this->parent_ = parent;
 		this->radius_ = radius;
-		this->name_ = "Moon #" + std::to_string(counter_++);
+		this->name_ = "Moon";
 	}
 
 	float Moon::getScale() const

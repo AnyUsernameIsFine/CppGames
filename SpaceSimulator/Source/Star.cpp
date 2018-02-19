@@ -23,13 +23,12 @@ namespace Game
 	const float Star::MAX_RADIUS = (int_least64_t)1 << 62;
 #endif
 	const glm::vec4 Star::COLOR = { 1, 0, 0, 1 };
-	int Star::counter_ = 1;
 
 	Star::Star(CoordinateSystem* parent, float radius)
 	{
 		this->parent_ = parent;
 		this->radius_ = radius;
-		this->name_ = "Star #" + std::to_string(counter_++);
+		this->name_ = "Star";
 	}
 
 	float Star::getScale() const

@@ -210,6 +210,7 @@ namespace Game
 			transform.setOrientation(transform.getOrientation() * q);
 
 			velocity_ *= coordinateSystem_->getScale() / parentCs->getScale();
+			maxVelocity_ *= coordinateSystem_->getScale() / parentCs->getScale();
 
 			coordinateSystem_ = parentCs;
 
@@ -239,6 +240,7 @@ namespace Game
 				transform.setOrientation(transform.getOrientation() * q);
 
 				velocity_ *= coordinateSystem_->getScale() / childCs->getScale();
+				maxVelocity_ *= coordinateSystem_->getScale() / childCs->getScale();
 
 				coordinateSystem_ = childCs;
 
