@@ -8,12 +8,13 @@ namespace Game
 	{
 	public:
 		static const float SCALE;
-		static const float MAXIMUM_RADIUS;
+		static const float MAX_RADIUS;
 		static const glm::vec4 COLOR;
 
 		Star(CoordinateSystem* parent, float radius);
 		float getScale() const;
 		const glm::vec4& getColor() const;
+		void create();
 
 	private:
 		void addPlanets_();

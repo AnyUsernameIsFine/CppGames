@@ -16,10 +16,10 @@ namespace Game
 	// from its planet of any natural satellites in our Solar System
 	// can be almost 50 million kilometers from Neptune.
 	// Let's make its orbit fit in twice for some wiggle room.
-	const float Planet::MAXIMUM_RADIUS = 1000 / SCALE * 50000000 * 2;
+	const float Planet::MAX_RADIUS = 1000 / SCALE * 50000000 * 2;
 #else
 	const float Planet::SCALE = 1.0f / (1 << 7);
-	const float Planet::MAXIMUM_RADIUS = (int_least64_t)1 << 62;
+	const float Planet::MAX_RADIUS = (int_least64_t)1 << 62;
 #endif
 	const glm::vec4 Planet::COLOR = { 1, 1, 0, 1 };
 	int Planet::counter_ = 1;
@@ -29,8 +29,6 @@ namespace Game
 		this->parent_ = parent;
 		this->radius_ = radius;
 		this->name_ = "Planet #" + std::to_string(counter_++);
-
-		addMoons_();
 	}
 
 	float Planet::getScale() const
@@ -43,25 +41,31 @@ namespace Game
 		return COLOR;
 	}
 
+	void Planet::create()
+	{
+		addMoons_();
+	}
+
 	void Planet::addMoons_()
 	{
-		float maxRadius = Moon::MAXIMUM_RADIUS * (Moon::SCALE / SCALE);
+		float maxRadius = Moon::MAX_RADIUS * (Moon::SCALE / SCALE);
 
-		float r = (float)rand() / RAND_MAX;
+		float r = Random::randFloat();
 		int numberOfMoons = (int)(5 * r);
 
 		for (int i = 0; i < numberOfMoons; i++) {
-			float r = (float)rand() / RAND_MAX;
+			float r = Random::randFloat();
 			float moonRadius = maxRadius * (0.25f + 0.75f * r * r);
 
-			children_.push_back(std::make_unique<Moon>(this, moonRadius));
-
-			Moon* moon = (Moon*)children_.back().get();
+			auto moon = std::make_shared<Moon>(this, moonRadius);
 
 			glm::vec2 v = glm::diskRand(0.5f * radius_ * parent_->getScale() / getScale());
 			moon->transform.setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });
-			r = (float)rand() / RAND_MAX;
+
+			r = Random::randFloat();
 			moon->transform.rotate(45 * r * r, glm::sphericalRand(1.0f));
+
+			children_.push_back(moon);
 		}
 	}
 }

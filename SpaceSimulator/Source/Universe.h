@@ -24,6 +24,11 @@ namespace Game
 		void addGalaxiesX_(bool positive);
 		void addGalaxiesY_(bool positive);
 		void addGalaxiesZ_(bool positive);
-		void addGalaxies_(const Vector3& steppedCameraPosition);
+		void addGalaxy_(const Vector3& offset, int x, int y, int z);
+		void addGalaxies_();
+		std::shared_ptr<Galaxy> createGalaxy_(const Vector3& offset);
+
+		static const int MAX_GALAXIES_IN_A_ROW_;
+		static const float PERIOD_;
 	};
 }

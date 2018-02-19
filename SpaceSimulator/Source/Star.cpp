@@ -17,10 +17,10 @@ namespace Game
 	// The Oort cloud (the outer edge of our Solar System)
 	// has a radius as much as 200,000 AU. One AU is 149,597,870,700 meters.
 	// Let's make that fit in twice for some wiggle room.
-	const float Star::MAXIMUM_RADIUS = 149597870700 / SCALE * 200000 * 2;
+	const float Star::MAX_RADIUS = 149597870700 / SCALE * 200000 * 2;
 #else
 	const float Star::SCALE = 1.0f;
-	const float Star::MAXIMUM_RADIUS = (int_least64_t)1 << 62;
+	const float Star::MAX_RADIUS = (int_least64_t)1 << 62;
 #endif
 	const glm::vec4 Star::COLOR = { 1, 0, 0, 1 };
 	int Star::counter_ = 1;
@@ -30,8 +30,6 @@ namespace Game
 		this->parent_ = parent;
 		this->radius_ = radius;
 		this->name_ = "Star #" + std::to_string(counter_++);
-
-		addPlanets_();
 	}
 
 	float Star::getScale() const
@@ -44,25 +42,31 @@ namespace Game
 		return COLOR;
 	}
 
+	void Star::create()
+	{
+		addPlanets_();
+	}
+
 	void Star::addPlanets_()
 	{
-		float maxRadius = Planet::MAXIMUM_RADIUS * (Planet::SCALE / SCALE);
+		float maxRadius = Planet::MAX_RADIUS * (Planet::SCALE / SCALE);
 
-		float r = (float)rand() / RAND_MAX;
+		float r = Random::randFloat();
 		int numberOfPlanets = (int)(10 * r);
 
 		for (int i = 0; i < numberOfPlanets; i++) {
-			float r = (float)rand() / RAND_MAX;
+			float r = Random::randFloat();
 			float planetRadius = maxRadius * (0.25f + 0.75f * r * r);
 
-			children_.push_back(std::make_unique<Planet>(this, planetRadius));
-
-			Planet* planet = (Planet*)children_.back().get();
+			auto planet = std::make_shared<Planet>(this, planetRadius);
 
 			glm::vec2 v = glm::diskRand(0.5f * radius_ * parent_->getScale() / getScale());
 			planet->transform.setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });
-			r = (float)rand() / RAND_MAX;
+
+			r = Random::randFloat();
 			planet->transform.rotate(45.0f * r * r, glm::sphericalRand(1.0f));
+
+			children_.push_back(planet);
 		}
 	}
 }

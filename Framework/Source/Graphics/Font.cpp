@@ -47,7 +47,7 @@ namespace Framework
 		return face_->family_name;
 	}
 
-	FT_Pos Font::getLineHeight() const
+	FT_Pos Font::getHeight() const
 	{
 		return face_->size->metrics.height >> 6;
 	}

@@ -2,7 +2,7 @@
 
 #include <Framework.hpp>
 
-#define USE_REALISTIC_SCALE
+//#define USE_REALISTIC_SCALE
 
 #include "Camera.h"
 
@@ -20,7 +20,7 @@ namespace Game
 		static void createMesh();
 
 		CoordinateSystem* getParent() const;
-		const std::vector<std::unique_ptr<CoordinateSystem>>& getChildren() const;
+		const std::vector<std::shared_ptr<CoordinateSystem>>& getChildren() const;
 		const std::string& getName() const;
 		float getRadius() const;
 		virtual float getScale() const = 0;
@@ -34,7 +34,7 @@ namespace Game
 		};
 
 		CoordinateSystem* parent_;
-		std::vector<std::unique_ptr<CoordinateSystem>> children_;
+		std::vector<std::shared_ptr<CoordinateSystem>> children_;
 		std::string name_;
 		float radius_;
 

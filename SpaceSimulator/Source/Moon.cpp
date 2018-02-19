@@ -11,10 +11,10 @@ namespace Game
 	// Ganymede, the largest moon in our Solar System, which is in
 	// orbit around Jupiter has a radius of over 2634 kilometers.
 	// Let's make that fit in about twice for some wiggle room.
-	const float Moon::MAXIMUM_RADIUS = 1000 / SCALE * 2634 * 2;
+	const float Moon::MAX_RADIUS = 1000 / SCALE * 2634 * 2;
 #else
 	const float Moon::SCALE = 1.0f / (1 << 14);
-	const float Moon::MAXIMUM_RADIUS = (int_least64_t)1 << 62;
+	const float Moon::MAX_RADIUS = (int_least64_t)1 << 62;
 #endif
 	const glm::vec4 Moon::COLOR = { 1, 0, 1, 1 };
 	int Moon::counter_ = 1;

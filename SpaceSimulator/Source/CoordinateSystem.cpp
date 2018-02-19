@@ -7,7 +7,7 @@ namespace Game
 		return parent_;
 	}
 
-	const std::vector<std::unique_ptr<CoordinateSystem>>& CoordinateSystem::getChildren() const
+	const std::vector<std::shared_ptr<CoordinateSystem>>& CoordinateSystem::getChildren() const
 	{
 		return children_;
 	}

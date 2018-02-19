@@ -27,14 +27,12 @@ namespace Game
 		{
 			graphics.text.loadFont("Resources/consola.ttf");
 			graphics.text.setFont("Consolas", 16);
-			graphics.text.setColor(1, 1, 1);
+			graphics.text.setColor(0.39f, 0.58f, 0.93f);
 
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
 			camera.setClippingPlanes(0.001f, 100000.0f);
 
 			CoordinateSystem::createMesh();
-
-			srand((int)time(nullptr));
 
 			camera.setCoordinateSystem(&universe);
 
@@ -85,10 +83,12 @@ namespace Game
 			std::string fpsString = std::to_string(fps) + " fps";
 			std::string csString = camera.getCoordinateSystem()->getName();
 			std::string speedString = camera.getSpeedString();
-			std::string positionString = "x: " + std::to_string(position.x) + " y: " + std::to_string(position.y) + " z: " + std::to_string(position.z);
+			std::string positionString = std::to_string(position.x) + ", " + std::to_string(position.y) + ", " + std::to_string(position.z);
 			std::string orientatonString = "yaw: " + std::to_string(o.y) + " pitch: " + std::to_string(o.x) + " roll: " + std::to_string(o.z);
 
-			graphics.text.draw(0, 0, fpsString + "\n" + csString + "\n" + speedString + "\n" + positionString + "\n" + orientatonString);
+			graphics.text.draw(2, -5, fpsString);
+			graphics.text.draw(2, -5 + graphics.window.getHeight() - 3 * graphics.text.getFontHeight(),
+				csString + "\n" + speedString + "\n" + positionString);// +"\n" + orientatonString);
 		}
 	};
 }

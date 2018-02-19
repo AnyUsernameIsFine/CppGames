@@ -20,12 +20,16 @@ namespace Framework
 		Vector3<T>& operator*=(const glm::quat& q);
 		Vector3<T>& operator*=(float f);
 		Vector3<T>& operator*=(double d);
+		Vector3<T>& operator/=(float f);
+		Vector3<T>& operator/=(double d);
 		Vector3<T> operator+(const Vector3& v) const;
 		Vector3<T> operator-(const Vector3& v) const;
 		Vector3<T> operator*(const Vector3& v) const;
 		Vector3<T> operator*(const glm::quat& q) const;
 		Vector3<T> operator*(float f) const;
 		Vector3<T> operator*(double d) const;
+		Vector3<T> operator/(float f) const;
+		Vector3<T> operator/(double d) const;
 		bool operator==(const Vector3& v) const;
 		bool operator!=(const Vector3& v) const;
 		glm::vec3 toVec3() const;
@@ -119,6 +123,24 @@ namespace Framework
 	}
 
 	template<typename T>
+	Vector3<T>& Vector3<T>::operator/=(float f)
+	{
+		x = static_cast<T>(x / f);
+		y = static_cast<T>(y / f);
+		z = static_cast<T>(z / f);
+		return *this;
+	}
+
+	template<typename T>
+	Vector3<T>& Vector3<T>::operator/=(double d)
+	{
+		x = static_cast<T>(x / d);
+		y = static_cast<T>(y / d);
+		z = static_cast<T>(z / d);
+		return *this;
+	}
+
+	template<typename T>
 	Vector3<T>& Vector3<T>::operator*=(const glm::quat& q)
 	{
 		// TODO: implement custom calculations for added precision?
@@ -188,6 +210,26 @@ namespace Framework
 			static_cast<T>(x * d),
 			static_cast<T>(y * d),
 			static_cast<T>(z * d),
+		};
+	}
+
+	template<typename T>
+	Vector3<T> Vector3<T>::operator/(float f) const
+	{
+		return {
+			static_cast<T>(x / f),
+			static_cast<T>(y / f),
+			static_cast<T>(z / f),
+		};
+	}
+
+	template<typename T>
+	Vector3<T> Vector3<T>::operator/(double d) const
+	{
+		return {
+			static_cast<T>(x / d),
+			static_cast<T>(y / d),
+			static_cast<T>(z / d),
 		};
 	}
 

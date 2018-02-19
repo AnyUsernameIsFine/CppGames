@@ -86,7 +86,7 @@ namespace Game
 
 			// the maximum speed when moving through the universe
 			else {
-				speed = ((int_least64_t)1 << 7) * Galaxy::MAXIMUM_RADIUS * (Galaxy::SCALE / Universe::SCALE);
+				speed = ((int_least64_t)1 << 7) * Galaxy::MAX_RADIUS * (Galaxy::SCALE / Universe::SCALE);
 			}
 
 			// if there are any children in this coordinate system,

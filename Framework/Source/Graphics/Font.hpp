@@ -15,7 +15,7 @@ namespace Framework
 		~Font();
 		void setSize(int size);
 		FT_String* getFamilyName() const;
-		FT_Pos getLineHeight() const;
+		FT_Pos getHeight() const;
 		const Glyph* getGlyph(char character) const;
 		GLuint getTextureId() const;
 

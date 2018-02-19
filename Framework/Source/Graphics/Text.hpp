@@ -15,6 +15,7 @@ namespace Framework
 		void setFontSize(int size);
 		void setFont(const std::string& family, int size);
 		void setColor(float r = 0, float g = 0, float b = 0, float a = 1);
+		int getFontHeight() const;
 		void draw(float x, float y, const std::string& text) const;
 
 	private:

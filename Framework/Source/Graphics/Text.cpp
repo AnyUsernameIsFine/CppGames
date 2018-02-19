@@ -60,10 +60,15 @@ namespace Framework
 		program_->setUniform("color", glm::vec4(r, g, b, a));
 	}
 
+	int Text::getFontHeight() const
+	{
+		return font_->getHeight();
+	}
+
 	void Text::draw(float x, float y, const std::string& text) const
 	{
 		if (font_) {
-			FT_Pos lineHeight = font_->getLineHeight();
+			FT_Pos lineHeight = font_->getHeight();
 
 			float lineX = x;
 			float lineY = y + lineHeight;

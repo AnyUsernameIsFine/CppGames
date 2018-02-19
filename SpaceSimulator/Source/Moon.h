@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoordinateSystem.h"
+#include "Random.h"
 
 #include <glm\gtc\random.hpp>
 
@@ -10,7 +11,7 @@ namespace Game
 	{
 	public:
 		static const float SCALE;
-		static const float MAXIMUM_RADIUS;
+		static const float MAX_RADIUS;
 		static const glm::vec4 COLOR;
 
 		Moon(CoordinateSystem* parent, float radius);
