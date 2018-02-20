@@ -2,7 +2,7 @@
 
 #include <Framework.hpp>
 
-#define USE_REALISTIC_SCALE
+//#define USE_REALISTIC_SCALE
 
 #include "Camera.h"
 
@@ -19,6 +19,7 @@ namespace Game
 
 		static void createMesh();
 
+		~CoordinateSystem();
 		CoordinateSystem* getParent() const;
 		const std::vector<std::shared_ptr<CoordinateSystem>>& getChildren() const;
 		const std::string& getName() const;
@@ -45,6 +46,7 @@ namespace Game
 			const std::vector<Camera::CameraHierarchyLevel>& cameraHierarchy,
 			int hierarchyIndex,
 			glm::mat4 rotations = glm::mat4(1),
+			glm::mat4 anotherMatrix = glm::mat4(1),
 			glm::vec3 camPos = glm::vec3(1),
 			bool useHighRes = true,
 			int descendantGenerationsToDraw = 1

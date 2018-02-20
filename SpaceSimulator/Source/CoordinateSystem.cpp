@@ -2,6 +2,10 @@
 
 namespace Game
 {
+	CoordinateSystem::~CoordinateSystem()
+	{
+	}
+
 	CoordinateSystem* CoordinateSystem::getParent() const
 	{
 		return parent_;
@@ -100,13 +104,14 @@ namespace Game
 		const std::vector<Camera::CameraHierarchyLevel>& hierarchy,	// list of the camera's positions and rotations relative to all its coordinate system's ancestors from inside to outside
 		int hierarchyIndex,											// which level of the camera hierarchy should we use for inverse rotations
 		glm::mat4 rotations,										// matrix of the combined rotations of all this coordinate system's ancestors
+		glm::mat4 anotherMatrix,
 		glm::vec3 camPos,											// camera position relative to this coordinate system's parent (we have to use floating point precision because this will be used for coordinate systems the camera is outside of)
 		bool useHighRes,
 		int descendantGenerationsToDraw
 	)
 	{
 		// define the matrix to be used for drawing
-		glm::mat4 m;
+		glm::mat4 modelMatrix;
 
 		// only draw descendants if there are any
 		bool drawDescendants = !children_.empty();
@@ -117,32 +122,32 @@ namespace Game
 			// use the camera's rotation relative to this coordinate system's ancestors
 			// and draw only one descendant generation
 			if (hierarchyIndex > 0) {
-				m = hierarchy[hierarchyIndex].rotation;
+				modelMatrix = hierarchy[hierarchyIndex].rotation;
 				descendantGenerationsToDraw = 1;
 			}
 
 			// if this is the camera's coordinate system, we draw the first two descendant generations
 			else {
-				m = glm::mat4(1);
+				modelMatrix = glm::mat4(1);
 				descendantGenerationsToDraw = 2;
 			}
 
 			// set the rotations for the descendants of this coordinate system
-			rotations = m;
+			rotations = modelMatrix;
 
 			// if this is not the universe, translate by the
 			// camera's position relative to this coordinate system
 			if (parent_) {
 				float r = getScale() / parent_->getScale();
 				glm::vec3 v = -hierarchy[hierarchyIndex].position.toVec3() * r;
-				m = glm::translate(m, v);
+				modelMatrix = glm::translate(modelMatrix, v);
 			}
 
 			// decrease the hierarchy index
 			hierarchyIndex--;
 
 			// add this coordinate system to the list of coordinate systems to draw
-			toDrawList.push_back({ glm::mat4(1), m, this->getColor(), radius_ });
+			toDrawList.push_back({ glm::mat4(1), modelMatrix, this->getColor(), radius_ });
 		}
 
 		// if this coordinate system is not in the hierarchy of the camera's coordinate systems
@@ -155,50 +160,51 @@ namespace Game
 				useHighRes = false;
 
 				Vector3 highResCamPos = hierarchy[hierarchyIndex + 1].position;
-				m = transform.getModelMatrix(highResCamPos);
+				modelMatrix = transform.getModelMatrix(highResCamPos);
 
 				if (drawDescendants) {
 					camPos = (highResCamPos - transform.getPosition()).toVec3();
 				}
 			}
 			else {
-				m = transform.getModelMatrix(camPos);
+				modelMatrix = transform.getModelMatrix(camPos);
 
 				if (drawDescendants) {
 					camPos -= transform.getPosition().toVec3();
 				}
 			}
 
-			// create a matrix from the combined rotations of all this coordinate system's ancestors
-			// up to but exluding the first shared ancestor with the hierarchy
-			// of the camera's coordinate systems (which could be the camera's coordinate system itself)
-			// and scale by the relative scale of this coordinate system's direct ancestors
-			float r = 1.0f;
-			if (parent_->parent_) {
-				r = parent_->getScale() / parent_->parent_->getScale();
-			}
-			glm::mat4 m0 = glm::scale(rotations, { r, r, r });
-
 			if (drawDescendants) {
 				// add the current coordinate system's rotation to the combined rotations to use by its descendants
-				rotations = glm::mat3(m0 * m); // use the rotation part of the matrix used for drawing
+				rotations = glm::mat3(anotherMatrix * modelMatrix); // use the rotation part of the matrix used for drawing
 
 				// calculate the camera position relative to this coordinate system
 				camPos = camPos * glm::conjugate(transform.getOrientation()) * parent_->getScale() / getScale();
 			}
 
 			// add this coordinate system to the list of coordinate systems to draw
-			toDrawList.push_back({ m0, m, this->getColor(), radius_ });
+			toDrawList.push_back({ anotherMatrix, modelMatrix, this->getColor(), radius_ });
 		}
 
-		// draw the coordinate system's descendants
 		if (drawDescendants) {
-			for (auto& cs : children_) {
-				cs->drawRecursively_(
+			// create a matrix from the combined rotations of all this coordinate system's ancestors
+			// up to but excluding the first shared ancestor with the hierarchy
+			// of the camera's coordinate systems (which could be the camera's coordinate system itself)
+			// and scale by the relative scale of this coordinate system's direct ancestors
+			float r = 1.0f;
+			if (parent_) {
+				r = getScale() / parent_->getScale();
+			}
+			anotherMatrix = glm::scale(rotations, { r, r, r });
+
+			// draw the coordinate system's descendants
+			for (auto& child : children_) {
+				child->drawRecursively_(
 					toDrawList,
 					hierarchy,
 					hierarchyIndex,
 					rotations,
+					anotherMatrix,
 					camPos,
 					useHighRes,
 					descendantGenerationsToDraw - 1
