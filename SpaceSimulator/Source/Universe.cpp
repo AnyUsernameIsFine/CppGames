@@ -23,8 +23,6 @@ namespace Game
 	{
 		this->radius_ = 1;
 		this->name_ = "Universe";
-
-		this->children_.reserve(MAX_GALAXIES_IN_A_ROW_ * MAX_GALAXIES_IN_A_ROW_ * MAX_GALAXIES_IN_A_ROW_);
 	}
 
 	float Universe::getScale() const

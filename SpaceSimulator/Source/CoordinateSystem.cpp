@@ -143,7 +143,7 @@ namespace Game
 			hierarchyIndex--;
 
 			// add this coordinate system to the list of coordinate systems to draw
-			toDrawList.push_back({ glm::mat4(1), modelMatrix, this->getColor(), radius_ });
+			toDrawList.emplace_back(DrawConfiguration{ glm::mat4(1), modelMatrix, this->getColor(), radius_ });
 		}
 
 		// if this coordinate system is not in the hierarchy of the camera's coordinate systems
@@ -179,7 +179,7 @@ namespace Game
 			}
 
 			// add this coordinate system to the list of coordinate systems to draw
-			toDrawList.push_back({ anotherMatrix, modelMatrix, this->getColor(), radius_ });
+			toDrawList.emplace_back(DrawConfiguration{ anotherMatrix, modelMatrix, this->getColor(), radius_ });
 		}
 
 		if (drawDescendants) {
@@ -187,11 +187,13 @@ namespace Game
 			// up to but excluding the first shared ancestor with the hierarchy
 			// of the camera's coordinate systems (which could be the camera's coordinate system itself)
 			// and scale by the relative scale of this coordinate system's direct ancestors
-			float r = 1.0f;
 			if (parent_) {
-				r = getScale() / parent_->getScale();
+				float r = getScale() / parent_->getScale();
+				anotherMatrix = glm::scale(rotations, { r, r, r });
 			}
-			anotherMatrix = glm::scale(rotations, { r, r, r });
+			else {
+				anotherMatrix = rotations;
+			}
 
 			// draw the coordinate system's descendants
 			for (auto& child : children_) {
