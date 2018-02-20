@@ -64,6 +64,8 @@ namespace Game
 			r = Random::randFloat();
 			planet->transform.rotate(45.0f * r * r, glm::sphericalRand(1.0f));
 
+			planet->create();
+
 			children_.push_back(planet);
 		}
 	}

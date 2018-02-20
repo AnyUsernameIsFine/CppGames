@@ -39,7 +39,7 @@ namespace Game
 
 	void Galaxy::create()
 	{
-		//addStars_();
+		addStars_();
 	}
 
 	void Galaxy::addStars_()
@@ -61,6 +61,8 @@ namespace Game
 
 			r = Random::randFloat();
 			star->transform.rotate(360 * r, glm::sphericalRand(1.0f));
+
+			star->create();
 
 			children_.push_back(star);
 		}

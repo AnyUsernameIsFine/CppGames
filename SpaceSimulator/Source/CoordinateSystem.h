@@ -8,6 +8,8 @@
 
 #include <memory>
 
+#define MOVE_TO_GPU
+
 namespace Game
 {
 	using namespace Framework;
@@ -29,7 +31,12 @@ namespace Game
 	protected:
 		struct DrawConfiguration
 		{
+#ifdef MOVE_TO_GPU
+			glm::mat4 m1;
+			glm::mat4 m2;
+#else
 			glm::mat4 matrix;
+#endif
 			glm::vec4 color;
 		};
 

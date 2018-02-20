@@ -51,7 +51,11 @@ namespace Game
 
 		glGenBuffers(1, &instanceBuffer_);
 		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer_);
+#ifdef MOVE_TO_GPU
+		glBufferData(GL_ARRAY_BUFFER, 65536 * (sizeof(glm::mat4) + sizeof(glm::mat4) + sizeof(glm::vec4)), nullptr, GL_DYNAMIC_DRAW);
+#else
 		glBufferData(GL_ARRAY_BUFFER, 65536 * (sizeof(glm::mat4) + sizeof(glm::vec4)), nullptr, GL_DYNAMIC_DRAW);
+#endif
 
 		GLsizei vec4Size = sizeof(glm::vec4);
 		glEnableVertexAttribArray(1);
@@ -69,6 +73,20 @@ namespace Game
 		glEnableVertexAttribArray(5);
 		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(4 * vec4Size));
 		glVertexAttribDivisor(5, 1);
+#ifdef MOVE_TO_GPU
+		glEnableVertexAttribArray(6);
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(5 * vec4Size));
+		glVertexAttribDivisor(6, 1);
+		glEnableVertexAttribArray(7);
+		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(6 * vec4Size));
+		glVertexAttribDivisor(7, 1);
+		glEnableVertexAttribArray(8);
+		glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(7 * vec4Size));
+		glVertexAttribDivisor(8, 1);
+		glEnableVertexAttribArray(9);
+		glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(8 * vec4Size));
+		glVertexAttribDivisor(9, 1);
+#endif
 
 		glBindVertexArray(0);
 
@@ -120,6 +138,16 @@ namespace Game
 
 			// decrease the hierarchy index
 			hierarchyIndex--;
+
+			// make a final scale adjustment according to the coordinate system's radius
+			m = glm::scale(m, { radius_, radius_, radius_ });
+
+			// add it to the list of coordinate systems to draw
+#ifdef MOVE_TO_GPU
+			toDrawList.push_back({ m, glm::mat4(1), this->getColor() });
+#else
+			toDrawList.push_back({ m, this->getColor() });
+#endif
 		}
 
 		// if this coordinate system is not in the hierarchy of the camera's coordinate systems
@@ -133,6 +161,8 @@ namespace Game
 				r = parent_->getScale() / parent_->parent_->getScale();
 			}
 
+			glm::mat4 m2 = glm::scale(rotations, { r, r, r });
+
 			// rotate by the combined rotations of all this coordinate system's ancestors
 			// up to but exluding the first shared ancestor with the hierarchy
 			// of the camera's coordinate systems (which could be the camera's coordinate system itself)
@@ -141,14 +171,14 @@ namespace Game
 				useHighRes = false;
 
 				Vector3 highResCamPos = hierarchy[hierarchyIndex + 1].position;
-				m = glm::scale(rotations, { r, r, r }) * transform.getModelMatrix(highResCamPos);
+				m = glm::scale(transform.getModelMatrix(highResCamPos), { radius_, radius_, radius_ });
 
 				if (drawDescendants) {
 					camPos = (highResCamPos - transform.getPosition()).toVec3();
 				}
 			}
 			else {
-				m = glm::scale(rotations, { r, r, r }) * transform.getModelMatrix(camPos);
+				m = glm::scale(transform.getModelMatrix(camPos), { radius_, radius_, radius_ });
 
 				if (drawDescendants) {
 					camPos -= transform.getPosition().toVec3();
@@ -157,18 +187,19 @@ namespace Game
 
 			if (drawDescendants) {
 				// add the current coordinate system's rotation to the combined rotations to use by its descendants
-				rotations = glm::mat3(m); // use the rotation part of the matrix used for drawing
+				rotations = glm::mat3(m2 * m); // use the rotation part of the matrix used for drawing
 
 				// calculate the camera position relative to this coordinate system
 				camPos = camPos * glm::conjugate(transform.getOrientation()) * parent_->getScale() / getScale();
 			}
+
+			// add it to the list of coordinate systems to draw
+#ifdef MOVE_TO_GPU
+			toDrawList.push_back({ m2, m, this->getColor() });
+#else
+			toDrawList.push_back({ m2 * m, this->getColor() });
+#endif
 		}
-
-		// make a final scale adjustment according to the coordinate system's radius
-		m = glm::scale(m, { radius_, radius_, radius_ });
-
-		// add it to the list of coordinate systems to draw
-		toDrawList.push_back({ m, this->getColor() });
 
 		// draw the coordinate system's descendants
 		if (drawDescendants) {
@@ -193,7 +224,11 @@ namespace Game
 		glBindVertexArray(vao_);
 
 		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer_);
+#ifdef MOVE_TO_GPU
+		glBufferSubData(GL_ARRAY_BUFFER, 0, toDrawList.size() * (sizeof(glm::mat4) + sizeof(glm::mat4) + sizeof(glm::vec4)), &toDrawList[0]);
+#else
 		glBufferSubData(GL_ARRAY_BUFFER, 0, toDrawList.size() * (sizeof(glm::mat4) + sizeof(glm::vec4)), &toDrawList[0]);
+#endif
 
 		glDrawElementsInstanced(GL_POINTS, 24, GL_UNSIGNED_INT, nullptr, toDrawList.size());
 		glDrawElementsInstanced(GL_LINES, 24, GL_UNSIGNED_INT, nullptr, toDrawList.size());
