@@ -95,7 +95,7 @@ namespace Game
 		shaderProgram_ = new ShaderProgram("Resources/simpleColor.vert", "Resources/simpleColor.frag");
 	}
 
-	void CoordinateSystem::drawRecursively_(
+	void CoordinateSystem::drawWithChildren_(
 		std::vector<DrawConfiguration>& toDrawList,
 		const std::vector<Camera::CameraHierarchyLevel>& hierarchy,	// list of the camera's positions and rotations relative to all its coordinate system's ancestors from inside to outside
 		int hierarchyIndex,											// which level of the camera hierarchy should we use for inverse rotations
@@ -197,7 +197,7 @@ namespace Game
 
 			// draw the coordinate system's descendants
 			for (auto& child : children_) {
-				child->drawRecursively_(
+				child->drawWithChildren_(
 					toDrawList,
 					hierarchy,
 					hierarchyIndex,

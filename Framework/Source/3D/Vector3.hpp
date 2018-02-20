@@ -34,9 +34,12 @@ namespace Framework
 		bool operator==(const Vector3Type& v) const;
 		bool operator!=(const Vector3Type& v) const;
 		glm::vec3 toVec3() const;
+		float lengthSquared() const;
 		float length() const;
 		float dot(const Vector3Type& v) const;
 		Vector3Type<T> cross(const Vector3Type& v) const;
+		float distanceSquared(const Vector3Type& v) const;
+		float distance(const Vector3Type& v) const;
 	};
 
 	typedef Vector3Type<float> Vector3;
@@ -263,26 +266,42 @@ namespace Framework
 	}
 
 	template<typename T>
+	float Vector3Type<T>::lengthSquared() const
+	{
+		return (float)x * (float)x + (float)y * (float)y + (float)z * (float)z;
+	}
+
+	template<typename T>
 	float Vector3Type<T>::length() const
 	{
-		// TODO: something about loss of precision?
-		return sqrt((float)x * (float)x + (float)y * (float)y + (float)z * (float)z);
+		return sqrt(lengthSquared());
 	}
 
 	template<typename T>
 	float Vector3Type<T>::dot(const Vector3Type& v) const
 	{
-		// TODO: something about loss of precision?
-		return this->x * v.x + this->y * v.y + this->z * v.z;
+		return x * v.x + y * v.y + z * v.z;
 	}
 
 	template<typename T>
 	Vector3Type<T> Vector3Type<T>::cross(const Vector3Type& v) const
 	{
 		return {
-			this->y * v.z - this->z * v.y,
-			this->z * v.x - this->x * v.z,
-			this->x * v.y - this->y * v.x,
+			y * v.z - z * v.y,
+			z * v.x - x * v.z,
+			x * v.y - y * v.x,
 		};
+	}
+
+	template<typename T>
+	float Vector3Type<T>::distanceSquared(const Vector3Type& v) const
+	{
+		return (*this - v).lengthSquared();
+	}
+
+	template<typename T>
+	float Vector3Type<T>::distance(const Vector3Type& v) const
+	{
+		return sqrt(distanceSquared(v));
 	}
 }

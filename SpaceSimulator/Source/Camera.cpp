@@ -48,17 +48,17 @@ namespace Game
 
 	void Camera::moveX(float distance)
 	{
-		move(distance, 0, 0);
+		move({ distance, 0, 0 });
 	}
 
 	void Camera::moveY(float distance)
 	{
-		move(0, distance, 0);
+		move({ 0, distance, 0 });
 	}
 
 	void Camera::moveZ(float distance)
 	{
-		move(0, 0, distance);
+		move({ 0, 0, distance });
 	}
 
 	const std::vector<Camera::CameraHierarchyLevel>& Camera::getHierarchy() const
@@ -99,8 +99,7 @@ namespace Game
 				CoordinateSystem* childCs = nullptr;
 				float smallestDistance = std::numeric_limits<float>::max();
 				for (auto& child : coordinateSystem_->getChildren()) {
-					Vector3 position = p - child->transform.getPosition();
-					float distance = position.length() - child->getRadius();
+					float distance = p.distance(child->transform.getPosition()) - child->getRadius();
 					if (distance < smallestDistance) {
 						childCs = child.get();
 						smallestDistance = distance;
@@ -194,24 +193,24 @@ namespace Game
 
 	void Camera::setCorrectCoordinateSystem_()
 	{
-		CoordinateSystem* parentCs = coordinateSystem_->getParent();
+		CoordinateSystem* cs = coordinateSystem_;
+		CoordinateSystem* parentCs = cs->getParent();
 		Vector3 p = transform.getPosition();
 
 		// go to parent
-		if (parentCs && p.length() > coordinateSystem_->getRadius() * (parentCs->getScale() / coordinateSystem_->getScale()) * 0.99f) {
-			glm::quat q = coordinateSystem_->transform.getOrientation();
+		if (parentCs && p.length() > cs->getRadius() * (parentCs->getScale() / cs->getScale()) * 0.99f) {
+			glm::quat q = cs->transform.getOrientation();
 
-			// TODO: add more precision?
 			p *= q;
-			p *= coordinateSystem_->getScale() / parentCs->getScale();
-			p += coordinateSystem_->transform.getPosition();
+			p *= cs->getScale() / parentCs->getScale();
+			p += cs->transform.getPosition();
 			transform.setPosition(p);
 
 			glm::quat o = transform.getOrientation() * q;
 			transform.setOrientation(transform.getOrientation() * q);
 
-			velocity_ *= coordinateSystem_->getScale() / parentCs->getScale();
-			maxVelocity_ *= coordinateSystem_->getScale() / parentCs->getScale();
+			velocity_ *= cs->getScale() / parentCs->getScale();
+			maxVelocity_ *= cs->getScale() / parentCs->getScale();
 
 			coordinateSystem_ = parentCs;
 
@@ -219,12 +218,13 @@ namespace Game
 		}
 
 		// go to child
-		else if (!coordinateSystem_->getChildren().empty()) {
+		else if (!cs->getChildren().empty()) {
 			CoordinateSystem* childCs = nullptr;
 
-			for (auto& child : coordinateSystem_->getChildren()) {
+			for (auto& child : cs->getChildren()) {
 				Vector3 position = p - child->transform.getPosition();
-				if (position.length() < child->getRadius() * 0.98f) {
+				float r = child->getRadius() * 0.98f;
+				if (position.lengthSquared() < r * r) {
 					childCs = child.get();
 				}
 			}
@@ -232,16 +232,15 @@ namespace Game
 			if (childCs) {
 				glm::quat q = glm::conjugate(childCs->transform.getOrientation());
 
-				// TODO: add more precision?
 				p -= childCs->transform.getPosition();
 				p *= q;
-				p *= coordinateSystem_->getScale() / childCs->getScale();
+				p *= cs->getScale() / childCs->getScale();
 				transform.setPosition(p);
 
 				transform.setOrientation(transform.getOrientation() * q);
 
-				velocity_ *= coordinateSystem_->getScale() / childCs->getScale();
-				maxVelocity_ *= coordinateSystem_->getScale() / childCs->getScale();
+				velocity_ *= cs->getScale() / childCs->getScale();
+				maxVelocity_ *= cs->getScale() / childCs->getScale();
 
 				coordinateSystem_ = childCs;
 
@@ -273,7 +272,6 @@ namespace Game
 			glm::quat q = ch.coordinateSystem->transform.getOrientation();
 			ch.rotation *= glm::mat4_cast(q);
 
-			// TODO: add more precision?
 			ch.position *= q;
 			ch.position *= ch.coordinateSystem->getScale() / parentCs->getScale();
 			ch.position += ch.coordinateSystem->transform.getPosition();

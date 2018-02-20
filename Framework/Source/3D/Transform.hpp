@@ -38,12 +38,12 @@ namespace Framework
 		void yaw(float angle);
 		void pitch(float angle);
 		void roll(float angle);
-		void scale(const glm::vec3& scale);
+		void scale(const glm::vec3& factor);
 		void scale(float x, float y, float z);
-		void scale(float scale);
-		void scaleX(float scale);
-		void scaleY(float scale);
-		void scaleZ(float scale);
+		void scale(float factor);
+		void scaleX(float factor);
+		void scaleY(float factor);
+		void scaleZ(float factor);
 		const glm::mat4& getRotationMatrix();
 		const glm::mat4& getModelMatrix();
 		const glm::mat4& getModelMatrix(const Vector3Type<T>& cameraPosition);
@@ -55,6 +55,7 @@ namespace Framework
 		glm::vec3 scale_;
 		bool useModelAxes_ = true;
 
+		bool isScaled_ = false;
 		bool isRotationMatrixValid_;
 		glm::mat4 rotationMatrix_;
 		bool isModelMatrixValid_;
@@ -126,6 +127,7 @@ namespace Framework
 	{
 		scale_ = scale;
 
+		isScaled_ = (scale != glm::vec3(1));
 		isModelMatrixValid_ = false;
 	}
 
@@ -185,19 +187,19 @@ namespace Framework
 	template<typename T>
 	void TransformType<T>::moveX(float distance)
 	{
-		move(distance, 0, 0);
+		move({ distance, 0, 0 });
 	}
 
 	template<typename T>
 	void TransformType<T>::moveY(float distance)
 	{
-		move(0, distance, 0);
+		move({ 0, distance, 0 });
 	}
 
 	template<typename T>
 	void TransformType<T>::moveZ(float distance)
 	{
-		move(0, 0, distance);
+		move({ 0, 0, distance });
 	}
 
 	template<typename T>
@@ -232,9 +234,9 @@ namespace Framework
 	}
 
 	template<typename T>
-	void TransformType<T>::scale(const glm::vec3& scale)
+	void TransformType<T>::scale(const glm::vec3& factor)
 	{
-		setScale(scale_ * scale);
+		setScale(scale_ * factor);
 	}
 
 	template<typename T>
@@ -244,27 +246,27 @@ namespace Framework
 	}
 
 	template<typename T>
-	void TransformType<T>::scale(float scale)
+	void TransformType<T>::scale(float factor)
 	{
-		scale_ *= scale;
+		scale({ factor, factor, factor });
 	}
 
 	template<typename T>
-	void TransformType<T>::scaleX(float scale)
+	void TransformType<T>::scaleX(float factor)
 	{
-		scale(scale, 0, 0);
+		scale({ factor, 0, 0 });
 	}
 
 	template<typename T>
-	void TransformType<T>::scaleY(float scale)
+	void TransformType<T>::scaleY(float factor)
 	{
-		scale(0, scale, 0);
+		scale({ 0, factor, 0 });
 	}
 
 	template<typename T>
-	void TransformType<T>::scaleZ(float scale)
+	void TransformType<T>::scaleZ(float factor)
 	{
-		scale(0, 0, scale);
+		scale({ 0, 0, factor });
 	}
 
 	template<typename T>
@@ -308,11 +310,18 @@ namespace Framework
 		if (position != modelMatrixPosition_) {
 			modelMatrixPosition_ = position;
 			modelMatrixPositionRotated_ = orientation_ * position;
+
 			isModelMatrixValid_ = false;
 		}
 
 		if (!isModelMatrixValid_) {
-			modelMatrix_ = glm::scale(glm::translate(getRotationMatrix(), modelMatrixPositionRotated_), scale_);
+			if (isScaled_) {
+				modelMatrix_ = glm::scale(glm::translate(getRotationMatrix(), modelMatrixPositionRotated_), scale_);
+			}
+			else {
+				modelMatrix_ = glm::translate(getRotationMatrix(), modelMatrixPositionRotated_);
+			}
+
 			isModelMatrixValid_ = true;
 		}
 

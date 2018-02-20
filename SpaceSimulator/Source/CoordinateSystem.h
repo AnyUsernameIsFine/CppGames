@@ -40,7 +40,7 @@ namespace Game
 		std::string name_;
 		float radius_;
 
-		void drawRecursively_(
+		void drawWithChildren_(
 			std::vector<DrawConfiguration>& toDrawList,
 			const std::vector<Camera::CameraHierarchyLevel>& cameraHierarchy,
 			int hierarchyIndex,

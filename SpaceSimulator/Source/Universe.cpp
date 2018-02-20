@@ -6,7 +6,7 @@
 
 namespace Game
 {
-	const int Universe::MAX_GALAXIES_IN_A_ROW_ = 15;
+	const int Universe::MAX_GALAXIES_IN_A_ROW_ = 16;
 	const float Universe::PERIOD_ = 100 * Galaxy::MAX_RADIUS * Galaxy::SCALE / Universe::SCALE;
 
 #ifdef USE_REALISTIC_SCALE
@@ -192,7 +192,7 @@ namespace Game
 		// draw the universe
 		std::vector<DrawConfiguration> toDrawList;
 		auto hierarchy = camera.getHierarchy();
-		drawRecursively_(toDrawList, hierarchy, hierarchy.size() - 1);
+		drawWithChildren_(toDrawList, hierarchy, hierarchy.size() - 1);
 		draw_(toDrawList);
 	}
 }
