@@ -6,7 +6,7 @@
 
 namespace Game
 {
-	const int Universe::MAX_GALAXIES_IN_A_ROW_ = 4;
+	const int Universe::MAX_GALAXIES_IN_A_ROW_ = 15;
 	const float Universe::PERIOD_ = 100 * Galaxy::MAX_RADIUS * Galaxy::SCALE / Universe::SCALE;
 
 #ifdef USE_REALISTIC_SCALE
@@ -17,7 +17,7 @@ namespace Game
 #else
 	const float Universe::SCALE = (int_least64_t)1 << 20;
 #endif
-	const glm::vec4 Universe::COLOR = { 0, 1, 0, 1 };
+	const glm::vec4 Universe::COLOR = { 0, 0, 0, 1 };
 
 	Universe::Universe()
 	{
@@ -131,35 +131,15 @@ namespace Game
 		}
 	}
 
-	void Universe::addGalaxy_(Vector3& offset, int x, int y, int z)
+	void Universe::addGalaxy_(const Vector3& offset, int x, int y, int z)
 	{
-		//int index =
-		//	((x + updateIndex_.x) % MAX_GALAXIES_IN_A_ROW_) +
-		//	(((y + updateIndex_.y) % MAX_GALAXIES_IN_A_ROW_) +
-		//	((z + updateIndex_.z) % MAX_GALAXIES_IN_A_ROW_) *
-		//	MAX_GALAXIES_IN_A_ROW_) * MAX_GALAXIES_IN_A_ROW_;
+		int index =
+			((x + updateIndex_.x) % MAX_GALAXIES_IN_A_ROW_) +
+			(((y + updateIndex_.y) % MAX_GALAXIES_IN_A_ROW_) +
+			((z + updateIndex_.z) % MAX_GALAXIES_IN_A_ROW_) *
+				MAX_GALAXIES_IN_A_ROW_) * MAX_GALAXIES_IN_A_ROW_;
 
-		//offset += Vector3(x, y, z);
-
-		//Random::setRandSeed(Random::u32FromByteArray(&(updateCameraPosition_ + offset), 24));
-
-		//float r = Random::randFloat();
-		//float maxRadius = Galaxy::MAX_RADIUS * Galaxy::SCALE / SCALE;
-		//float galaxyRadius = maxRadius * (0.25f + 0.75f * r * r);
-
-		//children_.at(index).reset(new Galaxy(this, galaxyRadius));
-		//auto galaxy = children_.at(index);
-
-		//galaxy->transform.setPosition((updateCameraPosition_ + offset) * PERIOD_ + Vector3(
-		//	(Coordinate)((1 - MAX_GALAXIES_IN_A_ROW_ * 0.5f + Random::randFloat(-0.75, 0.75)) * PERIOD_),
-		//	(Coordinate)((1 - MAX_GALAXIES_IN_A_ROW_ * 0.5f + Random::randFloat(-0.75, 0.75)) * PERIOD_),
-		//	(Coordinate)((1 - MAX_GALAXIES_IN_A_ROW_ * 0.5f + Random::randFloat(-0.75, 0.75)) * PERIOD_)
-		//));
-
-		//r = Random::randFloat();
-		//galaxy->transform.rotate(360 * r, glm::sphericalRand(1.0f));
-
-		//galaxy->create();
+		children_.at(index) = createGalaxy_(offset + Vector3(x, y, z));
 	}
 
 	void Universe::addGalaxies_()
@@ -199,8 +179,8 @@ namespace Game
 
 	void Universe::draw(const Camera& camera)
 	{
-		const CoordinateSystem* cs = camera.getCoordinateSystem();
-		const CoordinateSystem* parentCs = cs->getParent();
+		CoordinateSystem* cs = camera.getCoordinateSystem();
+		CoordinateSystem* parentCs = cs->getParent();
 
 		// create and set the projection-view matrix
 		float r = 1.0f;

@@ -19,7 +19,7 @@ namespace Game
 	// Let's make that fit in twice for some wiggle room.
 	const float Star::MAX_RADIUS = 149597870700 / SCALE * 200000 * 2;
 #else
-	const float Star::SCALE = 1.0f;
+	const float Star::SCALE = 1.0f * 8;
 	const float Star::MAX_RADIUS = (int_least64_t)1 << 62;
 #endif
 	const glm::vec4 Star::COLOR = { 1, 0, 0, 1 };
@@ -43,7 +43,7 @@ namespace Game
 
 	void Star::create()
 	{
-		//addPlanets_();
+		addPlanets_();
 	}
 
 	void Star::addPlanets_()

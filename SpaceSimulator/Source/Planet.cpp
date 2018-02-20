@@ -18,7 +18,7 @@ namespace Game
 	// Let's make its orbit fit in twice for some wiggle room.
 	const float Planet::MAX_RADIUS = 1000 / SCALE * 50000000 * 2;
 #else
-	const float Planet::SCALE = 1.0f / (1 << 7);
+	const float Planet::SCALE = 1.0f / (1 << 7) * 64;
 	const float Planet::MAX_RADIUS = (int_least64_t)1 << 62;
 #endif
 	const glm::vec4 Planet::COLOR = { 1, 1, 0, 1 };

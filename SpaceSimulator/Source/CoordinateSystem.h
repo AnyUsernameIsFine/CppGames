@@ -2,7 +2,7 @@
 
 #include <Framework.hpp>
 
-//#define USE_REALISTIC_SCALE
+#define USE_REALISTIC_SCALE
 
 #include "Camera.h"
 
@@ -19,7 +19,6 @@ namespace Game
 
 		static void createMesh();
 
-		~CoordinateSystem();
 		CoordinateSystem* getParent() const;
 		const std::vector<std::shared_ptr<CoordinateSystem>>& getChildren() const;
 		const std::string& getName() const;

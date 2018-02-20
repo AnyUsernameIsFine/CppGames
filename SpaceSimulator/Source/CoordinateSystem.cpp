@@ -2,10 +2,6 @@
 
 namespace Game
 {
-	CoordinateSystem::~CoordinateSystem()
-	{
-	}
-
 	CoordinateSystem* CoordinateSystem::getParent() const
 	{
 		return parent_;
@@ -220,7 +216,7 @@ namespace Game
 		glBindVertexArray(vao_);
 
 		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer_);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, toDrawList.size() * (sizeof(glm::mat4) + sizeof(glm::mat4) + sizeof(glm::vec4)), &toDrawList[0]);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, toDrawList.size() * (sizeof(glm::mat4) + sizeof(glm::mat4) + sizeof(glm::vec4) + sizeof(GLfloat)), &toDrawList[0]);
 
 		glDrawElementsInstanced(GL_POINTS, 24, GL_UNSIGNED_INT, nullptr, toDrawList.size());
 		glDrawElementsInstanced(GL_LINES, 24, GL_UNSIGNED_INT, nullptr, toDrawList.size());

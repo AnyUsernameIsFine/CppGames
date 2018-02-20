@@ -20,7 +20,7 @@ namespace Game
 			graphics.window.setSize(960, 540);
 			//graphics.window.setFullscreen(true);
 			graphics.window.hideCursor();
-			//graphics.window.enableVSync();
+			graphics.window.enableVSync();
 		}
 
 		void start()
