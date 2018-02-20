@@ -42,7 +42,7 @@ namespace Game
 
 	void Planet::create()
 	{
-		addMoons_();
+		//addMoons_();
 	}
 
 	void Planet::addMoons_()

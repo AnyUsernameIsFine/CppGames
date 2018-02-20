@@ -43,7 +43,7 @@ namespace Game
 
 	void Star::create()
 	{
-		addPlanets_();
+		//addPlanets_();
 	}
 
 	void Star::addPlanets_()
