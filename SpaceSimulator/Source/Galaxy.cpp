@@ -24,7 +24,7 @@ namespace Game
 	{
 		this->parent_ = parent;
 		this->radius_ = radius;
-		this->name_ = "Galaxy";
+		name_ = "Galaxy";
 	}
 
 	float Galaxy::getScale() const

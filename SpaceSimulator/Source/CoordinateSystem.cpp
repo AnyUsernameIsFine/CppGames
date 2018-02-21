@@ -143,7 +143,7 @@ namespace Game
 			hierarchyIndex--;
 
 			// add this coordinate system to the list of coordinate systems to draw
-			toDrawList.emplace_back(DrawConfiguration{ glm::mat4(1), modelMatrix, this->getColor(), radius_ });
+			toDrawList.emplace_back(DrawConfiguration{ glm::mat4(1), modelMatrix, getColor(), radius_ });
 		}
 
 		// if this coordinate system is not in the hierarchy of the camera's coordinate systems
@@ -179,7 +179,7 @@ namespace Game
 			}
 
 			// add this coordinate system to the list of coordinate systems to draw
-			toDrawList.emplace_back(DrawConfiguration{ anotherMatrix, modelMatrix, this->getColor(), radius_ });
+			toDrawList.emplace_back(DrawConfiguration{ anotherMatrix, modelMatrix, getColor(), radius_ });
 		}
 
 		if (drawDescendants) {

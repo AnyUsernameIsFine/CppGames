@@ -2,7 +2,7 @@
 
 #include <Framework.hpp>
 
-#include <ctime>
+#include <algorithm>
 
 namespace Game
 {
@@ -21,8 +21,11 @@ namespace Game
 
 	Universe::Universe()
 	{
-		this->radius_ = 1;
-		this->name_ = "Universe";
+		radius_ = 1;
+		name_ = "Universe";
+
+		children_ = std::vector<std::shared_ptr<CoordinateSystem>>
+			(MAX_GALAXIES_IN_A_ROW_ * MAX_GALAXIES_IN_A_ROW_ * MAX_GALAXIES_IN_A_ROW_);
 	}
 
 	float Universe::getScale() const
@@ -37,7 +40,7 @@ namespace Game
 
 	void Universe::create(const Camera& camera)
 	{
-		Vector3 positionInUniverse = camera.getHierarchy().back().position.x;
+		Vector3 positionInUniverse = camera.getHierarchy().back().position;
 
 		updateCameraPosition_ = Vector3(
 			(Coordinate)floor(positionInUniverse.x / PERIOD_),
@@ -52,127 +55,15 @@ namespace Game
 	{
 		Vector3 positionInUniverse = camera.getHierarchy().back().position;
 
-		Vector3 steppedCameraPosition = Vector3(
+		Vector3 offset = Vector3(
 			(Coordinate)floor(positionInUniverse.x / PERIOD_),
 			(Coordinate)floor(positionInUniverse.y / PERIOD_),
 			(Coordinate)floor(positionInUniverse.z / PERIOD_)
-		);
+		) - updateCameraPosition_;
 
-		if (steppedCameraPosition != updateCameraPosition_) {
-			if (steppedCameraPosition.x > updateCameraPosition_.x) {
-				addGalaxiesX_(true);
-				updateIndex_.x = (updateIndex_.x + 1) % MAX_GALAXIES_IN_A_ROW_;
-			}
-			else if (steppedCameraPosition.x < updateCameraPosition_.x) {
-				updateIndex_.x = (updateIndex_.x - 1 + MAX_GALAXIES_IN_A_ROW_) % MAX_GALAXIES_IN_A_ROW_;
-				addGalaxiesX_(false);
-			}
-
-			if (steppedCameraPosition.y > updateCameraPosition_.y) {
-				addGalaxiesY_(true);
-				updateIndex_.y = (updateIndex_.y + 1) % MAX_GALAXIES_IN_A_ROW_;
-			}
-			else if (steppedCameraPosition.y < updateCameraPosition_.y) {
-				updateIndex_.y = (updateIndex_.y - 1 + MAX_GALAXIES_IN_A_ROW_) % MAX_GALAXIES_IN_A_ROW_;
-				addGalaxiesY_(false);
-			}
-
-			if (steppedCameraPosition.z > updateCameraPosition_.z) {
-				addGalaxiesZ_(true);
-				updateIndex_.z = (updateIndex_.z + 1) % MAX_GALAXIES_IN_A_ROW_;
-			}
-			else if (steppedCameraPosition.z < updateCameraPosition_.z) {
-				updateIndex_.z = (updateIndex_.z - 1 + MAX_GALAXIES_IN_A_ROW_) % MAX_GALAXIES_IN_A_ROW_;
-				addGalaxiesZ_(false);
-			}
-
-			updateCameraPosition_ = steppedCameraPosition;
+		if (offset != Vector3(0)) {
+			addGalaxies_(offset);
 		}
-	}
-
-	void Universe::addGalaxiesX_(bool positive)
-	{
-		Vector3 offset(positive ? MAX_GALAXIES_IN_A_ROW_ : -1, 0, 0);
-
-		for (int z = 0; z < MAX_GALAXIES_IN_A_ROW_; z++) {
-			for (int y = 0; y < MAX_GALAXIES_IN_A_ROW_; y++) {
-				for (int x = 0; x < 1; x++) {
-					addGalaxy_(offset, x, y, z);
-				}
-			}
-		}
-	}
-
-	void Universe::addGalaxiesY_(bool positive)
-	{
-		Vector3 offset(0, positive ? MAX_GALAXIES_IN_A_ROW_ : -1, 0);
-
-		for (int z = 0; z < MAX_GALAXIES_IN_A_ROW_; z++) {
-			for (int y = 0; y < 1; y++) {
-				for (int x = 0; x < MAX_GALAXIES_IN_A_ROW_; x++) {
-					addGalaxy_(offset, x, y, z);
-				}
-			}
-		}
-	}
-
-	void Universe::addGalaxiesZ_(bool positive)
-	{
-		Vector3 offset(0, 0, positive ? MAX_GALAXIES_IN_A_ROW_ : -1);
-
-		for (int z = 0; z < 1; z++) {
-			for (int y = 0; y < MAX_GALAXIES_IN_A_ROW_; y++) {
-				for (int x = 0; x < MAX_GALAXIES_IN_A_ROW_; x++) {
-					addGalaxy_(offset, x, y, z);
-				}
-			}
-		}
-	}
-
-	void Universe::addGalaxy_(const Vector3& offset, int x, int y, int z)
-	{
-		int index =
-			((x + updateIndex_.x) % MAX_GALAXIES_IN_A_ROW_) +
-			(((y + updateIndex_.y) % MAX_GALAXIES_IN_A_ROW_) +
-			((z + updateIndex_.z) % MAX_GALAXIES_IN_A_ROW_) *
-				MAX_GALAXIES_IN_A_ROW_) * MAX_GALAXIES_IN_A_ROW_;
-
-		children_.at(index) = createGalaxy_(offset + Vector3(x, y, z));
-	}
-
-	void Universe::addGalaxies_()
-	{
-		for (int z = 0; z < MAX_GALAXIES_IN_A_ROW_; z++) {
-			for (int y = 0; y < MAX_GALAXIES_IN_A_ROW_; y++) {
-				for (int x = 0; x < MAX_GALAXIES_IN_A_ROW_; x++) {
-					children_.push_back(createGalaxy_(Vector3(x, y, z)));
-				}
-			}
-		}
-	}
-
-	std::shared_ptr<Galaxy> Universe::createGalaxy_(const Vector3& offset)
-	{
-		Random::setRandSeed(Random::u32FromByteArray(&(updateCameraPosition_ + offset), 24));
-
-		float r = Random::randFloat();
-		float maxRadius = Galaxy::MAX_RADIUS * Galaxy::SCALE / SCALE;
-		float galaxyRadius = maxRadius * (0.25f + 0.75f * r * r);
-
-		auto galaxy = std::make_shared<Galaxy>(this, galaxyRadius);
-
-		galaxy->transform.setPosition((updateCameraPosition_ + offset) * PERIOD_ + Vector3(
-			(Coordinate)((1 - MAX_GALAXIES_IN_A_ROW_ * 0.5f + Random::randFloat(-0.75, 0.75)) * PERIOD_),
-			(Coordinate)((1 - MAX_GALAXIES_IN_A_ROW_ * 0.5f + Random::randFloat(-0.75, 0.75)) * PERIOD_),
-			(Coordinate)((1 - MAX_GALAXIES_IN_A_ROW_ * 0.5f + Random::randFloat(-0.75, 0.75)) * PERIOD_)
-		));
-
-		r = Random::randFloat();
-		galaxy->transform.rotate(360 * r, glm::sphericalRand(1.0f));
-
-		galaxy->create();
-
-		return galaxy;
 	}
 
 	void Universe::draw(const Camera& camera)
@@ -194,5 +85,84 @@ namespace Game
 		auto hierarchy = camera.getHierarchy();
 		drawWithChildren_(toDrawList, hierarchy, hierarchy.size() - 1);
 		draw_(toDrawList);
+	}
+
+	void Universe::addGalaxies_(const Vector3& offset)
+	{
+		updateCameraPosition_ += offset;
+
+		updateIndex_.x = (updateIndex_.x + offset.x + MAX_GALAXIES_IN_A_ROW_) % MAX_GALAXIES_IN_A_ROW_;
+		updateIndex_.y = (updateIndex_.y + offset.y + MAX_GALAXIES_IN_A_ROW_) % MAX_GALAXIES_IN_A_ROW_;
+		updateIndex_.z = (updateIndex_.z + offset.z + MAX_GALAXIES_IN_A_ROW_) % MAX_GALAXIES_IN_A_ROW_;
+
+		bool updateAll = offset == Vector3(0) ||
+			abs(offset.x) >= MAX_GALAXIES_IN_A_ROW_ ||
+			abs(offset.y) >= MAX_GALAXIES_IN_A_ROW_ ||
+			abs(offset.z) >= MAX_GALAXIES_IN_A_ROW_;
+
+		int startX = (updateIndex_.x + MAX_GALAXIES_IN_A_ROW_ - (offset.x > 0 ? offset.x : 0)) % MAX_GALAXIES_IN_A_ROW_;
+		int startY = (updateIndex_.y + MAX_GALAXIES_IN_A_ROW_ - (offset.y > 0 ? offset.y : 0)) % MAX_GALAXIES_IN_A_ROW_;
+		int startZ = (updateIndex_.z + MAX_GALAXIES_IN_A_ROW_ - (offset.z > 0 ? offset.z : 0)) % MAX_GALAXIES_IN_A_ROW_;
+
+		int endX = (startX + abs(offset.x)) % MAX_GALAXIES_IN_A_ROW_;
+		int endY = (startY + abs(offset.y)) % MAX_GALAXIES_IN_A_ROW_;
+		int endZ = (startZ + abs(offset.z)) % MAX_GALAXIES_IN_A_ROW_;
+
+		bool wrapX = startX > endX;
+		bool wrapY = startY > endY;
+		bool wrapZ = startZ > endZ;
+
+		int minX = std::min(startX, endX);
+		int minY = std::min(startY, endY);
+		int minZ = std::min(startZ, endZ);
+
+		int maxX = std::max(startX, endX);
+		int maxY = std::max(startY, endY);
+		int maxZ = std::max(startZ, endZ);
+
+		for (int z = 0; z < MAX_GALAXIES_IN_A_ROW_; z++) {
+			for (int y = 0; y < MAX_GALAXIES_IN_A_ROW_; y++) {
+				for (int x = 0; x < MAX_GALAXIES_IN_A_ROW_; x++) {
+					if (updateAll ||
+						offset.x != 0 && wrapX == (x < minX || x >= maxX) ||
+						offset.y != 0 && wrapY == (y < minY || y >= maxY) ||
+						offset.z != 0 && wrapZ == (z < minZ || z >= maxZ)) {
+						
+						Vector3 p(
+							(x + MAX_GALAXIES_IN_A_ROW_ - updateIndex_.x) % MAX_GALAXIES_IN_A_ROW_,
+							(y + MAX_GALAXIES_IN_A_ROW_ - updateIndex_.y) % MAX_GALAXIES_IN_A_ROW_,
+							(z + MAX_GALAXIES_IN_A_ROW_ - updateIndex_.z) % MAX_GALAXIES_IN_A_ROW_
+						);
+
+						Random::setRandSeed(Random::u32FromByteArray(&(updateCameraPosition_ + p), 24));
+
+						float r = Random::randFloat();
+						float maxRadius = Galaxy::MAX_RADIUS * Galaxy::SCALE / SCALE;
+						float galaxyRadius = maxRadius * (0.25f + 0.75f * r * r);
+
+						auto galaxy = std::make_shared<Galaxy>(this, galaxyRadius);
+
+						glm::vec3 v = {
+							updateCameraPosition_.toVec3() +
+							glm::vec3(1 - 0.5f * MAX_GALAXIES_IN_A_ROW_) +
+							glm::vec3(
+								Random::randFloat(-0.75, 0.75),
+								Random::randFloat(-0.75, 0.75),
+								Random::randFloat(-0.75, 0.75)
+							)
+						};
+
+						galaxy->transform.setPosition(p * PERIOD_ + v * PERIOD_);
+
+						r = Random::randFloat();
+						galaxy->transform.rotate(360 * r, glm::sphericalRand(1.0f));
+
+						galaxy->create();
+
+						children_[x + (y + z * MAX_GALAXIES_IN_A_ROW_) * MAX_GALAXIES_IN_A_ROW_] = galaxy;
+					}
+				}
+			}
+		}
 	}
 }

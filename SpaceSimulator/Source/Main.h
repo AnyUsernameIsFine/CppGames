@@ -38,10 +38,13 @@ namespace Game
 
 			universe.create(camera);
 
-			//auto children = &camera.getCoordinateSystem()->getChildren();
-			//CoordinateSystem* toPutCameraNextTo = children->at(children->size() / 2).get();
-			//Vector3 p = toPutCameraNextTo->transform.getPosition() + Vector3(0, 0, 5 * toPutCameraNextTo->getRadius());
-			//camera.setPosition(p);
+			auto children = camera.getCoordinateSystem()->getChildren();
+			CoordinateSystem* toPutCameraNextTo = children[children.size() - 1].get();
+			Vector3 p = toPutCameraNextTo->transform.getPosition() +
+				Vector3(0, 0, (Coordinate)(5 * toPutCameraNextTo->getRadius()));
+			camera.setPosition(p);
+
+			universe.update(camera);
 		}
 
 		void onMouseMove(int x, int y)

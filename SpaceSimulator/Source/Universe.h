@@ -19,14 +19,9 @@ namespace Game
 
 	private:
 		Vector3 updateCameraPosition_;
-		glm::ivec3 updateIndex_;
+		glm::uvec3 updateIndex_;
 
-		void addGalaxiesX_(bool positive);
-		void addGalaxiesY_(bool positive);
-		void addGalaxiesZ_(bool positive);
-		void addGalaxy_(const Vector3& offset, int x, int y, int z);
-		void addGalaxies_();
-		std::shared_ptr<Galaxy> createGalaxy_(const Vector3& offset);
+		void addGalaxies_(const Vector3& offset = Vector3(0));
 
 		static const int MAX_GALAXIES_IN_A_ROW_;
 		static const float PERIOD_;
