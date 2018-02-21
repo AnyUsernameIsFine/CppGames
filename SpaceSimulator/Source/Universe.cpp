@@ -127,7 +127,7 @@ namespace Game
 						offset.x != 0 && wrapX == (x < minX || x >= maxX) ||
 						offset.y != 0 && wrapY == (y < minY || y >= maxY) ||
 						offset.z != 0 && wrapZ == (z < minZ || z >= maxZ)) {
-						
+
 						Vector3 p(
 							(x + MAX_GALAXIES_IN_A_ROW_ - updateIndex_.x) % MAX_GALAXIES_IN_A_ROW_,
 							(y + MAX_GALAXIES_IN_A_ROW_ - updateIndex_.y) % MAX_GALAXIES_IN_A_ROW_,

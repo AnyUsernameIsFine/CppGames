@@ -68,19 +68,15 @@ namespace Framework
 	template<typename T>
 	Vector3Type<T>::Vector3Type(const glm::vec3& v)
 	{
-		this->x = static_cast<T>(v.x);
-		this->y = static_cast<T>(v.y);
-		this->z = static_cast<T>(v.z);
+		x = static_cast<T>(v.x);
+		y = static_cast<T>(v.y);
+		z = static_cast<T>(v.z);
 	}
 
 	template<typename T>
 	Vector3Type<T> Vector3Type<T>::operator-() const
 	{
-		return {
-			-x,
-			-y,
-			-z,
-		};
+		return { -x, -y, -z };
 	}
 
 	template<typename T>
@@ -152,48 +148,36 @@ namespace Framework
 	Vector3Type<T>& Vector3Type<T>::operator*=(const glm::quat& q)
 	{
 		// TODO: implement custom calculations for added precision?
-		glm::vec3 v = glm::inverse(q) * glm::vec3(this->x, this->y, this->z);
-		this->x = static_cast<T>(v.x);
-		this->y = static_cast<T>(v.y);
-		this->z = static_cast<T>(v.z);
+		glm::vec3 v = glm::inverse(q) * glm::vec3(x, y, z);
+		x = static_cast<T>(v.x);
+		y = static_cast<T>(v.y);
+		z = static_cast<T>(v.z);
 		return *this;
 	}
 
 	template<typename T>
 	Vector3Type<T> Vector3Type<T>::operator+(const Vector3Type& v) const
 	{
-		return {
-			x + v.x,
-			y + v.y,
-			z + v.z,
-		};
+		return { x + v.x, y + v.y, z + v.z };
 	}
 
 	template<typename T>
 	Vector3Type<T> Vector3Type<T>::operator-(const Vector3Type& v) const
 	{
-		return {
-			x - v.x,
-			y - v.y,
-			z - v.z,
-		};
+		return { x - v.x, y - v.y, z - v.z };
 	}
 
 	template<typename T>
 	Vector3Type<T> Vector3Type<T>::operator*(const Vector3Type& v) const
 	{
-		return {
-			x * v.x,
-			y * v.y,
-			z * v.z,
-		};
+		return { x * v.x, y * v.y, z * v.z };
 	}
 
 	template<typename T>
 	Vector3Type<T> Vector3Type<T>::operator*(const glm::quat& q) const
 	{
 		// TODO: implement custom calculations for added precision?
-		glm::vec3 v = glm::inverse(q) * glm::vec3(this->x, this->y, this->z);
+		glm::vec3 v = glm::inverse(q) * glm::vec3(x, y, z);
 		return {
 			static_cast<T>(v.x),
 			static_cast<T>(v.y),
@@ -258,11 +242,7 @@ namespace Framework
 	template<typename T>
 	glm::vec3 Vector3Type<T>::toVec3() const
 	{
-		return {
-			this->x,
-			this->y,
-			this->z,
-		};
+		return { x, y, z };
 	}
 
 	template<typename T>

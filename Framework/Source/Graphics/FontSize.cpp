@@ -65,8 +65,8 @@ namespace Framework
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-		int textureX = ((unsigned char)character % 16) * (1024 / 16.0f);
-		int textureY = ((unsigned char)character / 16) * (1024 / 16.0f);
+		int textureX = (int)(((unsigned char)character % 16) * (1024 / 16.0f));
+		int textureY = (int)(((unsigned char)character / 16) * (1024 / 16.0f));
 
 		glTextureSubImage2D(
 			textureId_,
