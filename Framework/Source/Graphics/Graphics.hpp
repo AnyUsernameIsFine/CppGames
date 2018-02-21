@@ -23,7 +23,7 @@ namespace Framework
 		friend class Game;
 
 		static const int FPS_BUFFER_SIZE_ = 60;
-		const double NANOSECONDS_PER_SECOND_ = 1000000000.0;
+		const double NANOSECONDS_PER_SECOND_ = 1000000000;
 
 		long long nanosecondsSinceStart_;
 		long long frameLengths_[FPS_BUFFER_SIZE_];

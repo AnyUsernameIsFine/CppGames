@@ -31,13 +31,13 @@ namespace Game
 	private:
 		static RNG rng_;
 		static U32 hashSeed_;
-		static const int ONE_;
+		static const int ONE_ = 1;
 		static const bool LITTLE_ENDIAN_;
-		static const U32 PRIME_1_;
-		static const U32 PRIME_2_;
-		static const U32 PRIME_3_;
-		static const U32 PRIME_4_;
-		static const U32 PRIME_5_;
+		static const U32 PRIME_1_ = 2654435761U;
+		static const U32 PRIME_2_ = 2246822519U;
+		static const U32 PRIME_3_ = 3266489917U;
+		static const U32 PRIME_4_ = 668265263U;
+		static const U32 PRIME_5_ = 374761393U;
 
 		Random() {}
 		static U32 XXH_read32(const void* memPtr);

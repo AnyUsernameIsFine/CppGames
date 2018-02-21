@@ -51,36 +51,22 @@ namespace Game
 
 		glGenBuffers(1, &instanceBuffer_);
 		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer_);
-		glBufferData(GL_ARRAY_BUFFER, 65536 * (sizeof(glm::mat4) + sizeof(glm::mat4) + sizeof(glm::vec4) + sizeof(GLfloat)), nullptr, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, MAX_IN_DRAW_LIST_ * sizeof(DrawConfiguration), nullptr, GL_DYNAMIC_DRAW);
 
 		GLsizei vec4Size = sizeof(glm::vec4);
 
 		// mat4
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)0);
-		glVertexAttribDivisor(1, 1);
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(1 * vec4Size));
-		glVertexAttribDivisor(2, 1);
-		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(2 * vec4Size));
-		glVertexAttribDivisor(3, 1);
-		glEnableVertexAttribArray(4);
-		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(3 * vec4Size));
-		glVertexAttribDivisor(4, 1);
+		for (int i = 0; i < 4; i++) {
+			glEnableVertexAttribArray(i + 1);
+			glVertexAttribPointer(i + 1, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(i * vec4Size));
+			glVertexAttribDivisor(i + 1, 1);
+		}
 		// mat4
-		glEnableVertexAttribArray(5);
-		glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(4 * vec4Size));
-		glVertexAttribDivisor(5, 1);
-		glEnableVertexAttribArray(6);
-		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(5 * vec4Size));
-		glVertexAttribDivisor(6, 1);
-		glEnableVertexAttribArray(7);
-		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(6 * vec4Size));
-		glVertexAttribDivisor(7, 1);
-		glEnableVertexAttribArray(8);
-		glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(7 * vec4Size));
-		glVertexAttribDivisor(8, 1);
+		for (int i = 0; i < 4; i++) {
+			glEnableVertexAttribArray(i + 5);
+			glVertexAttribPointer(i + 5, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)((i + 4) * vec4Size));
+			glVertexAttribDivisor(i + 5, 1);
+		}
 		// vec4
 		glEnableVertexAttribArray(9);
 		glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(8 * vec4Size));
@@ -218,7 +204,7 @@ namespace Game
 		glBindVertexArray(vao_);
 
 		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer_);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, toDrawList.size() * (sizeof(glm::mat4) + sizeof(glm::mat4) + sizeof(glm::vec4) + sizeof(GLfloat)), &toDrawList[0]);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, toDrawList.size() * sizeof(DrawConfiguration), &toDrawList[0]);
 
 		glDrawElementsInstanced(GL_POINTS, 24, GL_UNSIGNED_INT, nullptr, toDrawList.size());
 		glDrawElementsInstanced(GL_LINES, 24, GL_UNSIGNED_INT, nullptr, toDrawList.size());

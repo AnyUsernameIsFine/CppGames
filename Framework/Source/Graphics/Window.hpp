@@ -10,13 +10,6 @@ namespace Framework
 {
 	class Window
 	{
-		const std::string TITLE = "New window";
-		const int WIDTH = 640;
-		const int HEIGHT = 480;
-		const bool HIDE_CURSOR = false;
-		const bool ENABLE_VSYNC = false;
-		const bool SET_FULLSCREEN = false;
-
 	public:
 		void setTitle(const std::string& title);
 		void setSize(int width, int height);
@@ -30,12 +23,12 @@ namespace Framework
 		friend class Graphics;
 
 		SDL_Window* window_;
-		std::string title_ = TITLE;
-		int width_ = WIDTH;
-		int height_ = HEIGHT;
-		bool hideCursor_ = HIDE_CURSOR;
-		bool enableVSync_ = ENABLE_VSYNC;
-		bool setFullscreen_ = SET_FULLSCREEN;
+		std::string title_ = "New window";
+		int width_ = 640;
+		int height_ = 480;
+		bool hideCursor_ = false;
+		bool enableVSync_ = false;
+		bool setFullscreen_ = false;
 		bool hidden_ = true;
 
 		int open_();

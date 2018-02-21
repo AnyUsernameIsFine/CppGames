@@ -26,7 +26,7 @@ namespace Framework
 			GLfloat data[24];
 		};
 
-		const int MAX_STRING_LENGTH_ = 1 << 16;
+		static const int MAX_STRING_LENGTH_ = 65536;
 
 		ShaderProgram* program_;
 		int windowWidth_;

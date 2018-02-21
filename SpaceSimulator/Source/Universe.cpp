@@ -82,6 +82,7 @@ namespace Game
 
 		// draw the universe
 		std::vector<DrawConfiguration> toDrawList;
+		//toDrawList.reserve(MAX_IN_DRAW_LIST_);
 		auto hierarchy = camera.getHierarchy();
 		drawWithChildren_(toDrawList, hierarchy, hierarchy.size() - 1);
 		draw_(toDrawList);

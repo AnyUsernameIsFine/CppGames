@@ -17,6 +17,8 @@ namespace Game
 	public:
 		Transform transform;
 
+		static const int MAX_IN_DRAW_LIST_ = 8192;
+
 		static void createMesh();
 
 		CoordinateSystem* getParent() const;
