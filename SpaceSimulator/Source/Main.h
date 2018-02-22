@@ -25,12 +25,22 @@ namespace Game
 
 		void start()
 		{
+			glEnable(GL_DEPTH_TEST);
+			glEnable(GL_CULL_FACE);
+
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 			graphics.text.loadFont("Resources/consola.ttf");
 			graphics.text.setFont("Consolas", 16);
 			graphics.text.setColor(0.39f, 0.58f, 0.93f);
 
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
-			camera.setClippingPlanes(0.001f, 100000.0f);
+#ifdef USE_REALISTIC_SCALE
+			camera.setClippingPlanes(1000000.0f, 10000000000.0f);
+#else
+			camera.setClippingPlanes(10000000000000.0f, 100000000000000000000000.0f);
+#endif
 
 			CoordinateSystem::createMesh();
 
@@ -76,6 +86,8 @@ namespace Game
 		void draw()
 		{
 			graphics.clearScreen(0, 0, 0);
+
+			glClear(GL_DEPTH_BUFFER_BIT);
 
 			universe.draw(camera);
 

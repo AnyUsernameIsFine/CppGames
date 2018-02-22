@@ -8,15 +8,13 @@ layout (location = 10) in float scale;
 
 out vec4 fragColor;
 
-uniform mat4 projectionViewMatrix;
+uniform mat4 projection;
+uniform mat4 view;
 
 void main()
 {
-	gl_Position = 
-		projectionViewMatrix * 
-		instMatrix1 * 
-		instMatrix2 * 
-		vec4(vertPosition.x * scale, vertPosition.y * scale, vertPosition.z * scale, 1.0f);
+	gl_Position = projection * view * instMatrix1 * instMatrix2 * 
+		vec4(vertPosition.x * scale, vertPosition.y * scale, vertPosition.z * scale, 1);
 
 	fragColor = instColor;
 }

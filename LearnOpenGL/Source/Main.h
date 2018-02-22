@@ -90,7 +90,7 @@ namespace Game
 				 0.5,  0.5,  0.5,	 1,  0,  0,		1, 1,
 			};
 
-			int indices[] = {
+			unsigned int indices[] = {
 				 0,  6,  3,  3,  6,  9,
 				 1,  4, 13, 13,  4, 16,
 				 2, 14,  8,  8, 14, 20,

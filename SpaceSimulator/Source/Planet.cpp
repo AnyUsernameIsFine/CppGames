@@ -21,7 +21,7 @@ namespace Game
 	const float Planet::SCALE = 1.0f / (1 << 7) * 64;
 	const float Planet::MAX_RADIUS = (int_least64_t)1 << 62;
 #endif
-	const glm::vec4 Planet::COLOR = { 1, 1, 0, 1 };
+	const glm::vec4 Planet::COLOR = { 1, 1, 0, 0.5 };
 
 	Planet::Planet(CoordinateSystem* parent, float radius)
 	{
@@ -42,7 +42,7 @@ namespace Game
 
 	void Planet::create()
 	{
-		//addMoons_();
+		addMoons_();
 	}
 
 	void Planet::addMoons_()
@@ -57,7 +57,7 @@ namespace Game
 
 			auto moon = std::make_shared<Moon>(this, moonRadius);
 
-			glm::vec2 v = glm::diskRand(0.5f * radius_ * parent_->getScale() / getScale());
+			glm::vec2 v = glm::diskRand(0.8f * radius_ * parent_->getScale() / getScale());
 			moon->transform.setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });
 
 			r = Random::randFloat();

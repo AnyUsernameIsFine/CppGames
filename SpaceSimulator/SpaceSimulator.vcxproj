@@ -119,6 +119,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="Resources\coordinateSystem.frag" />
+    <None Include="Resources\coordinateSystem.vert" />
     <None Include="Resources\simpleColor.frag" />
     <None Include="Resources\simpleColor.vert" />
   </ItemGroup>

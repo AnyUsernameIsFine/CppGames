@@ -6,7 +6,7 @@
 
 namespace Game
 {
-	const int Universe::MAX_GALAXIES_IN_A_ROW_ = 16;
+	const int Universe::MAX_GALAXIES_IN_A_ROW_ = 4;
 	const float Universe::PERIOD_ = 100 * Galaxy::MAX_RADIUS * Galaxy::SCALE / Universe::SCALE;
 
 #ifdef USE_REALISTIC_SCALE
@@ -17,7 +17,7 @@ namespace Game
 #else
 	const float Universe::SCALE = (int_least64_t)1 << 20;
 #endif
-	const glm::vec4 Universe::COLOR = { 0, 0, 0, 1 };
+	const glm::vec4 Universe::COLOR = { 0, 1, 0, 0.5 };
 
 	Universe::Universe()
 	{
@@ -71,14 +71,10 @@ namespace Game
 		CoordinateSystem* cs = camera.getCoordinateSystem();
 		CoordinateSystem* parentCs = cs->getParent();
 
-		// create and set the projection-view matrix
-		float r = 1.0f;
-		if (parentCs) {
-			r = parentCs->getScale() / cs->getScale();
-		}
-		glm::mat4 projectionViewMatrix = glm::scale(camera.getProjectionMatrix() * camera.getViewMatrix(true), { r, r, r });
+		// create and set the view and projection matrices
 		shaderProgram_->use();
-		shaderProgram_->setUniform("projectionViewMatrix", projectionViewMatrix);
+		shaderProgram_->setUniform("view", camera.getViewMatrix(true));
+		shaderProgram_->setUniform("projection", camera.getProjectionMatrix());
 
 		// draw the universe
 		std::vector<DrawConfiguration> toDrawList;
@@ -147,9 +143,9 @@ namespace Game
 							updateCameraPosition_.toVec3() +
 							glm::vec3(1 - 0.5f * MAX_GALAXIES_IN_A_ROW_) +
 							glm::vec3(
-								Random::randFloat(-0.75, 0.75),
-								Random::randFloat(-0.75, 0.75),
-								Random::randFloat(-0.75, 0.75)
+								Random::randFloat(-0.375, 0.375),
+								Random::randFloat(-0.375, 0.375),
+								Random::randFloat(-0.375, 0.375)
 							)
 						};
 

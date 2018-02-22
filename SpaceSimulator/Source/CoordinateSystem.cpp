@@ -25,29 +25,47 @@ namespace Game
 	void CoordinateSystem::createMesh()
 	{
 		float vertices[] = {
-			-1, -1, -1,
-			 1, -1, -1,
-			-1,  1, -1,
-			 1,  1, -1,
-			-1, -1,  1,
-			 1, -1,  1,
-			-1,  1,  1,
-			 1,  1,  1,
+			-1, -1, -1,		 0,  0, -1,		0, 0,
+			-1, -1, -1,		 0, -1,  0,		0, 0,
+			-1, -1, -1,		-1,  0,  0,		0, 0,
+			1, -1, -1,		 0,  0, -1,		1, 0,
+			1, -1, -1,		 0, -1,  0,		1, 0,
+			1, -1, -1,		 1,  0,  0,		1, 0,
+			-1,  1, -1,		 0,  0, -1,		0, 1,
+			-1,  1, -1,		 0,  1,  0,		0, 1,
+			-1,  1, -1,		-1,  0,  0,		0, 1,
+			1,  1, -1,		 0,  0, -1,		1, 1,
+			1,  1, -1,		 0,  1,  0,		1, 1,
+			1,  1, -1,		 1,  0,  0,		1, 1,
+			-1, -1,  1,		 0,  0,  1,		0, 0,
+			-1, -1,  1,		 0, -1,  0,		0, 0,
+			-1, -1,  1,		-1,  0,  0,		0, 0,
+			1, -1,  1,		 0,  0,  1,		1, 0,
+			1, -1,  1,		 0, -1,  0,		1, 0,
+			1, -1,  1,		 1,  0,  0,		1, 0,
+			-1,  1,  1,		 0,  0,  1,		0, 1,
+			-1,  1,  1,		 0,  1,  0,		0, 1,
+			-1,  1,  1,		-1,  0,  0,		0, 1,
+			1,  1,  1,		 0,  0,  1,		1, 1,
+			1,  1,  1,		 0,  1,  0,		1, 1,
+			1,  1,  1,		 1,  0,  0,		1, 1,
 		};
 
-		int indices[] = {
-			0, 1,	0, 2,	0, 4,
-			3, 1,	3, 2,	3, 7,
-			5, 1,	5, 4,	5, 7,
-			6, 2,	6, 4,	6, 7,
+		unsigned int indices[] = {
+			0,  6,  3,  3,  6,  9,
+			1,  4, 13, 13,  4, 16,
+			2, 14,  8,  8, 14, 20,
+			5, 11, 17, 17, 11, 23,
+			7, 19, 10, 10, 19, 22,
+			12, 15, 18, 18, 15, 21,
 		};
 
 		glGenVertexArrays(1, &vao_);
 		glBindVertexArray(vao_);
 
-		VertexBufferObject vbo({ 3 }, 8, vertices);
+		VertexBufferObject vbo({ 3, 3, 2 }, 24, vertices);
 
-		IndexBufferObject ibo(24, indices);
+		IndexBufferObject ibo(sizeof(indices) / sizeof(indices[0]), indices);
 
 		glGenBuffers(1, &instanceBuffer_);
 		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer_);
@@ -57,28 +75,28 @@ namespace Game
 
 		// mat4
 		for (int i = 0; i < 4; i++) {
-			glEnableVertexAttribArray(i + 1);
-			glVertexAttribPointer(i + 1, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(i * vec4Size));
-			glVertexAttribDivisor(i + 1, 1);
+			glEnableVertexAttribArray(i + 2);
+			glVertexAttribPointer(i + 2, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(i * vec4Size));
+			glVertexAttribDivisor(i + 2, 1);
 		}
 		// mat4
 		for (int i = 0; i < 4; i++) {
-			glEnableVertexAttribArray(i + 5);
-			glVertexAttribPointer(i + 5, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)((i + 4) * vec4Size));
-			glVertexAttribDivisor(i + 5, 1);
+			glEnableVertexAttribArray(i + 6);
+			glVertexAttribPointer(i + 6, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)((i + 4) * vec4Size));
+			glVertexAttribDivisor(i + 6, 1);
 		}
 		// vec4
-		glEnableVertexAttribArray(9);
-		glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(8 * vec4Size));
-		glVertexAttribDivisor(9, 1);
-		// float
 		glEnableVertexAttribArray(10);
-		glVertexAttribPointer(10, 1, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(9 * vec4Size));
+		glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(8 * vec4Size));
 		glVertexAttribDivisor(10, 1);
+		// float
+		glEnableVertexAttribArray(11);
+		glVertexAttribPointer(11, 1, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(9 * vec4Size));
+		glVertexAttribDivisor(11, 1);
 
 		glBindVertexArray(0);
 
-		shaderProgram_ = new ShaderProgram("Resources/simpleColor.vert", "Resources/simpleColor.frag");
+		shaderProgram_ = new ShaderProgram("Resources/coordinateSystem.vert", "Resources/coordinateSystem.frag");
 	}
 
 	void CoordinateSystem::drawWithChildren_(
@@ -97,6 +115,8 @@ namespace Game
 
 		// only draw descendants if there are any
 		bool drawDescendants = !children_.empty();
+
+		DrawConfiguration drawConfiguration;
 
 		// if this coordinate system is in the hierarchy of the camera's coordinate systems
 		if (hierarchyIndex >= 0 && hierarchy[hierarchyIndex].coordinateSystem == this) {
@@ -123,13 +143,13 @@ namespace Game
 				float r = getScale() / parent_->getScale();
 				glm::vec3 v = -hierarchy[hierarchyIndex].position.toVec3() * r;
 				modelMatrix = glm::translate(modelMatrix, v);
+
+				// add this coordinate system to the list of coordinate systems to draw
+				drawConfiguration = { glm::mat4(1), modelMatrix, getColor(), radius_ };
 			}
 
 			// decrease the hierarchy index
 			hierarchyIndex--;
-
-			// add this coordinate system to the list of coordinate systems to draw
-			toDrawList.emplace_back(DrawConfiguration{ glm::mat4(1), modelMatrix, getColor(), radius_ });
 		}
 
 		// if this coordinate system is not in the hierarchy of the camera's coordinate systems
@@ -160,12 +180,12 @@ namespace Game
 				// add the current coordinate system's rotation to the combined rotations to use by its descendants
 				rotations = glm::mat3(anotherMatrix * modelMatrix); // use the rotation part of the matrix used for drawing
 
-				// calculate the camera position relative to this coordinate system
+																	// calculate the camera position relative to this coordinate system
 				camPos = camPos * glm::conjugate(transform.getOrientation()) * parent_->getScale() / getScale();
 			}
 
 			// add this coordinate system to the list of coordinate systems to draw
-			toDrawList.emplace_back(DrawConfiguration{ anotherMatrix, modelMatrix, getColor(), radius_ });
+			drawConfiguration = { anotherMatrix, modelMatrix, getColor(), radius_ };
 		}
 
 		if (drawDescendants) {
@@ -195,6 +215,8 @@ namespace Game
 				);
 			}
 		}
+
+		toDrawList.emplace_back(drawConfiguration);
 	}
 
 	void CoordinateSystem::draw_(const std::vector<DrawConfiguration>& toDrawList)
@@ -206,8 +228,7 @@ namespace Game
 		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer_);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, toDrawList.size() * sizeof(DrawConfiguration), &toDrawList[0]);
 
-		glDrawElementsInstanced(GL_POINTS, 24, GL_UNSIGNED_INT, nullptr, toDrawList.size());
-		glDrawElementsInstanced(GL_LINES, 24, GL_UNSIGNED_INT, nullptr, toDrawList.size());
+		glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr, toDrawList.size());
 	}
 
 	GLuint CoordinateSystem::vao_;

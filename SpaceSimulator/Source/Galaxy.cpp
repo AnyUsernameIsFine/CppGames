@@ -18,7 +18,7 @@ namespace Game
 	const float Galaxy::SCALE = (int_least64_t)1 << 7;
 	const float Galaxy::MAX_RADIUS = (int_least64_t)1 << 62;
 #endif
-	const glm::vec4 Galaxy::COLOR = { 0, 0, 1, 1 };
+	const glm::vec4 Galaxy::COLOR = { 0, 0, 1, 0.5 };
 
 	Galaxy::Galaxy(CoordinateSystem* parent, float radius)
 	{
@@ -39,7 +39,7 @@ namespace Game
 
 	void Galaxy::create()
 	{
-		//addStars_();
+		addStars_();
 	}
 
 	void Galaxy::addStars_()
@@ -56,7 +56,7 @@ namespace Game
 
 			auto star = std::make_shared<Star>(this, starRadius);
 
-			glm::vec3 v = glm::ballRand(0.5f * radius_ * parent_->getScale() / getScale());
+			glm::vec3 v = glm::ballRand(0.8f * radius_ * parent_->getScale() / getScale());
 			star->transform.setPosition({ (Coordinate)v.x, (Coordinate)(v.y * roundness), (Coordinate)v.z });
 
 			r = Random::randFloat();

@@ -307,7 +307,7 @@ namespace Framework
 	template<typename T>
 	const glm::mat4& TransformType<T>::getModelMatrix_(const glm::vec3& position)
 	{
-		if (position != modelMatrixPosition_) {
+		if (position != modelMatrixPosition_ || !isRotationMatrixValid_) {
 			modelMatrixPosition_ = position;
 			modelMatrixPositionRotated_ = orientation_ * position;
 

@@ -22,7 +22,7 @@ namespace Game
 	const float Star::SCALE = 1.0f * 8;
 	const float Star::MAX_RADIUS = (int_least64_t)1 << 62;
 #endif
-	const glm::vec4 Star::COLOR = { 1, 0, 0, 1 };
+	const glm::vec4 Star::COLOR = { 1, 0, 0, 0.5 };
 
 	Star::Star(CoordinateSystem* parent, float radius)
 	{
@@ -58,7 +58,7 @@ namespace Game
 
 			auto planet = std::make_shared<Planet>(this, planetRadius);
 
-			glm::vec2 v = glm::diskRand(0.5f * radius_ * parent_->getScale() / getScale());
+			glm::vec2 v = glm::diskRand(0.8f * radius_ * parent_->getScale() / getScale());
 			planet->transform.setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });
 
 			r = Random::randFloat();

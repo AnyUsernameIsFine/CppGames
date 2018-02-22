@@ -21,6 +21,12 @@
     <None Include="Resources\simpleColor.frag">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Resources\coordinateSystem.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\coordinateSystem.frag">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\consola.ttf">
