@@ -16,13 +16,14 @@ namespace Game
 	// Let's make that fit in about twice for some wiggle room.
 	const float Moon::MAX_RADIUS = 1000 / SCALE * 2634 * 2;
 #endif
-	const glm::vec4 Moon::COLOR = { 1, 0, 1, 0.5 };
+	const glm::vec4 Moon::COLOR = { 0.5, 0, 1, 0.5 };
 
 	Moon::Moon(CoordinateSystem* parent, float radius)
 	{
 		this->parent_ = parent;
 		this->radius_ = radius;
 		name_ = "Moon";
+		mesh = new OctahedronMesh();
 	}
 
 	float Moon::getScale() const

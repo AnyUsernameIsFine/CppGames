@@ -29,7 +29,7 @@ namespace Game
 			graphics.text.setFont("Consolas", 16);
 			graphics.text.setColor(0.39f, 0.58f, 0.93f);
 
-			CoordinateSystem::createMesh();
+			CoordinateSystem::initialize();
 
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
 			CoordinateSystem* cs = &universe;

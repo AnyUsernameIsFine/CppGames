@@ -15,7 +15,7 @@ namespace Framework
 			size += attribute * sizeof(GLfloat);
 		}
 
-		glCheck(glBufferData(GL_ARRAY_BUFFER, size * numberOfVertices, vertices, vertices == nullptr ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW));
+		glCheck(glBufferData(GL_ARRAY_BUFFER, numberOfVertices * size, vertices, vertices == nullptr ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW));
 
 		int offset = 0;
 		for (int i = 0; i < (int)attributes.size(); i++) {

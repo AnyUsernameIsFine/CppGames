@@ -20,7 +20,7 @@ namespace Game
 	const float Universe::SCALE = (int_least64_t)1 << 53;
 	const int Universe::MAX_GALAXIES_IN_A_ROW_ = 16;
 #endif
-	const glm::vec4 Universe::COLOR = { 0, 1, 0, 0.5 };
+	const glm::vec4 Universe::COLOR = { 1, 1, 1, 1 };
 	const float Universe::PERIOD_ = 100 * Galaxy::MAX_RADIUS * Galaxy::SCALE / Universe::SCALE;
 
 	Universe::Universe()
@@ -79,7 +79,7 @@ namespace Game
 	{
 		auto hierarchy = camera.getHierarchy();
 
-		std::vector<std::vector<DrawConfiguration>> toDrawList(hierarchy.size());
+		std::vector<std::vector<std::vector<DrawConfiguration>>> toDrawList(hierarchy.size(), std::vector<std::vector<DrawConfiguration>>(3));
 
 		drawWithChildren_(toDrawList, hierarchy);
 
@@ -137,7 +137,7 @@ namespace Game
 
 						float r = Random::randFloat();
 						float maxRadius = Galaxy::MAX_RADIUS * Galaxy::SCALE / SCALE;
-						float galaxyRadius = maxRadius;// *(0.25f + 0.75f * r * r);
+						float galaxyRadius = maxRadius *(0.25f + 0.75f * r * r);
 
 						auto galaxy = std::make_shared<Galaxy>(this, galaxyRadius);
 

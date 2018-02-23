@@ -30,6 +30,7 @@ namespace Game
 		this->parent_ = parent;
 		this->radius_ = radius;
 		name_ = "Galaxy";
+		mesh = new CubeMesh();
 	}
 
 	float Galaxy::getScale() const
@@ -64,7 +65,7 @@ namespace Game
 
 		for (int i = 0; i < numberOfStars; i++) {
 			float r = Random::randFloat();
-			float starRadius = maxRadius;// *(0.25f + 0.75f * r * r);
+			float starRadius = maxRadius *(0.25f + 0.75f * r * r);
 
 			auto star = std::make_shared<Star>(this, starRadius);
 

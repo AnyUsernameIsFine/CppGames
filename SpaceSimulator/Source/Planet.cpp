@@ -33,6 +33,7 @@ namespace Game
 		this->parent_ = parent;
 		this->radius_ = radius;
 		name_ = "Planet";
+		mesh = new CubeMesh();
 	}
 
 	float Planet::getScale() const
@@ -63,7 +64,7 @@ namespace Game
 
 		for (int i = 0; i < numberOfMoons; i++) {
 			float r = Random::randFloat();
-			float moonRadius = maxRadius;// *(0.25f + 0.75f * r * r);
+			float moonRadius = maxRadius *(0.25f + 0.75f * r * r);
 
 			auto moon = std::make_shared<Moon>(this, moonRadius);
 

@@ -133,10 +133,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\CoordinateSystem.h" />
     <ClInclude Include="Source\Galaxy.h" />
     <ClInclude Include="Source\Main.h" />
+    <ClInclude Include="Source\Meshes\Cube.h" />
+    <ClInclude Include="Source\Meshes\Octahedron.h" />
     <ClInclude Include="Source\Moon.h" />
     <ClInclude Include="Source\Planet.h" />
     <ClInclude Include="Source\Random.h" />
@@ -145,10 +148,12 @@
     <ClInclude Include="Source\Universe.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Meshes\Cube.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\CoordinateSystem.cpp" />
     <ClCompile Include="Source\Galaxy.cpp" />
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\Meshes\Octahedron.cpp" />
     <ClCompile Include="Source\Moon.cpp" />
     <ClCompile Include="Source\Planet.cpp" />
     <ClCompile Include="Source\Random.cpp" />

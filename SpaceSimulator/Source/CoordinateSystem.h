@@ -5,6 +5,7 @@
 #define UNIVERSE_SCALE 0
 
 #include "Camera.h"
+#include "Mesh.h"
 
 #include <memory>
 
@@ -16,11 +17,13 @@ namespace Game
 	{
 	public:
 		Transform transform;
+		Mesh* mesh = nullptr;
 
 		static const int MAX_IN_DRAW_LIST_ = 8192;
 
-		static void createMesh();
+		static void initialize();
 
+		~CoordinateSystem();
 		CoordinateSystem* getParent() const;
 		const std::vector<std::shared_ptr<CoordinateSystem>>& getChildren() const;
 		const std::string& getName() const;
@@ -45,7 +48,7 @@ namespace Game
 		float radius_;
 
 		void drawWithChildren_(
-			std::vector<std::vector<DrawConfiguration>>& toDrawList,
+			std::vector<std::vector<std::vector<DrawConfiguration>>>& toDrawList,
 			const std::vector<Camera::CameraHierarchyLevel>& cameraHierarchy,
 			int hierarchyIndex = -1,
 			glm::mat4 rotations = glm::mat4(1),
@@ -55,10 +58,12 @@ namespace Game
 			int descendantGenerationsToDraw = 0
 		);
 
-		static GLuint vao_;
+		static GLuint vertexArray_;
+		static GLuint vertexBuffer_;
+		static GLuint indexBuffer_;
 		static GLuint instanceBuffer_;
 		static ShaderProgram* shaderProgram_;
 
-		static void draw_(const std::vector<std::vector<DrawConfiguration>>& drawConfigurations, const Camera& camera, float deltaSeconds);
+		static void draw_(const std::vector<std::vector<std::vector<DrawConfiguration>>>& drawConfigurations, const Camera& camera, float deltaSeconds);
 	};
 }

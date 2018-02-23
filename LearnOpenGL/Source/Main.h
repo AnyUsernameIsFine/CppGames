@@ -161,7 +161,7 @@ namespace Game
 
 			drawScene();
 			drawInfo();
-			//output((int)round(graphics.getFps()));
+			//console((int)round(graphics.getFps()));
 			//graphics.text.draw(0, 0,
 			//	"[32] Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium\n"
 			//	"doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis\n"
