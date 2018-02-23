@@ -14,7 +14,7 @@ namespace Framework
 		Window window;
 		Text text;
 
-		void clearScreen(float r = 0, float g = 0, float b = 0, bool depth = true) const;
+		void clearScreen(float r = 0, float g = 0, float b = 0, bool depth = false) const;
 		float getFps() const;
 		float getDeltaSeconds() const;
 		float getTotalSeconds() const;

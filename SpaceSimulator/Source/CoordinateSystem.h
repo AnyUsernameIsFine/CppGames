@@ -2,7 +2,7 @@
 
 #include <Framework.hpp>
 
-//#define USE_REALISTIC_SCALE
+#define UNIVERSE_SCALE 0
 
 #include "Camera.h"
 
@@ -27,10 +27,12 @@ namespace Game
 		float getRadius() const;
 		virtual float getScale() const = 0;
 		virtual const glm::vec4& getColor() const = 0;
+		virtual float getCameraNearPlane() const = 0;
 
 	protected:
 		struct DrawConfiguration
 		{
+			CoordinateSystem* cs;
 			glm::mat4 m1;
 			glm::mat4 m2;
 			glm::vec4 color;
@@ -43,20 +45,20 @@ namespace Game
 		float radius_;
 
 		void drawWithChildren_(
-			std::vector<DrawConfiguration>& toDrawList,
+			std::vector<std::vector<DrawConfiguration>>& toDrawList,
 			const std::vector<Camera::CameraHierarchyLevel>& cameraHierarchy,
-			int hierarchyIndex,
+			int hierarchyIndex = -1,
 			glm::mat4 rotations = glm::mat4(1),
 			glm::mat4 anotherMatrix = glm::mat4(1),
 			glm::vec3 camPos = glm::vec3(1),
 			bool useHighRes = true,
-			int descendantGenerationsToDraw = 1
+			int descendantGenerationsToDraw = 0
 		);
 
 		static GLuint vao_;
 		static GLuint instanceBuffer_;
 		static ShaderProgram* shaderProgram_;
 
-		static void draw_(const std::vector<DrawConfiguration>& drawConfigurations);
+		static void draw_(const std::vector<std::vector<DrawConfiguration>>& drawConfigurations, const Camera& camera, float deltaSeconds);
 	};
 }

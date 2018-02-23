@@ -1,10 +1,18 @@
 #include "Planet.h"
+#include "Star.h"
 
 #include <Framework.hpp>
 
 namespace Game
 {
-#ifdef USE_REALISTIC_SCALE
+#ifdef UNIVERSE_SCALE
+#	if UNIVERSE_SCALE == 0
+	const float Planet::SCALE = (int_least64_t)1 << 4;
+#	elif UNIVERSE_SCALE == 1
+	const float Planet::SCALE = (int_least64_t)1 << 7;
+#	endif
+	const float Planet::MAX_RADIUS = (int_least64_t)1 << 62;
+#else
 	// A little over 0.06 millimeters per unit.
 	// Allows for planets (and the orbits of their moons) with a radius of over 1800 times
 	// the distance between the Earth and the Sun (almost 700,000 times the distance
@@ -17,9 +25,6 @@ namespace Game
 	// can be almost 50 million kilometers from Neptune.
 	// Let's make its orbit fit in twice for some wiggle room.
 	const float Planet::MAX_RADIUS = 1000 / SCALE * 50000000 * 2;
-#else
-	const float Planet::SCALE = 1.0f / (1 << 7) * 64;
-	const float Planet::MAX_RADIUS = (int_least64_t)1 << 62;
 #endif
 	const glm::vec4 Planet::COLOR = { 1, 1, 0, 0.5 };
 
@@ -40,6 +45,11 @@ namespace Game
 		return COLOR;
 	}
 
+	float Planet::getCameraNearPlane() const
+	{
+		return Moon::MAX_RADIUS * Moon::SCALE / Star::SCALE;
+	}
+
 	void Planet::create()
 	{
 		addMoons_();
@@ -53,7 +63,7 @@ namespace Game
 
 		for (int i = 0; i < numberOfMoons; i++) {
 			float r = Random::randFloat();
-			float moonRadius = maxRadius * (0.25f + 0.75f * r * r);
+			float moonRadius = maxRadius;// *(0.25f + 0.75f * r * r);
 
 			auto moon = std::make_shared<Moon>(this, moonRadius);
 

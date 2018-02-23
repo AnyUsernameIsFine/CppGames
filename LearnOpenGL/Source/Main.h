@@ -157,7 +157,7 @@ namespace Game
 
 		void draw()
 		{
-			graphics.clearScreen(0.12f, 0, 0.06f);
+			graphics.clearScreen(0.12f, 0, 0.06f, true);
 
 			drawScene();
 			drawInfo();

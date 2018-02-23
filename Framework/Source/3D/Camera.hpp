@@ -12,9 +12,10 @@ namespace Framework
 
 		bool isPerspective() const;
 		float getFieldOfView() const;
+		float getAspectRatio() const;
 		void setPerspective(bool perspective = true);
-		void setAspectRatio(float ratio);
 		void setFieldOfView(float fov);
+		void setAspectRatio(float ratio);
 		void setClippingPlanes(float near, float far);
 		void setSize(float size);
 		glm::mat4 getViewMatrix(bool rotationOnly = false) const;
@@ -22,8 +23,8 @@ namespace Framework
 
 	private:
 		bool perspective_ = true;
-		float ratio_ = 1.0f;
 		float fov_ = 60.0f;
+		float ratio_ = 1.0f;
 		float near_ = 0.1f;
 		float far_ = 100.0f;
 		float size_ = 10.0f;
@@ -46,6 +47,12 @@ namespace Framework
 	float CameraType<T>::getFieldOfView() const
 	{
 		return fov_;
+	}
+
+	template<typename T>
+	float CameraType<T>::getAspectRatio() const
+	{
+		return ratio_;
 	}
 
 	template<typename T>

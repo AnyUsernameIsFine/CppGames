@@ -278,7 +278,7 @@ namespace Game
 
 			ch.coordinateSystem = parentCs;
 
-			hierarchy_.push_back(ch);
+			hierarchy_.insert(hierarchy_.begin(), ch); // quite inefficient
 
 			parentCs = parentCs->getParent();
 		}

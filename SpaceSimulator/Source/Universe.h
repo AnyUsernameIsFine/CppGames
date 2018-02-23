@@ -13,9 +13,10 @@ namespace Game
 		Universe();
 		float getScale() const;
 		const glm::vec4& getColor() const;
+		float getCameraNearPlane() const;
 		void create(const Camera& camera);
 		void update(const Camera& camera);
-		void draw(const Camera& camera);
+		void draw(const Camera& camera, float totalSeconds);
 
 	private:
 		Vector3 updateCameraPosition_;

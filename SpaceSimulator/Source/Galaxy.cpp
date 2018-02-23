@@ -1,10 +1,18 @@
 #include "Galaxy.h"
+#include "Universe.h"
 
 #include <Framework.hpp>
 
 namespace Game
 {
-#ifdef USE_REALISTIC_SCALE
+#ifdef UNIVERSE_SCALE
+#	if UNIVERSE_SCALE == 0
+	const float Galaxy::SCALE = (int_least64_t)1 << 12;
+#	elif UNIVERSE_SCALE == 1
+	const float Galaxy::SCALE = (int_least64_t)1 << 21;
+#	endif
+	const float Galaxy::MAX_RADIUS = (int_least64_t)1 << 62;
+#else
 	// 32,768 meters per unit.
 	// Allows for galaxies with a radius of up to nearly 16 million light-years
 	// when using 64-bit integers.
@@ -14,9 +22,6 @@ namespace Game
 	// has a maximum radius of about 4 million light-years.
 	// Let's make that fit in twice for some wiggle room.
 	const float Galaxy::MAX_RADIUS = 9460730472580800 / SCALE * 4000000 * 2;
-#else
-	const float Galaxy::SCALE = (int_least64_t)1 << 7;
-	const float Galaxy::MAX_RADIUS = (int_least64_t)1 << 62;
 #endif
 	const glm::vec4 Galaxy::COLOR = { 0, 0, 1, 0.5 };
 
@@ -37,9 +42,16 @@ namespace Game
 		return COLOR;
 	}
 
+	float Galaxy::getCameraNearPlane() const
+	{
+		return Star::MAX_RADIUS * Star::SCALE / Universe::SCALE;
+	}
+
 	void Galaxy::create()
 	{
+#ifdef UNIVERSE_SCALE
 		addStars_();
+#endif
 	}
 
 	void Galaxy::addStars_()
@@ -52,7 +64,7 @@ namespace Game
 
 		for (int i = 0; i < numberOfStars; i++) {
 			float r = Random::randFloat();
-			float starRadius = maxRadius * (0.25f + 0.75f * r * r);
+			float starRadius = maxRadius;// *(0.25f + 0.75f * r * r);
 
 			auto star = std::make_shared<Star>(this, starRadius);
 

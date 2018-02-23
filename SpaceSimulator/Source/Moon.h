@@ -17,5 +17,6 @@ namespace Game
 		Moon(CoordinateSystem* parent, float radius);
 		float getScale() const;
 		const glm::vec4& getColor() const;
+		float getCameraNearPlane() const;
 	};
 }

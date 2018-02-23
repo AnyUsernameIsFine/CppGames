@@ -1,10 +1,18 @@
 #include "Star.h"
+#include "Galaxy.h"
 
 #include <Framework.hpp>
 
 namespace Game
 {
-#ifdef USE_REALISTIC_SCALE
+#ifdef UNIVERSE_SCALE
+#	if UNIVERSE_SCALE == 0
+	const float Star::SCALE = (int_least64_t)1 << 8;
+#	elif UNIVERSE_SCALE == 1
+	const float Star::SCALE = (int_least64_t)1 << 14;
+#	endif
+	const float Star::MAX_RADIUS = (int_least64_t)1 << 62;
+#else
 	// About 1.6 centimers per unit.
 	// Allows for stars (and their planetary systems) with a radius of over 480,000 AU
 	// or about 7.6 light-years when using 64-bit integers.
@@ -18,9 +26,6 @@ namespace Game
 	// has a radius as much as 200,000 AU. One AU is 149,597,870,700 meters.
 	// Let's make that fit in twice for some wiggle room.
 	const float Star::MAX_RADIUS = 149597870700 / SCALE * 200000 * 2;
-#else
-	const float Star::SCALE = 1.0f * 8;
-	const float Star::MAX_RADIUS = (int_least64_t)1 << 62;
 #endif
 	const glm::vec4 Star::COLOR = { 1, 0, 0, 0.5 };
 
@@ -41,6 +46,11 @@ namespace Game
 		return COLOR;
 	}
 
+	float Star::getCameraNearPlane() const
+	{
+		return Planet::MAX_RADIUS * Planet::SCALE / Galaxy::SCALE;
+	}
+
 	void Star::create()
 	{
 		addPlanets_();
@@ -54,7 +64,7 @@ namespace Game
 
 		for (int i = 0; i < numberOfPlanets; i++) {
 			float r = Random::randFloat();
-			float planetRadius = maxRadius * (0.25f + 0.75f * r * r);
+			float planetRadius = maxRadius;// *(0.25f + 0.75f * r * r);
 
 			auto planet = std::make_shared<Planet>(this, planetRadius);
 

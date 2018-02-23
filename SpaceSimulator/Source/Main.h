@@ -25,34 +25,32 @@ namespace Game
 
 		void start()
 		{
-			glEnable(GL_DEPTH_TEST);
-			glEnable(GL_CULL_FACE);
-
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 			graphics.text.loadFont("Resources/consola.ttf");
 			graphics.text.setFont("Consolas", 16);
 			graphics.text.setColor(0.39f, 0.58f, 0.93f);
 
-			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
-#ifdef USE_REALISTIC_SCALE
-			camera.setClippingPlanes(1000000.0f, 10000000000.0f);
-#else
-			camera.setClippingPlanes(10000000000000.0f, 100000000000000000000000.0f);
-#endif
-
 			CoordinateSystem::createMesh();
 
-			camera.setCoordinateSystem(&universe);
+			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
+			CoordinateSystem* cs = &universe;
+			camera.setCoordinateSystem(cs);
 
 			universe.create(camera);
 
-			auto children = camera.getCoordinateSystem()->getChildren();
-			CoordinateSystem* toPutCameraNextTo = children[children.size() / 2].get();
-			Vector3 p = toPutCameraNextTo->transform.getPosition() +
-				Vector3(0, 0, (Coordinate)(5 * toPutCameraNextTo->getRadius()));
-			camera.setPosition(p);
+#ifdef UNIVERSE_SCALEZ
+			auto galaxies = universe.getChildren();
+			auto stars = galaxies[0].get()->getChildren();
+			auto planets = stars[0].get()->getChildren();
+			cs = planets[0].get();
+			camera.setCoordinateSystem(cs);
+#endif
+			auto children = cs->getChildren();
+			if (!children.empty()) {
+				CoordinateSystem* toPutCameraNextTo = children[children.size() / 2].get();
+				Vector3 p = toPutCameraNextTo->transform.getPosition() +
+					Vector3(0, 0, (Coordinate)(5 * toPutCameraNextTo->getRadius()));
+				camera.setPosition(p);
+			}
 
 			universe.update(camera);
 		}
@@ -87,9 +85,7 @@ namespace Game
 		{
 			graphics.clearScreen(0, 0, 0);
 
-			glClear(GL_DEPTH_BUFFER_BIT);
-
-			universe.draw(camera);
+			universe.draw(camera, graphics.getTotalSeconds());
 
 			int fps = (int)round(graphics.getFps());
 			Vector3 position = camera.transform.getPosition();

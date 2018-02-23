@@ -6,18 +6,22 @@
 
 namespace Game
 {
+#ifdef UNIVERSE_SCALE
+#	if UNIVERSE_SCALE == 0
+	const float Universe::SCALE = (int_least64_t)1 << 40;
+#	elif UNIVERSE_SCALE == 1
+	const float Universe::SCALE = (int_least64_t)1 << 59;
+#	endif
 	const int Universe::MAX_GALAXIES_IN_A_ROW_ = 4;
-	const float Universe::PERIOD_ = 100 * Galaxy::MAX_RADIUS * Galaxy::SCALE / Universe::SCALE;
-
-#ifdef USE_REALISTIC_SCALE
-	// About 1.9 light-years per unit.
-	// Gives a universe with a radius of over 17.5 million million million light-years
-	// when using 64 bit integers. One light-year is 9,460,730,472,580,800 meters.
-	const float Universe::SCALE = (int_least64_t)1 << 54;
 #else
-	const float Universe::SCALE = (int_least64_t)1 << 20;
+	// About 1.9 light-years per unit.
+	// Gives a universe with a radius of almost 9 million million million light-years
+	// when using 64 bit integers. One light-year is 9,460,730,472,580,800 meters.
+	const float Universe::SCALE = (int_least64_t)1 << 53;
+	const int Universe::MAX_GALAXIES_IN_A_ROW_ = 16;
 #endif
 	const glm::vec4 Universe::COLOR = { 0, 1, 0, 0.5 };
+	const float Universe::PERIOD_ = 100 * Galaxy::MAX_RADIUS * Galaxy::SCALE / Universe::SCALE;
 
 	Universe::Universe()
 	{
@@ -38,9 +42,14 @@ namespace Game
 		return COLOR;
 	}
 
+	float Universe::getCameraNearPlane() const
+	{
+		return Galaxy::MAX_RADIUS * Galaxy::SCALE / SCALE;
+	}
+
 	void Universe::create(const Camera& camera)
 	{
-		Vector3 positionInUniverse = camera.getHierarchy().back().position;
+		Vector3 positionInUniverse = camera.getHierarchy()[0].position;
 
 		updateCameraPosition_ = Vector3(
 			(Coordinate)floor(positionInUniverse.x / PERIOD_),
@@ -53,7 +62,7 @@ namespace Game
 
 	void Universe::update(const Camera& camera)
 	{
-		Vector3 positionInUniverse = camera.getHierarchy().back().position;
+		Vector3 positionInUniverse = camera.getHierarchy()[0].position;
 
 		Vector3 offset = Vector3(
 			(Coordinate)floor(positionInUniverse.x / PERIOD_),
@@ -66,22 +75,15 @@ namespace Game
 		}
 	}
 
-	void Universe::draw(const Camera& camera)
+	void Universe::draw(const Camera& camera, float totalSeconds)
 	{
-		CoordinateSystem* cs = camera.getCoordinateSystem();
-		CoordinateSystem* parentCs = cs->getParent();
-
-		// create and set the view and projection matrices
-		shaderProgram_->use();
-		shaderProgram_->setUniform("view", camera.getViewMatrix(true));
-		shaderProgram_->setUniform("projection", camera.getProjectionMatrix());
-
-		// draw the universe
-		std::vector<DrawConfiguration> toDrawList;
-		//toDrawList.reserve(MAX_IN_DRAW_LIST_);
 		auto hierarchy = camera.getHierarchy();
-		drawWithChildren_(toDrawList, hierarchy, hierarchy.size() - 1);
-		draw_(toDrawList);
+
+		std::vector<std::vector<DrawConfiguration>> toDrawList(hierarchy.size());
+
+		drawWithChildren_(toDrawList, hierarchy);
+
+		draw_(toDrawList, camera, totalSeconds);
 	}
 
 	void Universe::addGalaxies_(const Vector3& offset)
@@ -135,7 +137,7 @@ namespace Game
 
 						float r = Random::randFloat();
 						float maxRadius = Galaxy::MAX_RADIUS * Galaxy::SCALE / SCALE;
-						float galaxyRadius = maxRadius * (0.25f + 0.75f * r * r);
+						float galaxyRadius = maxRadius;// *(0.25f + 0.75f * r * r);
 
 						auto galaxy = std::make_shared<Galaxy>(this, galaxyRadius);
 
