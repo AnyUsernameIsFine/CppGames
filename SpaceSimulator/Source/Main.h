@@ -19,15 +19,16 @@ namespace Game
 		{
 			graphics.window.setTitle("SpaceSimulator");
 			graphics.window.setSize(960, 540);
-			//graphics.window.setFullscreen(true);
 			graphics.window.hideCursor();
 			graphics.window.enableVSync();
+			graphics.window.enableAntiAliasing();
+			//graphics.window.setFullscreen(true);
 		}
 
 		void start()
 		{
 			graphics.text.loadFont("Resources/consola.ttf");
-			graphics.text.setFont("Consolas", 16);
+			graphics.text.setFont("Consolas", graphics.window.getHeight() / 32);
 			graphics.text.setColor(0.39f, 0.58f, 0.93f);
 
 			CoordinateSystem::initialize();

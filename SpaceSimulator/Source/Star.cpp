@@ -27,7 +27,7 @@ namespace Game
 	// Let's make that fit in twice for some wiggle room.
 	const float Star::MAX_RADIUS = 149597870700 / SCALE * 200000 * 2;
 #endif
-	const glm::vec4 Star::COLOR = { 1, 0, 0, 0.5 };
+	const glm::vec4 Star::COLOR = { 1, 0.2, 0, 0.5 };
 
 	Star::Star(CoordinateSystem* parent, float radius)
 	{

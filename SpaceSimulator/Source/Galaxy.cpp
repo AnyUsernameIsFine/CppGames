@@ -23,7 +23,7 @@ namespace Game
 	// Let's make that fit in twice for some wiggle room.
 	const float Galaxy::MAX_RADIUS = 9460730472580800 / SCALE * 4000000 * 2;
 #endif
-	const glm::vec4 Galaxy::COLOR = { 0, 0, 1, 0.5 };
+	const glm::vec4 Galaxy::COLOR = { 0.2, 0, 1, 0.5 };
 
 	Galaxy::Galaxy(CoordinateSystem* parent, float radius)
 	{

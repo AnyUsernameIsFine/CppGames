@@ -15,6 +15,7 @@ namespace Framework
 		void setSize(int width, int height);
 		void hideCursor(bool hide = true);
 		void enableVSync(bool enable = true);
+		void enableAntiAliasing(bool enable = true);
 		void setFullscreen(bool set = true);
 		int getWidth() const;
 		int getHeight() const;
@@ -28,6 +29,7 @@ namespace Framework
 		int height_ = 480;
 		bool hideCursor_ = false;
 		bool enableVSync_ = false;
+		bool antiAliasing_ = false;
 		bool setFullscreen_ = false;
 		bool hidden_ = true;
 

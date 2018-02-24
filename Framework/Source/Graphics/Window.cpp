@@ -43,6 +43,13 @@ namespace Framework
 		}
 	}
 
+	void Window::enableAntiAliasing(bool enable)
+	{
+		if (!window_) {
+			antiAliasing_ = enable;
+		}
+	}
+
 	void Window::setFullscreen(bool set)
 	{
 		setFullscreen_ = set;
@@ -73,6 +80,11 @@ namespace Framework
 		sdlCheck(SDL_Init(SDL_INIT_VIDEO));
 		sdlCheck(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3));
 		sdlCheck(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3));
+
+		if (antiAliasing_) {
+			sdlCheck(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1));
+			sdlCheck(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4));
+		}
 
 		window_ = sdlCheckV(SDL_CreateWindow(
 			title_.c_str(),
@@ -124,6 +136,10 @@ namespace Framework
 		if (hidden_) {
 			sdlCheck(SDL_ShowWindow(window_));
 			sdlCheck(SDL_RaiseWindow(window_));
+
+			if (antiAliasing_) {
+				glCheck(glEnable(GL_MULTISAMPLE));
+			}
 
 			hidden_ = false;
 		}

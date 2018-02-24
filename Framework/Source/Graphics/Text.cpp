@@ -183,12 +183,12 @@ namespace Framework
 
 			"out vec4 fragColor;"
 
-			"uniform sampler2D texture;"
+			"uniform sampler2D fontSizeTexture;"
 			"uniform vec4 color;"
 
 			"void main()"
 			"{"
-			"	fragColor = color * vec4(1, 1, 1, texture(texture, vertTexCoords).r);"
+			"	fragColor = color * vec4(1, 1, 1, texture(fontSizeTexture, vertTexCoords).r);"
 			"}";
 
 		program_ = new ShaderProgram(vertexShader, fragmentShader, false);
