@@ -20,6 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\3D\Camera.hpp" />
+    <ClInclude Include="Source\3D\Mesh.h" />
+    <ClInclude Include="Source\3D\Meshes\Cube.h" />
+    <ClInclude Include="Source\3D\Meshes\Dodecahedron.h" />
+    <ClInclude Include="Source\3D\Meshes\Icosahedron.h" />
+    <ClInclude Include="Source\3D\Meshes\Octahedron.h" />
+    <ClInclude Include="Source\3D\Meshes\PlatonicSolidMesh.h" />
     <ClInclude Include="Source\3D\Transform.hpp" />
     <ClInclude Include="Source\3D\Vector3.hpp" />
     <ClInclude Include="Source\Framework.hpp" />
@@ -41,6 +47,11 @@
     <ClInclude Include="Source\System\Game.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\3D\Meshes\Cube.cpp" />
+    <ClCompile Include="Source\3D\Meshes\Dodecahedron.cpp" />
+    <ClCompile Include="Source\3D\Meshes\Icosahedron.cpp" />
+    <ClCompile Include="Source\3D\Meshes\Octahedron.cpp" />
+    <ClCompile Include="Source\3D\Meshes\PlatonicSolidMesh.cpp" />
     <ClCompile Include="Source\Graphics\Font.cpp" />
     <ClCompile Include="Source\Graphics\FontSize.cpp" />
     <ClCompile Include="Source\Graphics\Graphics.cpp" />

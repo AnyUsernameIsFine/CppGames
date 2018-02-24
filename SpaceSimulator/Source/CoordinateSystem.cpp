@@ -1,8 +1,5 @@
 #include "CoordinateSystem.h"
 
-#include "Meshes\Cube.h"
-#include "Meshes\Octahedron.h"
-
 #include <cmath>
 
 namespace Game
@@ -176,7 +173,8 @@ namespace Game
 
 		glGenBuffers(1, &indexBuffer_);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer_);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 12 * 3 * 3 * sizeof(unsigned int), nullptr, GL_DYNAMIC_DRAW);
+		// TODO: for some unknown reason, there needs to be room for one extra index
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 1 + 12 * 3 * 3 * sizeof(unsigned short), nullptr, GL_DYNAMIC_DRAW);
 
 		glGenBuffers(1, &instanceBuffer_);
 		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer_);
@@ -225,6 +223,8 @@ namespace Game
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
+		glBindVertexArray(vertexArray_);
+
 		for (int i = 0; i < (int)toDrawList.size(); i++) {
 			glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -236,15 +236,21 @@ namespace Game
 				if (!(list.empty())) {
 					Mesh* mesh = list[0].cs->mesh;
 
-					if (mesh != nullptr) {
-						glBindVertexArray(vertexArray_);
+					if (mesh != nullptr && !mesh->getVertices().empty()) {
 						auto vertices = mesh->getVertices();
-						glNamedBufferSubData(vertexBuffer_, 0, vertices.size() * sizeof(float), &vertices[0]);
-						auto indices = mesh->getIndices();
-						glNamedBufferSubData(indexBuffer_, 0, indices.size() * sizeof(unsigned int), &indices[0]);
+						glNamedBufferSubData(vertexBuffer_, 0, vertices.size() * sizeof(vertices[0]), &vertices[0]);
 
 						glNamedBufferSubData(instanceBuffer_, 0, list.size() * sizeof(DrawConfiguration), &list[0]);
-						glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr, list.size());
+
+						auto indices = mesh->getIndices();
+
+						if (!indices.empty()) {
+							glNamedBufferSubData(indexBuffer_, 0, indices.size() * sizeof(indices[0]), &indices[0]);
+							glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_SHORT, nullptr, list.size());
+						}
+						else {
+							glDrawArraysInstanced(GL_TRIANGLES, 0, vertices.size(), list.size());
+						}
 					}
 				}
 			}

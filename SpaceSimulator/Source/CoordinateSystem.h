@@ -5,7 +5,6 @@
 #define UNIVERSE_SCALE 0
 
 #include "Camera.h"
-#include "Mesh.h"
 
 #include <memory>
 

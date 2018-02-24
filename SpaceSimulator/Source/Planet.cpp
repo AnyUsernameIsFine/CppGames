@@ -33,7 +33,7 @@ namespace Game
 		this->parent_ = parent;
 		this->radius_ = radius;
 		name_ = "Planet";
-		mesh = new CubeMesh();
+		mesh = new DodecahedronMesh();
 	}
 
 	float Planet::getScale() const

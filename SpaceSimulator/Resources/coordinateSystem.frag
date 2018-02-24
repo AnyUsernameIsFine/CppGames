@@ -11,9 +11,8 @@ void main()
 	vec3 normal = normalize(fragNormal);
 	vec3 lightDirection = normalize(-fragPosition);
 
-	float ambient = 0.2;
-	float diffuse = 0.8 * abs(dot(normal, lightDirection));
+	float ambient = 0.5;
+	float diffuse = 0.5 * max(0, dot(normal, lightDirection));
 
-//    finalColor = vec4((ambient + diffuse) * fragColor.rgb, fragColor.a);
-	finalColor = fragColor;
+	finalColor = vec4((ambient + diffuse) * fragColor.rgb, fragColor.a);
 }

@@ -2,8 +2,10 @@
 
 #include "CoordinateSystem.h"
 #include "Random.h"
-#include "Meshes\Cube.h"
-#include "Meshes\Octahedron.h"
+#include "3D\Meshes\Cube.h"
+#include "3D\Meshes\Octahedron.h"
+#include "3D\Meshes\Dodecahedron.h"
+#include "3D\Meshes\Icosahedron.h"
 
 #include <glm\gtc\random.hpp>
 

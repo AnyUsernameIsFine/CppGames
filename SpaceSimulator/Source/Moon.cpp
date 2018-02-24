@@ -23,7 +23,7 @@ namespace Game
 		this->parent_ = parent;
 		this->radius_ = radius;
 		name_ = "Moon";
-		mesh = new OctahedronMesh();
+		mesh = new IcosahedronMesh();
 	}
 
 	float Moon::getScale() const
