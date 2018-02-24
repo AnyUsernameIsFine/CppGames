@@ -13,6 +13,7 @@ namespace Game
 	public:
 		Universe universe;
 		Camera camera;
+		int seed;
 
 		Game()
 		{
@@ -32,10 +33,20 @@ namespace Game
 			CoordinateSystem::initialize();
 
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
+
+			generateUniverse();
+		}
+
+		void generateUniverse()
+		{
+			Random::setRandSeed((unsigned int)(graphics.getTotalSeconds() * 1000));
+			seed = Random::randInt();
+			Random::setHashSeed(seed);
+
+			universe.create();
+
 			CoordinateSystem* cs = &universe;
 			camera.setCoordinateSystem(cs);
-
-			universe.create(camera);
 
 #ifdef UNIVERSE_SCALEZ
 			auto galaxies = universe.getChildren();
@@ -52,6 +63,8 @@ namespace Game
 				camera.setPosition(p);
 			}
 
+			camera.transform.setEulerAngles(0, 0, 0);
+
 			universe.update(camera);
 		}
 
@@ -65,6 +78,10 @@ namespace Game
 
 		void update()
 		{
+			if (input.isKeyDown(SDLK_g)) {
+				generateUniverse();
+			}
+
 			camera.move(
 				(float)(input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)),
 				(float)(input.isKeyDown(SDLK_r) - input.isKeyDown(SDLK_f)),
@@ -92,13 +109,13 @@ namespace Game
 			glm::ivec3 o = camera.transform.getEulerAngles();
 
 			std::string fpsString = std::to_string(fps) + " fps";
-			std::string csString = camera.getCoordinateSystem()->getName();
-			std::string speedString = camera.getSpeedString();
-			std::string positionString = std::to_string(position.x) + ", " + std::to_string(position.y) + ", " + std::to_string(position.z);
+			std::string seedString = "seed     " + std::to_string(seed);
+			std::string speedString = "speed    " + camera.getSpeedString();
+			std::string csString = "system   " + camera.getCoordinateSystem()->getName();
 
 			graphics.text.draw(2, -5, fpsString);
 			graphics.text.draw(2, -5 + graphics.window.getHeight() - 3.0f * graphics.text.getFontHeight(),
-				csString + "\n" + speedString + "\n" + positionString);
+				seedString + "\n" + speedString + "\n" + csString + "\n");
 		}
 	};
 }

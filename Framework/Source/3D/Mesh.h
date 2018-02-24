@@ -1,5 +1,7 @@
 #pragma once
 
+#include <GL\glew.h>
+
 #define GLM_FORCE_INLINE 
 #include <glm\vec3.hpp>
 
@@ -12,7 +14,7 @@ namespace Framework
 	public:
 		union Vertex
 		{
-			float data[6];
+			GLfloat data[6];
 			struct
 			{
 				glm::vec3 position;
@@ -21,6 +23,6 @@ namespace Framework
 		};
 
 		virtual const std::vector<Vertex>& getVertices() const = 0;
-		virtual const std::vector<unsigned short>& getIndices() const = 0;
+		virtual const std::vector<GLushort>& getIndices() const = 0;
 	};
 }

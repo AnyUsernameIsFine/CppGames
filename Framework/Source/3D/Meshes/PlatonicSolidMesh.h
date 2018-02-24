@@ -12,7 +12,7 @@ namespace Framework
 		struct CreatedMesh
 		{
 			std::vector<Vertex> vertices;
-			std::vector<unsigned short> indices;
+			std::vector<GLushort> indices;
 		};
 
 		static std::vector<glm::vec3> evenPermutationsOfVertex_(glm::vec3 v);

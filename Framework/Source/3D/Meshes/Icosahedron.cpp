@@ -12,7 +12,7 @@ namespace Framework
 		return vertices_;
 	}
 
-	const std::vector<unsigned short>& IcosahedronMesh::getIndices() const
+	const std::vector<GLushort>& IcosahedronMesh::getIndices() const
 	{
 		return indices_;
 	}
@@ -66,5 +66,5 @@ namespace Framework
 	}
 
 	std::vector<Mesh::Vertex> IcosahedronMesh::vertices_;
-	std::vector<unsigned short> IcosahedronMesh::indices_;
+	std::vector<GLushort> IcosahedronMesh::indices_;
 }

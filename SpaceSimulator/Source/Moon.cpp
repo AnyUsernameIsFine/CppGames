@@ -22,7 +22,7 @@ namespace Game
 	{
 		this->parent_ = parent;
 		this->radius_ = radius;
-		name_ = "Moon";
+		name_ = "Moon #" + std::to_string((unsigned int)Random::randInt());
 		mesh = new IcosahedronMesh();
 	}
 

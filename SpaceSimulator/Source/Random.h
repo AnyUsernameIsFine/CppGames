@@ -2,31 +2,21 @@
 
 #include <random>
 
-#ifndef MEM_MODULE
-#	if !defined (__VMS) \
-	&& (defined (__cplusplus) \
-	|| (defined (__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L) /* C99 */) )
-#		include <stdint.h>
-typedef		uint8_t			BYTE;
-typedef		uint32_t		U32;
-#	else
-typedef		unsigned char	BYTE;
-typedef		unsigned char	U32;
-#	endif
-#endif
-
 namespace Game
 {
 	class Random
 	{
 		typedef std::mt19937 RNG;
+		typedef	uint8_t BYTE;
+		typedef	uint32_t U32;
 
 	public:
-		static void setRandSeed(U32 seed);
-		static void setHashSeed(U32 seed);
-		static float randFloat(float min = 0, float max = 1);
+		static void setRandSeed(unsigned int seed);
+		static void setHashSeed(uint32_t seed);
+		static int randInt();
 		static int randInt(int min, int max);
-		static U32 u32FromByteArray(const void* byteArray, size_t length);
+		static float randFloat(float min = 0, float max = 1);
+		static U32 ui32FromByteArray(const void* byteArray, size_t length);
 
 	private:
 		static RNG rng_;
@@ -40,8 +30,7 @@ namespace Game
 		static const U32 PRIME_5_ = 374761393U;
 
 		Random() {}
-		static U32 XXH_read32(const void* memPtr);
-		static U32 XXH_readLE32(const void* ptr);
-		static U32 XXH32_round(U32 seed, U32 input);
+		static U32 XXH_readLE32_(const void* ptr);
+		static U32 XXH32_round_(U32 seed, U32 input);
 	};
 }

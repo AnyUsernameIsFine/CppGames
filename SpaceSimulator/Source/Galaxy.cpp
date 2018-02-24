@@ -29,7 +29,7 @@ namespace Game
 	{
 		this->parent_ = parent;
 		this->radius_ = radius;
-		name_ = "Galaxy";
+		name_ = "Galaxy #" + std::to_string((unsigned int)Random::randInt());
 		mesh = new CubeMesh();
 	}
 
@@ -59,13 +59,13 @@ namespace Game
 	{
 		float maxRadius = Star::MAX_RADIUS * (Star::SCALE / SCALE);
 
-		int numberOfStars = Random::randInt(10, 20);
+		int numberOfStars = Random::randInt(10, 15);
 		float r = Random::randFloat();
 		float roundness = r * r * r;
 
 		for (int i = 0; i < numberOfStars; i++) {
 			float r = Random::randFloat();
-			float starRadius = maxRadius *(0.25f + 0.75f * r * r);
+			float starRadius = maxRadius *(0.5f + 0.5f * r * r);
 
 			auto star = std::make_shared<Star>(this, starRadius);
 

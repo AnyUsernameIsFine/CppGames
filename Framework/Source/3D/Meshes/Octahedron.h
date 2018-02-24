@@ -9,11 +9,11 @@ namespace Framework
 	public:
 		OctahedronMesh();
 		const std::vector<Vertex>& getVertices() const;
-		const std::vector<unsigned short>& getIndices() const;
+		const std::vector<GLushort>& getIndices() const;
 
 	private:
 		static std::vector<Vertex> vertices_;
-		static std::vector<unsigned short> indices_;
+		static std::vector<GLushort> indices_;
 
 		static void initialize_();
 	};

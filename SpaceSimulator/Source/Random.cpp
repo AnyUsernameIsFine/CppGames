@@ -5,21 +5,20 @@
 
 namespace Game
 {
-	void Random::setRandSeed(U32 seed)
+	void Random::setRandSeed(unsigned int seed)
 	{
 		rng_.seed(seed);
 		srand(seed);
 	}
 
-	void Random::setHashSeed(U32 seed)
+	void Random::setHashSeed(uint32_t seed)
 	{
 		hashSeed_ = seed;
 	}
 
-	float Random::randFloat(float min, float max)
+	int Random::randInt()
 	{
-		std::uniform_real_distribution<float> distribution(min, max);
-		return distribution(rng_);
+		return rng_();
 	}
 
 	int Random::randInt(int min, int max)
@@ -28,7 +27,13 @@ namespace Game
 		return distribution(rng_);
 	}
 
-	U32 Random::u32FromByteArray(const void* byteArray, size_t length)
+	float Random::randFloat(float min, float max)
+	{
+		std::uniform_real_distribution<float> distribution(min, max);
+		return distribution(rng_);
+	}
+
+	Random::U32 Random::ui32FromByteArray(const void* byteArray, size_t length)
 	{
 		const BYTE* p = (const BYTE*)byteArray;
 		const BYTE* bEnd = p + length;
@@ -42,13 +47,13 @@ namespace Game
 			U32 v4 = hashSeed_ - PRIME_1_;
 
 			do {
-				v1 = XXH32_round(v1, XXH_readLE32(p));
+				v1 = XXH32_round_(v1, XXH_readLE32_(p));
 				p += 4;
-				v2 = XXH32_round(v2, XXH_readLE32(p));
+				v2 = XXH32_round_(v2, XXH_readLE32_(p));
 				p += 4;
-				v3 = XXH32_round(v3, XXH_readLE32(p));
+				v3 = XXH32_round_(v3, XXH_readLE32_(p));
 				p += 4;
-				v4 = XXH32_round(v4, XXH_readLE32(p));
+				v4 = XXH32_round_(v4, XXH_readLE32_(p));
 				p += 4;
 			} while (p <= limit);
 
@@ -61,7 +66,7 @@ namespace Game
 		h32 += (U32)length;
 
 		while (p + 4 <= bEnd) {
-			h32 += XXH_readLE32(p) * PRIME_3_;
+			h32 += XXH_readLE32_(p) * PRIME_3_;
 			h32 = _rotl(h32, 17) * PRIME_4_;
 			p += 4;
 		}
@@ -82,22 +87,18 @@ namespace Game
 	}
 
 	Random::RNG Random::rng_;
-	U32 Random::hashSeed_;
+	Random::U32 Random::hashSeed_;
 	const bool Random::LITTLE_ENDIAN_ = *(const char*)(&ONE_);
 
-	U32 Random::XXH_read32(const void* memPtr)
+	Random::U32 Random::XXH_readLE32_(const void* ptr)
 	{
 		U32 val;
-		memcpy(&val, memPtr, sizeof(val));
-		return val;
+		memcpy(&val, ptr, sizeof(val));
+
+		return LITTLE_ENDIAN_ ? val : _byteswap_ulong(val);
 	}
 
-	U32 Random::XXH_readLE32(const void* ptr)
-	{
-		return LITTLE_ENDIAN_ ? XXH_read32(ptr) : _byteswap_ulong(XXH_read32(ptr));
-	}
-
-	U32 Random::XXH32_round(U32 seed, U32 input)
+	Random::U32 Random::XXH32_round_(U32 seed, U32 input)
 	{
 		seed += input * PRIME_2_;
 		seed = _rotl(seed, 13);

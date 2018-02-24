@@ -14,7 +14,7 @@ namespace Game
 		float getScale() const;
 		const glm::vec4& getColor() const;
 		float getCameraNearPlane() const;
-		void create(const Camera& camera);
+		void create();
 		void update(const Camera& camera);
 		void draw(const Camera& camera, float totalSeconds);
 
@@ -24,7 +24,7 @@ namespace Game
 
 		void addGalaxies_(const Vector3& offset = Vector3(0));
 
-		static const int MAX_GALAXIES_IN_A_ROW_;
+		static const int GALAXIES_PER_SIDE_;
 		static const float PERIOD_;
 	};
 }

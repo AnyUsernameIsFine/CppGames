@@ -12,7 +12,7 @@ namespace Framework
 		return vertices_;
 	}
 
-	const std::vector<unsigned short>& DodecahedronMesh::getIndices() const
+	const std::vector<GLushort>& DodecahedronMesh::getIndices() const
 	{
 		return indices_;
 	}
@@ -63,5 +63,5 @@ namespace Framework
 	}
 
 	std::vector<Mesh::Vertex> DodecahedronMesh::vertices_;
-	std::vector<unsigned short> DodecahedronMesh::indices_;
+	std::vector<GLushort> DodecahedronMesh::indices_;
 }

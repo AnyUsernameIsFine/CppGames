@@ -33,7 +33,7 @@ namespace Game
 	{
 		this->parent_ = parent;
 		this->radius_ = radius;
-		name_ = "Star";
+		name_ = "Star #" + std::to_string((unsigned int)Random::randInt());
 		mesh = new OctahedronMesh();
 	}
 
@@ -65,7 +65,7 @@ namespace Game
 
 		for (int i = 0; i < numberOfPlanets; i++) {
 			float r = Random::randFloat();
-			float planetRadius = maxRadius *(0.25f + 0.75f * r * r);
+			float planetRadius = maxRadius *(0.5f + 0.5f * r * r);
 
 			auto planet = std::make_shared<Planet>(this, planetRadius);
 

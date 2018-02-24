@@ -12,7 +12,7 @@ namespace Framework
 		return vertices_;
 	}
 
-	const std::vector<unsigned short>& CubeMesh::getIndices() const
+	const std::vector<GLushort>& CubeMesh::getIndices() const
 	{
 		return indices_;
 	}
@@ -47,5 +47,5 @@ namespace Framework
 	}
 
 	std::vector<Mesh::Vertex> CubeMesh::vertices_;
-	std::vector<unsigned short> CubeMesh::indices_;
+	std::vector<GLushort> CubeMesh::indices_;
 }
