@@ -31,14 +31,13 @@ namespace Game
 		std::string getSpeedString() const;
 
 	private:
-		CoordinateSystem* coordinateSystem_;
-		glm::vec3 velocity_;
-		glm::vec3 maxVelocity_;
-		glm::vec3 acceleration_;
+		CoordinateSystem* coordinateSystem;
+		glm::vec3 velocity;
+		glm::vec3 maxVelocity;
+		glm::vec3 acceleration;
+		std::vector<CameraHierarchyLevel> hierarchy;
 
-		std::vector<CameraHierarchyLevel> hierarchy_;
-
-		void setCorrectCoordinateSystem_();
-		void createHierarchy_();
+		void setCorrectCoordinateSystem();
+		void createHierarchy();
 	};
 }

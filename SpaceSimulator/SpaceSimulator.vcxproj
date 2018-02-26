@@ -139,7 +139,6 @@
     <ClInclude Include="Source\Main.h" />
     <ClInclude Include="Source\Moon.h" />
     <ClInclude Include="Source\Planet.h" />
-    <ClInclude Include="Source\Random.h" />
     <ClInclude Include="Source\Star.h" />
     <ClInclude Include="Source\Transform.h" />
     <ClInclude Include="Source\Universe.h" />
@@ -151,7 +150,6 @@
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\Moon.cpp" />
     <ClCompile Include="Source\Planet.cpp" />
-    <ClCompile Include="Source\Random.cpp" />
     <ClCompile Include="Source\Star.cpp" />
     <ClCompile Include="Source\Universe.cpp" />
   </ItemGroup>

@@ -5,10 +5,10 @@
 
 namespace Framework
 {
-	VertexBufferObject::VertexBufferObject(const std::vector<int>& attributes, int numberOfVertices, const void* vertices)
+	VertexBufferObject::VertexBufferObject(const vector<int>& attributes, int numberOfVertices, const void* vertices)
 	{
-		glCheck(glGenBuffers(1, &id_));
-		glCheck(glBindBuffer(GL_ARRAY_BUFFER, id_));
+		glCheck(glGenBuffers(1, &id));
+		glCheck(glBindBuffer(GL_ARRAY_BUFFER, id));
 
 		GLsizei size = 0;
 		for (auto const& attribute : attributes) {

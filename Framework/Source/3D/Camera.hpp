@@ -10,80 +10,78 @@ namespace Framework
 	public:
 		TransformType<T> transform;
 
-		bool isPerspective() const;
-		float getFieldOfView() const;
-		float getAspectRatio() const;
-		void setPerspective(bool perspective = true);
-		void setFieldOfView(float fov);
+		void usePerspective(bool use = true);
+		void setFieldOfView(float degrees);
 		void setAspectRatio(float ratio);
 		void setClippingPlanes(float near, float far);
 		void setSize(float size);
+		bool usesPerspective() const;
+		float getFieldOfView() const;
+		float getAspectRatio() const;
 		glm::mat4 getViewMatrix(bool rotationOnly = false) const;
 		glm::mat4 getProjectionMatrix() const;
 
 	private:
-		bool perspective_ = true;
-		float fov_ = 60.0f;
-		float ratio_ = 1.0f;
-		float near_ = 0.1f;
-		float far_ = 100.0f;
-		float size_ = 10.0f;
+		bool perspective = true;
+		float fieldOfView = 60.0f;
+		float aspectRatio = 1.0f;
+		float nearClippingPlane = 1.0f;
+		float farClippingPlane = 100.0f;
+		float size = 10.0f;
 	};
 
 	typedef CameraType<float> Camera;
 }
 
-//#include "Camera.h"
-
 namespace Framework
 {
 	template<typename T>
-	bool CameraType<T>::isPerspective() const
+	void CameraType<T>::usePerspective(bool use)
 	{
-		return perspective_;
-	}
-
-	template<typename T>
-	float CameraType<T>::getFieldOfView() const
-	{
-		return fov_;
-	}
-
-	template<typename T>
-	float CameraType<T>::getAspectRatio() const
-	{
-		return ratio_;
-	}
-
-	template<typename T>
-	void CameraType<T>::setPerspective(bool perspective)
-	{
-		perspective_ = perspective;
+		perspective = use;
 	}
 
 	template<typename T>
 	void CameraType<T>::setAspectRatio(float ratio)
 	{
-		ratio_ = ratio;
+		aspectRatio = ratio;
 	}
 
 	template<typename T>
-	void CameraType<T>::setFieldOfView(float fov)
+	void CameraType<T>::setFieldOfView(float degrees)
 	{
-		fov_ = fov;
+		fieldOfView = degrees;
 	}
 
 	template<typename T>
 	void CameraType<T>::setClippingPlanes(float near, float far)
 	{
-		near_ = near;
-		far_ = far;
+		nearClippingPlane = near;
+		farClippingPlane = far;
 	}
 
 	template<typename T>
 	void CameraType<T>::setSize(float size)
 	{
-		size_ = size;
+		this->size = size;
+	}
+
+	template<typename T>
+	bool CameraType<T>::usesPerspective() const
+	{
+		return perspective;
+	}
+
+	template<typename T>
+	float CameraType<T>::getFieldOfView() const
+	{
+		return fieldOfView;
+	}
+
+	template<typename T>
+	float CameraType<T>::getAspectRatio() const
+	{
+		return aspectRatio;
 	}
 
 	template<typename T>
@@ -102,13 +100,26 @@ namespace Framework
 	template<typename T>
 	glm::mat4 CameraType<T>::getProjectionMatrix() const
 	{
-		if (perspective_) {
-			return glm::perspective(glm::radians(fov_), ratio_, near_, far_);
+		if (perspective) {
+			return glm::perspective(
+				glm::radians(fieldOfView),
+				aspectRatio,
+				nearClippingPlane,
+				farClippingPlane
+			);
 		}
 		else {
-			float halfHeight = size_ * 0.5f;
-			float halfWidth = halfHeight * ratio_;
-			return glm::ortho(-halfWidth, halfWidth, -halfHeight, halfHeight, near_, far_);
+			float halfHeight = size * 0.5f;
+			float halfWidth = halfHeight * aspectRatio;
+
+			return glm::ortho(
+				-halfWidth,
+				halfWidth,
+				-halfHeight,
+				halfHeight,
+				nearClippingPlane,
+				farClippingPlane
+			);
 		}
 	}
 }

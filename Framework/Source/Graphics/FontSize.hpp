@@ -23,15 +23,14 @@ namespace Framework
 	{
 	public:
 		FontSize(int size);
-		~FontSize();
 		int getSize() const;
 		GLuint getTextureId() const;
 		const Glyph* getGlyph(char character);
 		const Glyph* addGlyph(char character, FT_GlyphSlot glyph);
 
 	private:
-		int size_;
-		std::unordered_map<char, Glyph> glyphs_;
-		GLuint textureId_;
+		int size;
+		std::unordered_map<char, Glyph> glyphs;
+		GLuint textureId;
 	};
 }

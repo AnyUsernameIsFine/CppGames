@@ -1,38 +1,36 @@
 #pragma once
 
+#include "System\Globals.hpp"
+
 #include <GL\glew.h>
 #include <SDL_error.h>
 
-#include <string>
 #include <iostream>
-
-#define console(output) std::cout << output << std::endl
-#define error(error) Framework::private_::error_(error, __FILE__, __LINE__)
-#define glCheckV(expr) Framework::private_::glCheckV_(expr, __FILE__, __LINE__, #expr)
-#define glCheck(expr) { expr; Framework::private_::glCheck_(__FILE__, __LINE__, #expr); }
-#define sdlCheckV(expr) Framework::private_::sdlCheckV_(expr, __FILE__, __LINE__, #expr)
-#define sdlCheck(expr) { expr; Framework::private_::sdlCheck_(__FILE__, __LINE__, #expr); }
-
-namespace
-{
-	const std::string GL_ERRORS[] = {
-		"GL_INVALID_ENUM",
-		"GL_INVALID_VALUE",
-		"GL_INVALID_OPERATION",
-		"GL_STACK_OVERFLOW",
-		"GL_STACK_UNDERFLOW",
-		"GL_OUT_OF_MEMORY",
-		"GL_INVALID_FRAMEBUFFER_OPERATION",
-	};
-}
 
 namespace Framework
 {
-	namespace private_
+#define console(output) std::cout << output << std::endl
+#define error(error) detail::error_(error, __FILE__, __LINE__)
+#define glCheckV(expr) detail::glCheckV_(expr, __FILE__, __LINE__, #expr)
+#define glCheck(expr) { expr; detail::glCheck_(__FILE__, __LINE__, #expr); }
+#define sdlCheckV(expr) detail::sdlCheckV_(expr, __FILE__, __LINE__, #expr)
+#define sdlCheck(expr) { expr; detail::sdlCheck_(__FILE__, __LINE__, #expr); }
+
+	namespace detail
 	{
-		inline void error_(const std::string& error, const std::string& file, int line, const std::string& expression = std::string())
+		const string GL_ERRORS[] = {
+			"GL_INVALID_ENUM",
+			"GL_INVALID_VALUE",
+			"GL_INVALID_OPERATION",
+			"GL_STACK_OVERFLOW",
+			"GL_STACK_UNDERFLOW",
+			"GL_OUT_OF_MEMORY",
+			"GL_INVALID_FRAMEBUFFER_OPERATION",
+		};
+
+		inline void error_(const string& error, const string& file, int line, const string& expression = string())
 		{
-			std::string string(file);
+			string string(file);
 			std::cerr << "\"" << error << "\" error in " << string.substr(string.find_last_of("\\/") + 1) << ":" << line << ".";
 			if (!expression.empty()) {
 				std::cerr << " (" << expression << ")";
@@ -41,13 +39,13 @@ namespace Framework
 		}
 
 		template<typename T>
-		inline T glCheckV_(T value, const std::string& file, int line, const std::string& expression)
+		inline T glCheckV_(T value, const string& file, int line, const string& expression)
 		{
 			glCheck_(file, line, expression);
 			return value;
 		}
 
-		inline void glCheck_(const std::string& file, int line, const std::string& expression)
+		inline void glCheck_(const string& file, int line, const string& expression)
 		{
 			GLenum e;
 			while ((e = glGetError()) != GL_NO_ERROR) {
@@ -56,13 +54,13 @@ namespace Framework
 		}
 
 		template<typename T>
-		inline T sdlCheckV_(T value, const std::string& file, int line, const std::string& expression)
+		inline T sdlCheckV_(T value, const string& file, int line, const string& expression)
 		{
 			sdlCheck_(file, line, expression);
 			return value;
 		}
 
-		inline void sdlCheck_(const std::string& file, int line, const std::string& expression)
+		inline void sdlCheck_(const string& file, int line, const string& expression)
 		{
 			const char* e;
 			while (std::strlen(e = SDL_GetError()) > 0) {

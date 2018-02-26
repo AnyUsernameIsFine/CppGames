@@ -10,6 +10,6 @@ namespace Framework
 		GLuint getId() const;
 
 	protected:
-		GLuint id_ = 0;
+		GLuint id = 0;
 	};
 }

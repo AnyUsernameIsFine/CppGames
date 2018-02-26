@@ -1,26 +1,26 @@
-#include "Icosahedron.h"
+#include "Icosahedron.hpp"
 
 namespace Framework
 {
 	IcosahedronMesh::IcosahedronMesh()
 	{
-		initialize_();
+		initialize();
 	}
 
-	const std::vector<Mesh::Vertex>& IcosahedronMesh::getVertices() const
+	const vector<Mesh::Vertex>& IcosahedronMesh::getVertices() const
 	{
-		return vertices_;
+		return vertices;
 	}
 
-	const std::vector<GLushort>& IcosahedronMesh::getIndices() const
+	const vector<GLushort>& IcosahedronMesh::getIndices() const
 	{
-		return indices_;
+		return indices;
 	}
 
-	void IcosahedronMesh::initialize_()
+	void IcosahedronMesh::initialize()
 	{
-		if (vertices_.empty()) {
-			std::vector<glm::vec3> positions;
+		if (vertices.empty()) {
+			vector<glm::vec3> positions;
 
 			float phi = (1 + sqrtf(5)) / 2;
 
@@ -30,12 +30,12 @@ namespace Framework
 
 			for (int i = -1; i <= +1; i += 2) {
 				for (int j = -1; j <= +1; j += 2) {
-					auto permutations = evenPermutationsOfVertex_(glm::vec3(i, j * phi, 0) * s);
+					auto permutations = evenPermutationsOfVertex(glm::vec3(i, j * phi, 0) * s);
 					positions.insert(positions.end(), permutations.begin(), permutations.end());
 				}
 			}
 
-			std::vector<std::vector<int>> faces = {
+			vector<vector<int>> faces = {
 				{ 0, 1, 6 },
 				{ 0, 2, 1 },
 				{ 0, 4, 8 },
@@ -60,11 +60,11 @@ namespace Framework
 
 			CreatedMesh mesh = createMesh(positions, faces);
 
-			vertices_ = mesh.vertices;
-			indices_ = mesh.indices;
+			vertices = mesh.vertices;
+			indices = mesh.indices;
 		}
 	}
 
-	std::vector<Mesh::Vertex> IcosahedronMesh::vertices_;
-	std::vector<GLushort> IcosahedronMesh::indices_;
+	vector<Mesh::Vertex> IcosahedronMesh::vertices;
+	vector<GLushort> IcosahedronMesh::indices;
 }

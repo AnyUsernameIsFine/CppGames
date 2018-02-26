@@ -32,6 +32,7 @@
     <Font Include="Resources\consola.ttf">
       <Filter>Resource Files</Filter>
     </Font>
+    <Font Include="Resources\calibri.ttf" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\flow.jpg">

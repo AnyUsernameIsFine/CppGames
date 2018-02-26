@@ -18,6 +18,6 @@ namespace Game
 		void create();
 
 	private:
-		void addPlanets_();
+		void addPlanets();
 	};
 }

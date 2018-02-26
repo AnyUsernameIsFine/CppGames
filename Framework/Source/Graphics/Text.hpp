@@ -9,37 +9,39 @@ namespace Framework
 	class Text
 	{
 	public:
-		~Text();
-		void loadFont(const std::string& filename);
-		void setFontFamily(const std::string& family);
+		void loadFont(const string& filename);
+		void setFontFamily(const string& family);
 		void setFontSize(int size);
-		void setFont(const std::string& family, int size);
-		void setColor(float r = 0, float g = 0, float b = 0, float a = 1);
+		void setFont(const string& family, int size);
+		void setColor(float r, float g, float b, float a = 1);
 		int getFontHeight() const;
-		void draw(float x, float y, const std::string& text) const;
+		void draw(float x, float y, const string& text);
 
 	private:
-		friend class Graphics;
-
 		struct GlyphQuad
 		{
 			GLfloat data[24];
 		};
 
-		static const int MAX_STRING_LENGTH_ = 65536;
+		static const int MAX_STRING_LENGTH = 65536;
 
-		ShaderProgram* program_;
-		int windowWidth_;
-		int windowHeight_;
-		GLuint vao_;
-		GlyphQuad* vertices_;
-		VertexBufferObject* vbo_;
+		ShaderProgram* program;
+		GLuint vao;
+		GlyphQuad* vertices;
+		VertexBufferObject* vbo;
+		bool windowHasResized = false;
+		int windowWidth;
+		int windowHeight;
+		vector<std::shared_ptr<Font>> fonts;
+		Font* font = nullptr;
+		int size = 30;
 
-		std::vector<std::shared_ptr<Font>> fonts_;
-		Font* font_ = nullptr;
-		int size_ = 30;
+		Text() {}
+		void initialize(int windowWidth, int windowHeight);
+		void onWindowResize(int width, int height);
+		Font* findFont(const FT_String* family) const;
+		void applyWindowSize();
 
-		void initialize_(int windowWidth, int windowHeight);
-		Font* findFont_(const FT_String* family) const;
+		friend class Graphics;
 	};
 }

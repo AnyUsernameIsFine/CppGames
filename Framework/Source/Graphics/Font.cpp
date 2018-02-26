@@ -3,65 +3,65 @@
 
 namespace Framework
 {
-	Font::Font(const std::string& filename)
+	Font::Font(const string& filename)
 	{
-		if (FT_Init_FreeType(&freeType_)) {
+		if (FT_Init_FreeType(&freeType)) {
 			error("Could not initialize FreeType");
 		}
 
-		if (FT_New_Face(freeType_, filename.c_str(), 0, &face_)) {
+		if (FT_New_Face(freeType, filename.c_str(), 0, &face)) {
 			error("Could not load font from file " + filename);
 		}
 	}
 
 	Font::~Font()
 	{
-		FT_Done_Face(face_);
-		FT_Done_FreeType(freeType_);
+		FT_Done_Face(face);
+		FT_Done_FreeType(freeType);
 	}
 
 	void Font::setSize(int size)
 	{
-		if (!fontSize_ || (fontSize_ && size != fontSize_->getSize())) {
-			fontSize_ = findFontSize_(size);
+		if (!fontSize || (fontSize && size != fontSize->getSize())) {
+			fontSize = findFontSize(size);
 
-			if (fontSize_) {
-				if (size != face_->size->metrics.y_ppem) {
-					FT_Set_Pixel_Sizes(face_, 0, size);
+			if (fontSize) {
+				if (size != face->size->metrics.y_ppem) {
+					FT_Set_Pixel_Sizes(face, 0, size);
 				}
 			}
 			else {
-				if (FT_Set_Pixel_Sizes(face_, 0, size)) {
+				if (FT_Set_Pixel_Sizes(face, 0, size)) {
 					error("Could not set font size " + size);
 				}
 
 				auto fontSize = std::make_shared<FontSize>(size);
-				fontSizes_.push_back(fontSize);
-				fontSize_ = fontSize.get();
+				fontSizes.push_back(fontSize);
+				this->fontSize = fontSize.get();
 			}
 		}
 	}
 
 	FT_String* Font::getFamilyName() const
 	{
-		return face_->family_name;
+		return face->family_name;
 	}
 
 	FT_Pos Font::getHeight() const
 	{
-		return face_->size->metrics.height >> 6;
+		return face->size->metrics.height >> 6;
 	}
 
 	const Glyph* Font::getGlyph(char character) const
 	{
-		const Glyph* glyph = fontSize_->getGlyph(character);
+		const Glyph* glyph = fontSize->getGlyph(character);
 
 		if (!glyph) {
-			if (FT_Load_Char(face_, character, FT_LOAD_RENDER)) {
+			if (FT_Load_Char(face, character, FT_LOAD_RENDER)) {
 				error("Could not load glyph " + character);
 			}
 
-			glyph = fontSize_->addGlyph(character, face_->glyph);
+			glyph = fontSize->addGlyph(character, face->glyph);
 		}
 
 		return glyph;
@@ -69,15 +69,15 @@ namespace Framework
 
 	GLuint Font::getTextureId() const
 	{
-		return fontSize_->getTextureId();
+		return fontSize->getTextureId();
 	}
 
-	FontSize* Font::findFontSize_(int size) const
+	FontSize* Font::findFontSize(int size) const
 	{
 		bool found = false;
 		FontSize* result = nullptr;
 
-		for (auto i = fontSizes_.begin(); i != fontSizes_.end() && !found; i++) {
+		for (auto i = fontSizes.begin(); i != fontSizes.end() && !found; i++) {
 			if (i->get()->getSize() == size) {
 				found = true;
 				result = i->get();

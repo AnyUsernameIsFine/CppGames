@@ -7,11 +7,11 @@ namespace Game
 {
 #ifdef UNIVERSE_SCALE
 #	if UNIVERSE_SCALE == 0
-	const float Star::SCALE = (int_least64_t)1 << 8;
+	const float Star::SCALE = (int64)1 << 8;
 #	elif UNIVERSE_SCALE == 1
-	const float Star::SCALE = (int_least64_t)1 << 14;
+	const float Star::SCALE = (int64)1 << 14;
 #	endif
-	const float Star::MAX_RADIUS = (int_least64_t)1 << 62;
+	const float Star::MAX_RADIUS = (int64)1 << 62;
 #else
 	// About 1.6 centimers per unit.
 	// Allows for stars (and their planetary systems) with a radius of over 480,000 AU
@@ -31,9 +31,9 @@ namespace Game
 
 	Star::Star(CoordinateSystem* parent, float radius)
 	{
-		this->parent_ = parent;
-		this->radius_ = radius;
-		name_ = "Star #" + std::to_string((unsigned int)Random::randInt());
+		this->parent = parent;
+		this->radius = radius;
+		name = "Star #" + std::to_string((unsigned int)Random::randInt());
 		mesh = new OctahedronMesh();
 	}
 
@@ -54,10 +54,10 @@ namespace Game
 
 	void Star::create()
 	{
-		addPlanets_();
+		addPlanets();
 	}
 
-	void Star::addPlanets_()
+	void Star::addPlanets()
 	{
 		float maxRadius = Planet::MAX_RADIUS * (Planet::SCALE / SCALE);
 
@@ -69,7 +69,7 @@ namespace Game
 
 			auto planet = std::make_shared<Planet>(this, planetRadius);
 
-			glm::vec2 v = glm::diskRand(0.8f * radius_ * parent_->getScale() / getScale());
+			glm::vec2 v = glm::diskRand(0.8f * radius * parent->getScale() / getScale());
 			planet->transform.setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });
 
 			r = Random::randFloat();
@@ -77,7 +77,7 @@ namespace Game
 
 			planet->create();
 
-			children_.push_back(planet);
+			children.push_back(planet);
 		}
 	}
 }

@@ -1,75 +1,77 @@
 #include "Graphics.hpp"
 #include "System\Error.hpp"
 
-#include <thread>
-
 namespace Framework
 {
 	void Graphics::clearScreen(float r, float g, float b, bool depth) const
 	{
-		glCheck(glClearColor(r, g, b, 1.0f));
+		glCheck(glClearColor(r, g, b, 1));
 		glCheck(glClear(GL_COLOR_BUFFER_BIT | (depth ? GL_DEPTH_BUFFER_BIT : 0)));
-	}
-
-	float Graphics::getDeltaSeconds() const
-	{
-		return (float)(frameLengths_[frameLengthsIndex_] / NANOSECONDS_PER_SECOND_);
-	}
-
-	float Graphics::getTotalSeconds() const
-	{
-		return (float)(nanosecondsSinceStart_ / NANOSECONDS_PER_SECOND_);
 	}
 
 	float Graphics::getFps() const
 	{
-		return (float)(numberOfFrameLengths_ * NANOSECONDS_PER_SECOND_ / frameLengthsTotal_);
+		return numberOfFrameLengths / frameLengthsTotal;
 	}
 
-	int Graphics::openWindow_()
+	int Graphics::openWindow()
 	{
-		return window.open_();
+		return window.open();
 	}
 
-	void Graphics::closeWindow_()
+	void Graphics::closeWindow()
 	{
-		window.close_();
+		window.close();
 	}
 
-	int Graphics::initialize_()
+	int Graphics::initialize()
 	{
-		if (window.activateOpenGL_() != 0) {
+		if (window.activateOpenGL() != 0) {
 			return 1;
 		}
 
-		text.initialize_(window.getWidth(), window.getHeight());
+		text.initialize(window.getWidth(), window.getHeight());
 
-		for (int i = 0; i < FPS_BUFFER_SIZE_; i++) {
-			frameLengths_[i] = 0;
+		for (int i = 0; i < FPS_BUFFER_SIZE; i++) {
+			frameLengths[i] = 0;
 		}
 
-		frameTimePoint_ = std::chrono::high_resolution_clock::now();
+		frameTimePoint.setToNow();
 
 		return 0;
 	}
 
-	void Graphics::update_()
+	void Graphics::update()
 	{
-		window.update_();
+		window.update();
 
-		auto now = std::chrono::high_resolution_clock::now();
-		auto frameLength = std::chrono::duration_cast<std::chrono::nanoseconds>(now - frameTimePoint_).count();
-		frameTimePoint_ = now;
+		TimePoint now;
+		float frameLength = now.differenceInSeconds(frameTimePoint);
+		frameTimePoint = now;
 
-		nanosecondsSinceStart_ += frameLength;
+		frameLengthsIndex = (frameLengthsIndex + 1) % FPS_BUFFER_SIZE;
+		frameLengthsTotal -= frameLengths[frameLengthsIndex];
+		frameLengths[frameLengthsIndex] = frameLength;
+		frameLengthsTotal += frameLength;
 
-		frameLengthsIndex_ = (frameLengthsIndex_ + 1) % FPS_BUFFER_SIZE_;
-		frameLengthsTotal_ -= frameLengths_[frameLengthsIndex_];
-		frameLengths_[frameLengthsIndex_] = frameLength;
-		frameLengthsTotal_ += frameLength;
+		if (numberOfFrameLengths < FPS_BUFFER_SIZE) {
+			numberOfFrameLengths++;
+		}
+	}
 
-		if (numberOfFrameLengths_ < FPS_BUFFER_SIZE_) {
-			numberOfFrameLengths_++;
+	void Graphics::onWindowResize(SDL_Event event)
+	{
+		if (event.type == SDL_WINDOWEVENT) {
+			int width = event.window.data1;
+			int height = event.window.data2;
+
+			switch (event.window.event) {
+			case SDL_WINDOWEVENT_RESIZED:
+				window.onResize(width, height);
+				break;
+			case SDL_WINDOWEVENT_SIZE_CHANGED:
+				text.onWindowResize(width, height);
+			}
 		}
 	}
 }

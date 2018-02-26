@@ -1,10 +1,10 @@
 #pragma once
 
+#include "System\TimePoint.hpp"
 #include "Window.hpp"
 #include "Text.hpp"
 
-#include <chrono>
-#include <vector>
+#include <SDL_events.h>
 
 namespace Framework
 {
@@ -16,25 +16,23 @@ namespace Framework
 
 		void clearScreen(float r = 0, float g = 0, float b = 0, bool depth = false) const;
 		float getFps() const;
-		float getDeltaSeconds() const;
-		float getTotalSeconds() const;
 
 	private:
+		static const int FPS_BUFFER_SIZE = 60;
+
+		float frameLengths[FPS_BUFFER_SIZE];
+		float frameLengthsTotal = 0;
+		int frameLengthsIndex = 0;
+		int numberOfFrameLengths = 0;
+		TimePoint frameTimePoint;
+
+		Graphics() {}
+		int openWindow();
+		void closeWindow();
+		int initialize();
+		void update();
+		void onWindowResize(SDL_Event event);
+
 		friend class Game;
-
-		static const int FPS_BUFFER_SIZE_ = 60;
-		const double NANOSECONDS_PER_SECOND_ = 1000000000;
-
-		long long nanosecondsSinceStart_;
-		long long frameLengths_[FPS_BUFFER_SIZE_];
-		long long frameLengthsTotal_ = 0;
-		int frameLengthsIndex_ = 0;
-		int numberOfFrameLengths_ = 0;
-		std::chrono::time_point<std::chrono::high_resolution_clock> frameTimePoint_;
-
-		int openWindow_();
-		void closeWindow_();
-		int initialize_();
-		void update_();
 	};
 }

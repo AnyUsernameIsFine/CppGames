@@ -1,35 +1,35 @@
-#include "Octahedron.h"
+#include "Octahedron.hpp"
 
 namespace Framework
 {
 	OctahedronMesh::OctahedronMesh()
 	{
-		initialize_();
+		initialize();
 	}
 
-	const std::vector<Mesh::Vertex>& OctahedronMesh::getVertices() const
+	const vector<Mesh::Vertex>& OctahedronMesh::getVertices() const
 	{
-		return vertices_;
+		return vertices;
 	}
 
-	const std::vector<GLushort>& OctahedronMesh::getIndices() const
+	const vector<GLushort>& OctahedronMesh::getIndices() const
 	{
-		return indices_;
+		return indices;
 	}
 
-	void OctahedronMesh::initialize_()
+	void OctahedronMesh::initialize()
 	{
-		if (vertices_.empty()) {
-			std::vector<glm::vec3> positions;
+		if (vertices.empty()) {
+			vector<glm::vec3> positions;
 
 			float s = sqrtf(3);
 
 			for (int i = -1; i <= +1; i += 2) {
-				auto permutations = evenPermutationsOfVertex_(glm::vec3(i, 0, 0) * s);
+				auto permutations = evenPermutationsOfVertex(glm::vec3(i, 0, 0) * s);
 				positions.insert(positions.end(), permutations.begin(), permutations.end());
 			}
 
-			std::vector<std::vector<int>> faces = {
+			vector<vector<int>> faces = {
 				{ 0, 2, 1 },
 				{ 0, 4, 2 },
 				{ 1, 2, 3 },
@@ -42,11 +42,11 @@ namespace Framework
 
 			CreatedMesh mesh = createMesh(positions, faces);
 
-			vertices_ = mesh.vertices;
-			indices_ = mesh.indices;
+			vertices = mesh.vertices;
+			indices = mesh.indices;
 		}
 	}
 
-	std::vector<Mesh::Vertex> OctahedronMesh::vertices_;
-	std::vector<GLushort> OctahedronMesh::indices_;
+	vector<Mesh::Vertex> OctahedronMesh::vertices;
+	vector<GLushort> OctahedronMesh::indices;
 }

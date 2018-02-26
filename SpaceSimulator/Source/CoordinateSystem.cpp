@@ -1,6 +1,6 @@
 #include "CoordinateSystem.h"
 
-#include <cmath>
+//#include <cmath>
 
 namespace Game
 {
@@ -13,25 +13,25 @@ namespace Game
 
 	CoordinateSystem* CoordinateSystem::getParent() const
 	{
-		return parent_;
+		return parent;
 	}
 
 	const std::vector<std::shared_ptr<CoordinateSystem>>& CoordinateSystem::getChildren() const
 	{
-		return children_;
+		return children;
 	}
 
 	const std::string& CoordinateSystem::getName() const
 	{
-		return name_;
+		return name;
 	}
 
 	float CoordinateSystem::getRadius() const
 	{
-		return radius_;
+		return radius;
 	}
 
-	void CoordinateSystem::drawWithChildren_(
+	void CoordinateSystem::drawWithChildren(
 		std::vector<std::vector<std::vector<DrawConfiguration>>>& toDrawList,
 		const std::vector<Camera::CameraHierarchyLevel>& hierarchy,	// list of the camera's positions and rotations relative to all its coordinate system's ancestors from outside in
 		int hierarchyIndex,											// which level of the camera hierarchy should we use for inverse rotations
@@ -46,7 +46,7 @@ namespace Game
 		glm::mat4 modelMatrix;
 
 		// only draw descendants if there are any
-		bool drawDescendants = !children_.empty();
+		bool drawDescendants = !children.empty();
 
 		DrawConfiguration drawConfiguration;
 		int toDrawListIndex;
@@ -76,13 +76,13 @@ namespace Game
 
 			// if this is not the universe, translate by the
 			// camera's position relative to this coordinate system
-			if (parent_) {
-				float r = getScale() / parent_->getScale();
+			if (parent) {
+				float r = getScale() / parent->getScale();
 				glm::vec3 v = -hierarchy[hierarchyIndex].position.toVec3() * r;
 				modelMatrix = glm::translate(modelMatrix, v);
 			}
 
-			drawConfiguration = { this, glm::mat4(1), modelMatrix, getColor(), radius_ };
+			drawConfiguration = { this, glm::mat4(1), modelMatrix, getColor(), radius };
 		}
 
 		// if this coordinate system is not in the hierarchy of the camera's coordinate systems
@@ -116,10 +116,10 @@ namespace Game
 				rotations = glm::mat3(anotherMatrix * modelMatrix); // use the rotation part of the matrix used for drawing
 
 				// calculate the camera position relative to this coordinate system
-				camPos = camPos * glm::conjugate(transform.getOrientation()) * parent_->getScale() / getScale();
+				camPos = camPos * glm::conjugate(transform.getOrientation()) * parent->getScale() / getScale();
 			}
 
-			drawConfiguration = { this, anotherMatrix, modelMatrix, getColor(), radius_ };
+			drawConfiguration = { this, anotherMatrix, modelMatrix, getColor(), radius };
 		}
 
 		// add this coordinate system to the list of coordinate systems to draw
@@ -130,8 +130,8 @@ namespace Game
 			// up to but excluding the first shared ancestor with the hierarchy
 			// of the camera's coordinate systems (which could be the camera's coordinate system itself)
 			// and scale by the relative scale of this coordinate system's direct ancestors
-			if (parent_) {
-				float r = getScale() / parent_->getScale();
+			if (parent) {
+				float r = getScale() / parent->getScale();
 				anotherMatrix = glm::scale(rotations, { r, r, r });
 			}
 			else {
@@ -139,8 +139,8 @@ namespace Game
 			}
 
 			// draw the coordinate system's descendants
-			for (auto& child : children_) {
-				child->drawWithChildren_(
+			for (auto& child : children) {
+				child->drawWithChildren(
 					toDrawList,
 					hierarchy,
 					hierarchyIndex,
@@ -156,11 +156,11 @@ namespace Game
 
 	void CoordinateSystem::initialize()
 	{
-		glGenVertexArrays(1, &vertexArray_);
-		glBindVertexArray(vertexArray_);
+		glGenVertexArrays(1, &vertexArray);
+		glBindVertexArray(vertexArray);
 
-		glGenBuffers(1, &vertexBuffer_);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer_);
+		glGenBuffers(1, &vertexBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 		glBufferData(GL_ARRAY_BUFFER, 60 * 6 * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
 
 		// vec3
@@ -171,13 +171,13 @@ namespace Game
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)(3 * sizeof(float)));
 
-		glGenBuffers(1, &indexBuffer_);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer_);
+		glGenBuffers(1, &indexBuffer);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 		// TODO: for some unknown reason, there needs to be room for one extra index
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 1 + 12 * 3 * 3 * sizeof(unsigned short), nullptr, GL_DYNAMIC_DRAW);
 
-		glGenBuffers(1, &instanceBuffer_);
-		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer_);
+		glGenBuffers(1, &instanceBuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
 		glBufferData(GL_ARRAY_BUFFER, MAX_IN_DRAW_LIST_ * sizeof(DrawConfiguration), nullptr, GL_DYNAMIC_DRAW);
 
 		GLsizei vec4Size = sizeof(glm::vec4);
@@ -205,32 +205,32 @@ namespace Game
 
 		glBindVertexArray(0);
 
-		shaderProgram_ = new ShaderProgram("Resources/coordinateSystem.vert", "Resources/coordinateSystem.frag");
+		shaderProgram = new ShaderProgram("Resources/coordinateSystem.vert", "Resources/coordinateSystem.frag");
 	}
 
-	void CoordinateSystem::draw_(const std::vector<std::vector<std::vector<DrawConfiguration>>>& toDrawList, const Camera& camera, float deltaSeconds)
+	void CoordinateSystem::myDraw(const std::vector<std::vector<std::vector<DrawConfiguration>>>& toDrawList, const Camera& camera)
 	{
 		auto hierarchy = camera.getHierarchy();
 
 		float fov = glm::radians(camera.getFieldOfView());
 		float ratio = camera.getAspectRatio();
 
-		shaderProgram_->use();
-		shaderProgram_->setUniform("view", camera.getViewMatrix(true));
+		shaderProgram->use();
+		shaderProgram->setUniform("view", camera.getViewMatrix(true));
 
 		//glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-		glBindVertexArray(vertexArray_);
+		glBindVertexArray(vertexArray);
 
 		for (int i = 0; i < (int)toDrawList.size(); i++) {
 			glClear(GL_DEPTH_BUFFER_BIT);
 
 			float near = 0.1f * hierarchy[i].coordinateSystem->getCameraNearPlane();
 			float far = near * 100000.0f;
-			shaderProgram_->setUniform("projection", glm::perspective(fov, ratio, near, far));
+			shaderProgram->setUniform("projection", glm::perspective(fov, ratio, near, far));
 
 			for (auto& list : toDrawList[i]) {
 				if (!(list.empty())) {
@@ -238,14 +238,14 @@ namespace Game
 
 					if (mesh != nullptr && !mesh->getVertices().empty()) {
 						auto vertices = mesh->getVertices();
-						glNamedBufferSubData(vertexBuffer_, 0, vertices.size() * sizeof(vertices[0]), &vertices[0]);
+						glNamedBufferSubData(vertexBuffer, 0, vertices.size() * sizeof(vertices[0]), &vertices[0]);
 
-						glNamedBufferSubData(instanceBuffer_, 0, list.size() * sizeof(DrawConfiguration), &list[0]);
+						glNamedBufferSubData(instanceBuffer, 0, list.size() * sizeof(DrawConfiguration), &list[0]);
 
 						auto indices = mesh->getIndices();
 
 						if (!indices.empty()) {
-							glNamedBufferSubData(indexBuffer_, 0, indices.size() * sizeof(indices[0]), &indices[0]);
+							glNamedBufferSubData(indexBuffer, 0, indices.size() * sizeof(indices[0]), &indices[0]);
 							glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_SHORT, nullptr, list.size());
 						}
 						else {
@@ -257,9 +257,9 @@ namespace Game
 		}
 	}
 
-	GLuint CoordinateSystem::vertexArray_;
-	GLuint CoordinateSystem::vertexBuffer_;
-	GLuint CoordinateSystem::indexBuffer_;
-	GLuint CoordinateSystem::instanceBuffer_;
-	ShaderProgram* CoordinateSystem::shaderProgram_;
+	GLuint CoordinateSystem::vertexArray;
+	GLuint CoordinateSystem::vertexBuffer;
+	GLuint CoordinateSystem::indexBuffer;
+	GLuint CoordinateSystem::instanceBuffer;
+	ShaderProgram* CoordinateSystem::shaderProgram;
 }

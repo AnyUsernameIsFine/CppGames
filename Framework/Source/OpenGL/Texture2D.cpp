@@ -7,10 +7,10 @@
 
 namespace Framework
 {
-	Texture2D::Texture2D(const std::string& filename)
+	Texture2D::Texture2D(const string& filename)
 	{
-		glCheck(glGenTextures(1, &id_));
-		glCheck(glBindTexture(GL_TEXTURE_2D, id_));
+		glCheck(glGenTextures(1, &id));
+		glCheck(glBindTexture(GL_TEXTURE_2D, id));
 		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
@@ -29,13 +29,9 @@ namespace Framework
 		stbi_image_free(data);
 	}
 
-	Texture2D::~Texture2D()
-	{
-	}
-
 	void Texture2D::use(int unit) const
 	{
 		glCheck(glActiveTexture(GL_TEXTURE0 + unit));
-		glCheck(glBindTexture(GL_TEXTURE_2D, id_));
+		glCheck(glBindTexture(GL_TEXTURE_2D, id));
 	}
 }

@@ -26,20 +26,22 @@ namespace Game
 
 		Game()
 		{
-			graphics.window.setTitle("Learn OpenG");
+			graphics.window.setTitle("Learn OpenGL");
 			graphics.window.setSize(800, 600);
-			graphics.window.hideCursor();
-			graphics.window.enableVSync();
+			//graphics.window.enableFullscreen();
+			//graphics.window.enableResizing();
+			graphics.window.enableCursor(false);
+			//graphics.window.enableVSync(false);
+			graphics.window.enableAntiAliasing();
 		}
 
-		void start()
+		void initialize()
 		{
-			srand((int)time(nullptr));
+			Random::setRandSeed(getGameTimeInSeconds());
 
 			graphics.text.loadFont("Resources/consola.ttf");
 			graphics.text.setFont("Consolas", 10);
 
-			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
 			camera.transform.moveZ(10);
 
 			for (int i = 0; i < 10; i++) {
@@ -90,7 +92,7 @@ namespace Game
 				 0.5,  0.5,  0.5,	 1,  0,  0,		1, 1,
 			};
 
-			unsigned int indices[] = {
+			GLushort indices[] = {
 				 0,  6,  3,  3,  6,  9,
 				 1,  4, 13, 13,  4, 16,
 				 2, 14,  8,  8, 14, 20,
@@ -114,29 +116,13 @@ namespace Game
 			glBindVertexArray(0);
 		}
 
-		void onKeyDown(SDL_Keycode key)
+		void update(float deltaSeconds)
 		{
-			if (key == SDLK_p) {
-				camera.setPerspective(!camera.isPerspective());
+			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
+
+			if (input.isKeyDown(SDLK_p)) {
+				camera.usePerspective(!camera.usesPerspective());
 			}
-		}
-
-		void onMouseMove(int x, int y)
-		{
-			float sensitivity = 0.05f;
-
-			camera.transform.yaw(sensitivity * x);
-			camera.transform.pitch(sensitivity * y);
-		}
-
-		void onMouseWheel(int y)
-		{
-			camera.setFieldOfView(camera.getFieldOfView() - y * 10);
-		}
-
-		void update()
-		{
-			float deltaSeconds = graphics.getDeltaSeconds();
 
 			float cameraSpeed = 5 * deltaSeconds;
 			camera.transform.move(
@@ -148,8 +134,14 @@ namespace Game
 			float rollSensitivity = 90 * deltaSeconds;
 			camera.transform.roll(rollSensitivity * (input.isKeyDown(SDLK_e) - input.isKeyDown(SDLK_q)));
 
+			float sensitivity = 0.05f;
+			camera.transform.yaw(sensitivity * input.getMouseDeltaX());
+			camera.transform.pitch(sensitivity * input.getMouseDeltaY());
+
+			camera.setFieldOfView(camera.getFieldOfView() - input.getMouseWheel() * 10);
+
 			for (auto& cube : cubes) {
-				cube.rotate(graphics.getDeltaSeconds() * 50.0f, { 1.0f, 0.3f, 0.5f });
+				cube.rotate(deltaSeconds * 50.0f, { 1.0f, 0.3f, 0.5f });
 			}
 
 			light.setPosition(0, 0, 0);
@@ -221,7 +213,7 @@ namespace Game
 			cubeShader->use();
 			cubeShader->setUniform("view", view);
 			cubeShader->setUniform("projection", projection);
-			cubeShader->setUniform("mix", (sin(graphics.getTotalSeconds()) + 1) * 0.5f);
+			cubeShader->setUniform("mix", (sin(getGameTimeInSeconds()) + 1) * 0.5f);
 			cubeShader->setUniform("lightColor", glm::vec3(1, 1, 1));
 
 			glm::vec3 p = light.getPosition().toVec3();
@@ -234,7 +226,7 @@ namespace Game
 			for (auto& cube : cubes) {
 				glm::mat4 model = cube.getModelMatrix();
 				cubeShader->setUniform("model", model);
-				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
+				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, nullptr);
 			}
 
 			glm::mat4 model = light.getModelMatrix();
@@ -245,7 +237,7 @@ namespace Game
 			lightShader->setUniform("projection", projection);
 
 			glBindVertexArray(lightVao);
-			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
+			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, nullptr);
 		}
 
 		void drawInfo()

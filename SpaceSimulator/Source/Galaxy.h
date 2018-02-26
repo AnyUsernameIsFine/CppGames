@@ -18,6 +18,6 @@ namespace Game
 		void create();
 
 	private:
-		void addStars_();
+		void addStars();
 	};
 }

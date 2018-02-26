@@ -1,26 +1,26 @@
-#include "Cube.h"
+#include "Cube.hpp"
 
 namespace Framework
 {
 	CubeMesh::CubeMesh()
 	{
-		initialize_();
+		initialize();
 	}
 
-	const std::vector<Mesh::Vertex>& CubeMesh::getVertices() const
+	const vector<Mesh::Vertex>& CubeMesh::getVertices() const
 	{
-		return vertices_;
+		return vertices;
 	}
 
-	const std::vector<GLushort>& CubeMesh::getIndices() const
+	const vector<GLushort>& CubeMesh::getIndices() const
 	{
-		return indices_;
+		return indices;
 	}
 
-	void CubeMesh::initialize_()
+	void CubeMesh::initialize()
 	{
-		if (vertices_.empty()) {
-			std::vector<glm::vec3> positions;
+		if (vertices.empty()) {
+			vector<glm::vec3> positions;
 
 			for (int i = -1; i <= +1; i += 2) {
 				for (int j = -1; j <= +1; j += 2) {
@@ -30,7 +30,7 @@ namespace Framework
 				}
 			}
 
-			std::vector<std::vector<int>> faces = {
+			vector<vector<int>> faces = {
 				{ 0, 1, 3, 2 },
 				{ 0, 4, 5, 1 },
 				{ 0, 2, 6, 4 },
@@ -41,11 +41,11 @@ namespace Framework
 
 			CreatedMesh mesh = createMesh(positions, faces);
 
-			vertices_ = mesh.vertices;
-			indices_ = mesh.indices;
+			vertices = mesh.vertices;
+			indices = mesh.indices;
 		}
 	}
 
-	std::vector<Mesh::Vertex> CubeMesh::vertices_;
-	std::vector<GLushort> CubeMesh::indices_;
+	vector<Mesh::Vertex> CubeMesh::vertices;
+	vector<GLushort> CubeMesh::indices;
 }

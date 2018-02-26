@@ -45,16 +45,14 @@ namespace Framework
 	typedef Vector3Type<float> Vector3;
 }
 
-//#include "Vector3.h"
-
 namespace Framework
 {
 	template<typename T>
 	Vector3Type<T>::Vector3Type(T t)
 	{
-		this->x = t;
-		this->y = t;
-		this->z = t;
+		x = t;
+		y = t;
+		z = t;
 	}
 
 	template<typename T>
@@ -158,19 +156,31 @@ namespace Framework
 	template<typename T>
 	Vector3Type<T> Vector3Type<T>::operator+(const Vector3Type& v) const
 	{
-		return { x + v.x, y + v.y, z + v.z };
+		return {
+			x + v.x,
+			y + v.y,
+			z + v.z
+		};
 	}
 
 	template<typename T>
 	Vector3Type<T> Vector3Type<T>::operator-(const Vector3Type& v) const
 	{
-		return { x - v.x, y - v.y, z - v.z };
+		return {
+			x - v.x, 
+			y - v.y,
+			z - v.z
+		};
 	}
 
 	template<typename T>
 	Vector3Type<T> Vector3Type<T>::operator*(const Vector3Type& v) const
 	{
-		return { x * v.x, y * v.y, z * v.z };
+		return { 
+			x * v.x,
+			y * v.y,
+			z * v.z 
+		};
 	}
 
 	template<typename T>

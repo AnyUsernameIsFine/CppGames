@@ -1,14 +1,13 @@
 #pragma once
 
+#include "System\Globals.hpp"
 #include "OpenGLObject.hpp"
-
-#include <vector>
 
 namespace Framework
 {
 	class VertexBufferObject : public OpenGLObject
 	{
 	public:
-		VertexBufferObject(const std::vector<int>& attributes, int numberOfVertices, const void* vertices = nullptr);
+		VertexBufferObject(const vector<int>& attributes, int numberOfVertices, const void* vertices = nullptr);
 	};
 }

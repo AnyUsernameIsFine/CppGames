@@ -1,11 +1,11 @@
-#include "PlatonicSolidMesh.h"
+#include "PlatonicSolidMesh.hpp"
 
 #define GLM_FORCE_INLINE
 #include <glm\glm.hpp>
 
 namespace Framework
 {
-	std::vector<glm::vec3> PlatonicSolidMesh::evenPermutationsOfVertex_(glm::vec3 v)
+	vector<glm::vec3> PlatonicSolidMesh::evenPermutationsOfVertex(const glm::vec3& v)
 	{
 		return {
 			{ v.x, v.y, v.z },
@@ -14,7 +14,7 @@ namespace Framework
 		};
 	}
 
-	std::vector<glm::vec3> PlatonicSolidMesh::oddPermutationsOfVertex_(glm::vec3 v)
+	vector<glm::vec3> PlatonicSolidMesh::oddPermutationsOfVertex(const glm::vec3& v)
 	{
 		return {
 			{ v.x, v.z, v.y },
@@ -23,7 +23,7 @@ namespace Framework
 		};
 	}
 
-	std::vector<glm::vec3> PlatonicSolidMesh::evenAndOddPermutationsOfVertex_(glm::vec3 v)
+	vector<glm::vec3> PlatonicSolidMesh::evenAndOddPermutationsOfVertex(const glm::vec3& v)
 	{
 		return {
 			{ v.x, v.y, v.z },
@@ -35,10 +35,9 @@ namespace Framework
 		};
 	}
 
-	PlatonicSolidMesh::CreatedMesh PlatonicSolidMesh::createMesh(const std::vector<glm::vec3>& positions, const std::vector<std::vector<int>>& faces)
+	PlatonicSolidMesh::CreatedMesh PlatonicSolidMesh::createMesh(const vector<glm::vec3>& positions, const vector<vector<int>>& faces)
 	{
 		CreatedMesh mesh;
-
 
 		bool useIndices = false;
 		for (int i = 0; !useIndices && i < (int)faces.size(); i++) {

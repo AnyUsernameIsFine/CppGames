@@ -19,13 +19,14 @@ namespace Game
 		{
 			graphics.window.setTitle("SpaceSimulator");
 			graphics.window.setSize(960, 540);
-			graphics.window.hideCursor();
-			graphics.window.enableVSync();
+			//graphics.window.enableFullscreen();
+			//graphics.window.enableResizing();
+			graphics.window.enableCursor(false);
+			//graphics.window.enableVSync(false);
 			graphics.window.enableAntiAliasing();
-			//graphics.window.setFullscreen(true);
 		}
 
-		void start()
+		void initialize()
 		{
 			graphics.text.loadFont("Resources/consola.ttf");
 			graphics.text.setFont("Consolas", graphics.window.getHeight() / 32);
@@ -40,7 +41,7 @@ namespace Game
 
 		void generateUniverse()
 		{
-			Random::setRandSeed((unsigned int)(graphics.getTotalSeconds() * 1000));
+			Random::setRandSeed((unsigned int)(getGameTimeInSeconds() * 1000) * 0);
 			seed = Random::randInt();
 			Random::setHashSeed(seed);
 
@@ -51,8 +52,8 @@ namespace Game
 
 #ifdef UNIVERSE_SCALEZ
 			auto galaxies = universe.getChildren();
-			auto stars = galaxies[0].get()->getChildren();
-			auto planets = stars[0].get()->getChildren();
+			auto stars = galaxies[0]->getChildren();
+			auto planets = stars[0]->getChildren();
 			cs = planets[0].get();
 			camera.setCoordinateSystem(cs);
 #endif
@@ -69,15 +70,7 @@ namespace Game
 			universe.update(camera);
 		}
 
-		void onMouseMove(int x, int y)
-		{
-			float sensitivity = 0.05f;
-
-			camera.transform.yaw(sensitivity * x);
-			camera.transform.pitch(sensitivity * y);
-		}
-
-		void update()
+		void update(float deltaSeconds)
 		{
 			if (input.isKeyDown(SDLK_g)) {
 				generateUniverse();
@@ -89,10 +82,12 @@ namespace Game
 				(float)(input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w))
 			);
 
-			float deltaSeconds = graphics.getDeltaSeconds();
-
 			float rollSensitivity = 90 * deltaSeconds;
 			camera.transform.roll(rollSensitivity * (input.isKeyDown(SDLK_e) - input.isKeyDown(SDLK_q)));
+
+			float sensitivity = 0.05f;
+			camera.transform.yaw(sensitivity * input.getMouseDeltaX());
+			camera.transform.pitch(sensitivity * input.getMouseDeltaY());
 
 			camera.update(deltaSeconds);
 
@@ -103,7 +98,7 @@ namespace Game
 		{
 			graphics.clearScreen(0, 0, 0);
 
-			universe.draw(camera, graphics.getTotalSeconds());
+			universe.draw(camera);
 
 			int fps = (int)round(graphics.getFps());
 			Vector3 position = camera.transform.getPosition();

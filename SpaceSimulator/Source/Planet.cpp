@@ -7,11 +7,11 @@ namespace Game
 {
 #ifdef UNIVERSE_SCALE
 #	if UNIVERSE_SCALE == 0
-	const float Planet::SCALE = (int_least64_t)1 << 4;
+	const float Planet::SCALE = (int64)1 << 4;
 #	elif UNIVERSE_SCALE == 1
-	const float Planet::SCALE = (int_least64_t)1 << 7;
+	const float Planet::SCALE = (int64)1 << 7;
 #	endif
-	const float Planet::MAX_RADIUS = (int_least64_t)1 << 62;
+	const float Planet::MAX_RADIUS = (int64)1 << 62;
 #else
 	// A little over 0.06 millimeters per unit.
 	// Allows for planets (and the orbits of their moons) with a radius of over 1800 times
@@ -30,9 +30,9 @@ namespace Game
 
 	Planet::Planet(CoordinateSystem* parent, float radius)
 	{
-		this->parent_ = parent;
-		this->radius_ = radius;
-		name_ = "Planet #" + std::to_string((unsigned int)Random::randInt());
+		this->parent = parent;
+		this->radius = radius;
+		name = "Planet #" + std::to_string((unsigned int)Random::randInt());
 		mesh = new DodecahedronMesh();
 	}
 
@@ -53,10 +53,10 @@ namespace Game
 
 	void Planet::create()
 	{
-		addMoons_();
+		addMoons();
 	}
 
-	void Planet::addMoons_()
+	void Planet::addMoons()
 	{
 		float maxRadius = Moon::MAX_RADIUS * (Moon::SCALE / SCALE);
 
@@ -68,13 +68,13 @@ namespace Game
 
 			auto moon = std::make_shared<Moon>(this, moonRadius);
 
-			glm::vec2 v = glm::diskRand(0.8f * radius_ * parent_->getScale() / getScale());
+			glm::vec2 v = glm::diskRand(0.8f * radius * parent->getScale() / getScale());
 			moon->transform.setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });
 
 			r = Random::randFloat();
 			moon->transform.rotate(45 * r * r, glm::sphericalRand(1.0f));
 
-			children_.push_back(moon);
+			children.push_back(moon);
 		}
 	}
 }

@@ -1,26 +1,26 @@
-#include "Dodecahedron.h"
+#include "Dodecahedron.hpp"
 
 namespace Framework
 {
 	DodecahedronMesh::DodecahedronMesh()
 	{
-		initialize_();
+		initialize();
 	}
 
-	const std::vector<Mesh::Vertex>& DodecahedronMesh::getVertices() const
+	const vector<Mesh::Vertex>& DodecahedronMesh::getVertices() const
 	{
-		return vertices_;
+		return vertices;
 	}
 
-	const std::vector<GLushort>& DodecahedronMesh::getIndices() const
+	const vector<GLushort>& DodecahedronMesh::getIndices() const
 	{
-		return indices_;
+		return indices;
 	}
 
-	void DodecahedronMesh::initialize_()
+	void DodecahedronMesh::initialize()
 	{
-		if (vertices_.empty()) {
-			std::vector<glm::vec3> positions;
+		if (vertices.empty()) {
+			vector<glm::vec3> positions;
 
 			float h = (sqrtf(5) - 1) / 2;
 			float onePlusH = 1 + h;
@@ -35,12 +35,12 @@ namespace Framework
 					for (int k = -1; k <= +1; k += 2) {
 						positions.emplace_back(glm::vec3(i, j, k) * s);
 					}
-					auto permutations = evenPermutationsOfVertex_(glm::vec3(i * onePlusH, j * oneMinusH2, 0) * s);
+					auto permutations = evenPermutationsOfVertex(glm::vec3(i * onePlusH, j * oneMinusH2, 0) * s);
 					positions.insert(positions.end(), permutations.begin(), permutations.end());
 				}
 			}
 
-			std::vector<std::vector<int>> faces = {
+			vector<vector<int>> faces = {
 				{ 0, 2, 7, 5, 4 },
 				{ 0, 3, 8, 1, 2 },
 				{ 0, 4, 9, 10, 3 },
@@ -57,11 +57,11 @@ namespace Framework
 
 			CreatedMesh mesh = createMesh(positions, faces);
 
-			vertices_ = mesh.vertices;
-			indices_ = mesh.indices;
+			vertices = mesh.vertices;
+			indices = mesh.indices;
 		}
 	}
 
-	std::vector<Mesh::Vertex> DodecahedronMesh::vertices_;
-	std::vector<GLushort> DodecahedronMesh::indices_;
+	vector<Mesh::Vertex> DodecahedronMesh::vertices;
+	vector<GLushort> DodecahedronMesh::indices;
 }

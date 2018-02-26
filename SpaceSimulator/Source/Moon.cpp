@@ -6,7 +6,7 @@ namespace Game
 {
 #ifdef UNIVERSE_SCALE
 	const float Moon::SCALE = 1;
-	const float Moon::MAX_RADIUS = (int_least64_t)1 << 62;
+	const float Moon::MAX_RADIUS = (int64)1 << 62;
 #else
 	// A little over 0.06 millimeters per unit.
 	const float Moon::SCALE = 1.0f / (1 << 14);
@@ -20,9 +20,9 @@ namespace Game
 
 	Moon::Moon(CoordinateSystem* parent, float radius)
 	{
-		this->parent_ = parent;
-		this->radius_ = radius;
-		name_ = "Moon #" + std::to_string((unsigned int)Random::randInt());
+		this->parent = parent;
+		this->radius = radius;
+		name = "Moon #" + std::to_string((unsigned int)Random::randInt());
 		mesh = new IcosahedronMesh();
 	}
 

@@ -1,15 +1,15 @@
 #pragma once
 
+#include "System\Globals.hpp"
+
 #include <GL\glew.h>
 
 #define GLM_FORCE_INLINE 
 #include <glm\vec3.hpp>
 
-#include <vector>
-
 namespace Framework
 {
-	class Mesh
+	class Mesh abstract
 	{
 	public:
 		union Vertex
@@ -22,7 +22,7 @@ namespace Framework
 			};
 		};
 
-		virtual const std::vector<Vertex>& getVertices() const = 0;
-		virtual const std::vector<GLushort>& getIndices() const = 0;
+		virtual const vector<Vertex>& getVertices() const = 0;
+		virtual const vector<GLushort>& getIndices() const = 0;
 	};
 }

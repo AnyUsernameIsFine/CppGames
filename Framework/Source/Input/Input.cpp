@@ -1,30 +1,52 @@
 #include "Input.hpp"
-#include "System\Error.hpp"
 
 namespace Framework
 {
-	//Input::Input()
-	//{
-	//	keyboardState_ = SDL_GetKeyboardState(nullptr);
-	//}
-
 	bool Input::isKeyDown(SDL_Keycode key) const
 	{
-		return keyboardState_[SDL_GetScancodeFromKey(key)];
+		return keyboardState[SDL_GetScancodeFromKey(key)];
 	}
 
 	bool Input::isKeyUp(SDL_Keycode key) const
 	{
-		return !keyboardState_[SDL_GetScancodeFromKey(key)];
+		return !keyboardState[SDL_GetScancodeFromKey(key)];
 	}
 
-	void Input::processEvent_(SDL_Event event)
+	int Input::getMouseDeltaX() const
 	{
-		//switch (event.type) {
-		//case SDL_KEYDOWN:
-		//case SDL_KEYUP:
-		//	//keyboardState_ = SDL_GetKeyboardState(nullptr);
-		//	break;
-		//}
+		return mouseDeltaX;
+	}
+
+	int Input::getMouseDeltaY() const
+	{
+		return mouseDeltaY;
+	}
+
+	int Input::getMouseWheel() const
+	{
+		return mouseWheel;
+	}
+
+	void Input::processEvent(SDL_Event event)
+	{
+		switch (event.type) {
+		case SDL_MOUSEMOTION:
+			int x, y;
+			SDL_GetRelativeMouseState(&x, &y);
+			mouseDeltaX += x;
+			mouseDeltaY += y;
+			break;
+
+		case SDL_MOUSEWHEEL:
+			mouseWheel += event.wheel.y;
+			break;
+		}
+	}
+
+	void Input::clear()
+	{
+		mouseDeltaX = 0;
+		mouseDeltaY = 0;
+		mouseWheel = 0;
 	}
 }

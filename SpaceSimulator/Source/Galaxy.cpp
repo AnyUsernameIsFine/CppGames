@@ -7,11 +7,11 @@ namespace Game
 {
 #ifdef UNIVERSE_SCALE
 #	if UNIVERSE_SCALE == 0
-	const float Galaxy::SCALE = (int_least64_t)1 << 12;
+	const float Galaxy::SCALE = (int64)1 << 12;
 #	elif UNIVERSE_SCALE == 1
-	const float Galaxy::SCALE = (int_least64_t)1 << 21;
+	const float Galaxy::SCALE = (int64)1 << 21;
 #	endif
-	const float Galaxy::MAX_RADIUS = (int_least64_t)1 << 62;
+	const float Galaxy::MAX_RADIUS = (int64)1 << 62;
 #else
 	// 32,768 meters per unit.
 	// Allows for galaxies with a radius of up to nearly 16 million light-years
@@ -27,9 +27,9 @@ namespace Game
 
 	Galaxy::Galaxy(CoordinateSystem* parent, float radius)
 	{
-		this->parent_ = parent;
-		this->radius_ = radius;
-		name_ = "Galaxy #" + std::to_string((unsigned int)Random::randInt());
+		this->parent = parent;
+		this->radius = radius;
+		name = "Galaxy #" + std::to_string((unsigned int)Random::randInt());
 		mesh = new CubeMesh();
 	}
 
@@ -51,11 +51,11 @@ namespace Game
 	void Galaxy::create()
 	{
 #ifdef UNIVERSE_SCALE
-		addStars_();
+		addStars();
 #endif
 	}
 
-	void Galaxy::addStars_()
+	void Galaxy::addStars()
 	{
 		float maxRadius = Star::MAX_RADIUS * (Star::SCALE / SCALE);
 
@@ -69,7 +69,7 @@ namespace Game
 
 			auto star = std::make_shared<Star>(this, starRadius);
 
-			glm::vec3 v = glm::ballRand(0.8f * radius_ * parent_->getScale() / getScale());
+			glm::vec3 v = glm::ballRand(0.8f * radius * parent->getScale() / getScale());
 			star->transform.setPosition({ (Coordinate)v.x, (Coordinate)(v.y * roundness), (Coordinate)v.z });
 
 			r = Random::randFloat();
@@ -77,7 +77,7 @@ namespace Game
 
 			star->create();
 
-			children_.push_back(star);
+			children.push_back(star);
 		}
 	}
 }

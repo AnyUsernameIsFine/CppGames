@@ -1,33 +1,29 @@
 #include "Text.hpp"
 #include "System\Error.hpp"
 
+#define GLM_FORCE_INLINE 
 #include <glm\glm.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 
 namespace Framework
 {
-	Text::~Text()
-	{
-		delete[] vertices_;
-	}
-
-	void Text::loadFont(const std::string& filename)
+	void Text::loadFont(const string& filename)
 	{
 		auto font = std::make_shared<Font>(filename);
 
-		if (!findFont_(font->getFamilyName())) {
-			fonts_.push_back(font);
+		if (!findFont(font->getFamilyName())) {
+			fonts.push_back(font);
 		}
 	}
 
-	void Text::setFontFamily(const std::string& family)
+	void Text::setFontFamily(const string& family)
 	{
-		Font* font = findFont_(family.c_str());
+		Font* font = findFont(family.c_str());
 
 		if (font) {
-			if (font != font_) {
-				font_ = font;
-				font_->setSize(size_);
+			if (font != this->font) {
+				this->font = font;
+				this->font->setSize(size);
 			}
 		}
 		else {
@@ -37,10 +33,10 @@ namespace Framework
 
 	void Text::setFontSize(int size)
 	{
-		if (font_) {
-			if (size != size_) {
-				size_ = size;
-				font_->setSize(size);
+		if (font) {
+			if (size != this->size) {
+				this->size = size;
+				font->setSize(size);
 			}
 		}
 		else {
@@ -48,7 +44,7 @@ namespace Framework
 		}
 	}
 
-	void Text::setFont(const std::string& family, int size)
+	void Text::setFont(const string& family, int size)
 	{
 		setFontFamily(family);
 		setFontSize(size);
@@ -56,19 +52,24 @@ namespace Framework
 
 	void Text::setColor(float r, float g, float b, float a)
 	{
-		program_->use();
-		program_->setUniform("color", glm::vec4(r, g, b, a));
+		program->use();
+		program->setUniform("color", glm::vec4(r, g, b, a));
 	}
 
 	int Text::getFontHeight() const
 	{
-		return font_->getHeight();
+		return font->getHeight();
 	}
 
-	void Text::draw(float x, float y, const std::string& text) const
+	void Text::draw(float x, float y, const string& text)
 	{
-		if (font_) {
-			FT_Pos lineHeight = font_->getHeight();
+		if (font) {
+			if (windowHasResized) {
+				windowHasResized = false;
+				applyWindowSize();
+			}
+
+			FT_Pos lineHeight = font->getHeight();
 
 			float lineX = x;
 			float lineY = y + lineHeight;
@@ -77,7 +78,7 @@ namespace Framework
 
 			for (auto c : text) {
 				if (c != '\n') {
-					const Glyph* glyph = font_->getGlyph(c);
+					const Glyph* glyph = font->getGlyph(c);
 
 					float xpos = lineX + glyph->left;
 					float ypos = glyph->top - lineY - glyph->height;
@@ -87,7 +88,7 @@ namespace Framework
 					float textureRight = textureLeft + glyph->width / 1024.0f;
 					float textureBottom = textureTop + glyph->height / 1024.0f;
 
-					vertices_[numberOfGlyphs] = {
+					vertices[numberOfGlyphs] = {
 						xpos, ypos,									textureLeft, textureBottom,
 						xpos + glyph->width, ypos,					textureRight, textureBottom,
 						xpos, ypos + glyph->height,					textureLeft, textureTop,
@@ -127,15 +128,15 @@ namespace Framework
 			glGetIntegerv(GL_BLEND_DST_ALPHA, &blendDstAlpha);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-			program_->use();
+			program->use();
 
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, font_->getTextureId());
+			glBindTexture(GL_TEXTURE_2D, font->getTextureId());
 
-			glBindVertexArray(vao_);
-			glBindBuffer(GL_ARRAY_BUFFER, vbo_->getId());
+			glBindVertexArray(vao);
+			glBindBuffer(GL_ARRAY_BUFFER, vbo->getId());
 
-			glBufferSubData(GL_ARRAY_BUFFER, 0, 96 * numberOfGlyphs, &vertices_[0]);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, 96 * numberOfGlyphs, &vertices[0]);
 			glDrawArrays(GL_TRIANGLES, 0, 6 * numberOfGlyphs);
 
 			// enable depth testing if it was enabled
@@ -159,8 +160,11 @@ namespace Framework
 		}
 	}
 
-	void Text::initialize_(int windowWidth, int windowHeight)
+	void Text::initialize(int windowWidth, int windowHeight)
 	{
+		this->windowWidth = windowWidth;
+		this->windowHeight = windowHeight;
+
 		const char* vertexShader =
 			"#version 330 core\n"
 
@@ -191,28 +195,33 @@ namespace Framework
 			"	fragColor = color * vec4(1, 1, 1, texture(fontSizeTexture, vertTexCoords).r);"
 			"}";
 
-		program_ = new ShaderProgram(vertexShader, fragmentShader, false);
+		program = new ShaderProgram(vertexShader, fragmentShader, false);
 
-		glm::mat4 projection = glm::ortho(0.0f, (float)windowWidth, -(float)windowHeight, 0.0f);
-
-		program_->use();
-		program_->setUniform("projection", projection);
+		applyWindowSize();
 
 		setColor(0.5f, 0.5f, 0.5f);
 
-		glGenVertexArrays(1, &vao_);
-		glBindVertexArray(vao_);
-		vertices_ = new GlyphQuad[MAX_STRING_LENGTH_];
-		vbo_ = new VertexBufferObject({ 4 }, 6 * MAX_STRING_LENGTH_);
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
+		vertices = new GlyphQuad[MAX_STRING_LENGTH];
+		vbo = new VertexBufferObject({ 4 }, 6 * MAX_STRING_LENGTH);
 		glBindVertexArray(0);
 	}
 
-	Font* Text::findFont_(const FT_String* family) const
+	void Text::onWindowResize(int width, int height)
+	{
+		windowHasResized = true;
+
+		windowWidth = width;
+		windowHeight = height;
+	}
+
+	Font* Text::findFont(const FT_String* family) const
 	{
 		bool found = false;
 		Font* result = nullptr;
 
-		for (auto i = fonts_.begin(); i != fonts_.end() && !found; i++) {
+		for (auto i = fonts.begin(); i != fonts.end() && !found; i++) {
 			if (strcmp(i->get()->getFamilyName(), family) == 0) {
 				found = true;
 				result = i->get();
@@ -220,5 +229,13 @@ namespace Framework
 		}
 
 		return result;
+	}
+
+	void Text::applyWindowSize()
+	{
+		glm::mat4 projection = glm::ortho(0.0f, (float)windowWidth, -(float)windowHeight, 0.0f);
+
+		program->use();
+		program->setUniform("projection", projection);
 	}
 }

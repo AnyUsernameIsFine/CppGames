@@ -1,16 +1,14 @@
 #pragma once
 
+#include "System\Globals.hpp"
 #include "OpenGLObject.hpp"
-
-#include <string>
 
 namespace Framework
 {
 	class Texture2D : public OpenGLObject
 	{
 	public:
-		Texture2D(const std::string& filename);
-		~Texture2D();
+		Texture2D(const string& filename);
 
 		void use(int unit = 0) const;
 	};

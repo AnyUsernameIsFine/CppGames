@@ -4,6 +4,7 @@
 
 #define GLM_FORCE_INLINE 
 #include <glm\gtc\quaternion.hpp>
+#include <glm\gtc\matrix_transform.hpp>
 
 namespace Framework
 {
@@ -50,28 +51,23 @@ namespace Framework
 		const glm::mat4& getModelMatrix(const glm::vec3& cameraPosition);
 
 	private:
-		Vector3Type<T> position_;
-		glm::quat orientation_;
-		glm::vec3 scale_;
-		bool useModelAxes_ = true;
+		Vector3Type<T> position;
+		glm::quat orientation;
+		glm::vec3 myScale;
+		bool modelAxes = true;
+		bool isScaled = false;
+		bool isRotationMatrixValid;
+		glm::mat4 rotationMatrix;
+		bool isModelMatrixValid;
+		glm::mat4 modelMatrix;
+		glm::vec3 modelMatrixPosition;
+		glm::vec3 modelMatrixPositionRotated;
 
-		bool isScaled_ = false;
-		bool isRotationMatrixValid_;
-		glm::mat4 rotationMatrix_;
-		bool isModelMatrixValid_;
-		glm::mat4 modelMatrix_;
-		glm::vec3 modelMatrixPosition_;
-		glm::vec3 modelMatrixPositionRotated_;
-
-		const glm::mat4& getModelMatrix_(const glm::vec3& position);
+		const glm::mat4& myGetModelMatrix(const glm::vec3& position);
 	};
 
 	typedef TransformType<float> Transform;
 }
-
-//#include "Transform.h"
-
-#include <glm\gtc\matrix_transform.hpp>
 
 namespace Framework
 {
@@ -84,15 +80,9 @@ namespace Framework
 	}
 
 	template<typename T>
-	void TransformType<T>::useModelAxes(bool use)
-	{
-		useModelAxes_ = use;
-	}
-
-	template<typename T>
 	void TransformType<T>::setPosition(const Vector3Type<T>& position)
 	{
-		position_ = position;
+		this->position = position;
 	}
 
 	template<typename T>
@@ -104,10 +94,10 @@ namespace Framework
 	template<typename T>
 	void TransformType<T>::setOrientation(const glm::quat& orientation)
 	{
-		orientation_ = orientation;
+		this->orientation = orientation;
 
-		isRotationMatrixValid_ = false;
-		isModelMatrixValid_ = false;
+		isRotationMatrixValid = false;
+		isModelMatrixValid = false;
 	}
 
 	template<typename T>
@@ -125,10 +115,10 @@ namespace Framework
 	template<typename T>
 	void TransformType<T>::setScale(const glm::vec3& scale)
 	{
-		scale_ = scale;
+		myScale = scale;
 
-		isScaled_ = (scale != glm::vec3(1));
-		isModelMatrixValid_ = false;
+		isScaled = (scale != glm::vec3(1));
+		isModelMatrixValid = false;
 	}
 
 	template<typename T>
@@ -144,37 +134,43 @@ namespace Framework
 	}
 
 	template<typename T>
+	void TransformType<T>::useModelAxes(bool use)
+	{
+		modelAxes = use;
+	}
+
+	template<typename T>
 	const Vector3Type<T>& TransformType<T>::getPosition() const
 	{
-		return position_;
+		return position;
 	}
 
 	template<typename T>
 	const glm::quat& TransformType<T>::getOrientation() const
 	{
-		return orientation_;
+		return orientation;
 	}
 
 	template<typename T>
 	glm::vec3 TransformType<T>::getEulerAngles() const
 	{
-		return glm::degrees(glm::eulerAngles(orientation_));
+		return glm::degrees(glm::eulerAngles(orientation));
 	}
 
 	template<typename T>
 	const glm::vec3& TransformType<T>::getScale() const
 	{
-		return scale_;
+		return myScale;
 	}
 
 	template<typename T>
 	void TransformType<T>::move(const glm::vec3& vector)
 	{
-		if (useModelAxes_) {
-			position_ += vector * orientation_;
+		if (modelAxes) {
+			position += vector * orientation;
 		}
 		else {
-			position_ += vector;
+			position += vector;
 		}
 	}
 
@@ -207,11 +203,11 @@ namespace Framework
 	{
 		glm::quat rotation = glm::angleAxis(glm::radians(angle), axis);
 
-		if (useModelAxes_) {
-			setOrientation(glm::normalize(rotation * orientation_));
+		if (modelAxes) {
+			setOrientation(glm::normalize(rotation * orientation));
 		}
 		else {
-			setOrientation(glm::normalize(orientation_ * rotation));
+			setOrientation(glm::normalize(orientation * rotation));
 		}
 	}
 
@@ -236,7 +232,7 @@ namespace Framework
 	template<typename T>
 	void TransformType<T>::scale(const glm::vec3& factor)
 	{
-		setScale(scale_ * factor);
+		setScale(myScale * factor);
 	}
 
 	template<typename T>
@@ -272,59 +268,54 @@ namespace Framework
 	template<typename T>
 	const glm::mat4& TransformType<T>::getRotationMatrix()
 	{
-		if (!isRotationMatrixValid_) {
-			rotationMatrix_ = glm::mat4_cast(glm::conjugate(orientation_));
-			isRotationMatrixValid_ = true;
+		if (!isRotationMatrixValid) {
+			isRotationMatrixValid = true;
+
+			rotationMatrix = glm::mat4_cast(glm::conjugate(orientation));
 		}
 
-		return rotationMatrix_;
+		return rotationMatrix;
 	}
 
 	template<typename T>
 	const glm::mat4& TransformType<T>::getModelMatrix()
 	{
-		return getModelMatrix_({ position_.x, position_.y, position_.z });
+		return myGetModelMatrix(position.toVec3());
 	}
 
 	template<typename T>
 	const glm::mat4& TransformType<T>::getModelMatrix(const Vector3Type<T>& cameraPosition)
 	{
-		Vector3Type<T> distance = position_ - cameraPosition;
-
-		return getModelMatrix_({ distance.x, distance.y, distance.z });
+		return myGetModelMatrix((position - cameraPosition).toVec3());
 	}
 
 	template<typename T>
 	const glm::mat4& TransformType<T>::getModelMatrix(const glm::vec3& cameraPosition)
 	{
-		return getModelMatrix_({
-			(float)position_.x - cameraPosition.x,
-			(float)position_.y - cameraPosition.y,
-			(float)position_.z - cameraPosition.z,
-			});
+		return myGetModelMatrix(position.toVec3() - cameraPosition);
 	}
 
 	template<typename T>
-	const glm::mat4& TransformType<T>::getModelMatrix_(const glm::vec3& position)
+	const glm::mat4& TransformType<T>::myGetModelMatrix(const glm::vec3& position)
 	{
-		if (position != modelMatrixPosition_ || !isRotationMatrixValid_) {
-			modelMatrixPosition_ = position;
-			modelMatrixPositionRotated_ = orientation_ * position;
+		if (position != modelMatrixPosition || !isRotationMatrixValid) {
+			modelMatrixPosition = position;
+			modelMatrixPositionRotated = orientation * position;
 
-			isModelMatrixValid_ = false;
+			isModelMatrixValid = false;
 		}
 
-		if (!isModelMatrixValid_) {
-			if (isScaled_) {
-				modelMatrix_ = glm::scale(glm::translate(getRotationMatrix(), modelMatrixPositionRotated_), scale_);
+		if (!isModelMatrixValid) {
+			isModelMatrixValid = true;
+
+			if (isScaled) {
+				modelMatrix = glm::scale(glm::translate(getRotationMatrix(), modelMatrixPositionRotated), myScale);
 			}
 			else {
-				modelMatrix_ = glm::translate(getRotationMatrix(), modelMatrixPositionRotated_);
+				modelMatrix = glm::translate(getRotationMatrix(), modelMatrixPositionRotated);
 			}
-
-			isModelMatrixValid_ = true;
 		}
 
-		return modelMatrix_;
+		return modelMatrix;
 	}
 }

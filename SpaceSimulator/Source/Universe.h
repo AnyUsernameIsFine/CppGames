@@ -16,15 +16,15 @@ namespace Game
 		float getCameraNearPlane() const;
 		void create();
 		void update(const Camera& camera);
-		void draw(const Camera& camera, float totalSeconds);
+		void draw(const Camera& camera);
 
 	private:
-		Vector3 updateCameraPosition_;
-		glm::uvec3 updateIndex_;
+		Vector3 updateCameraPosition;
+		glm::uvec3 updateIndex;
 
-		void addGalaxies_(const Vector3& offset = Vector3(0));
+		void addGalaxies(const Vector3& offset = Vector3(0));
 
-		static const int GALAXIES_PER_SIDE_;
-		static const float PERIOD_;
+		static const int GALAXIES_PER_SIDE;
+		static const float PERIOD;
 	};
 }

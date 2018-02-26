@@ -20,12 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\3D\Camera.hpp" />
-    <ClInclude Include="Source\3D\Mesh.h" />
-    <ClInclude Include="Source\3D\Meshes\Cube.h" />
-    <ClInclude Include="Source\3D\Meshes\Dodecahedron.h" />
-    <ClInclude Include="Source\3D\Meshes\Icosahedron.h" />
-    <ClInclude Include="Source\3D\Meshes\Octahedron.h" />
-    <ClInclude Include="Source\3D\Meshes\PlatonicSolidMesh.h" />
+    <ClInclude Include="Source\3D\Mesh.hpp" />
+    <ClInclude Include="Source\3D\Meshes\Cube.hpp" />
+    <ClInclude Include="Source\3D\Meshes\Dodecahedron.hpp" />
+    <ClInclude Include="Source\3D\Meshes\Icosahedron.hpp" />
+    <ClInclude Include="Source\3D\Meshes\Octahedron.hpp" />
+    <ClInclude Include="Source\3D\Meshes\PlatonicSolidMesh.hpp" />
     <ClInclude Include="Source\3D\Transform.hpp" />
     <ClInclude Include="Source\3D\Vector3.hpp" />
     <ClInclude Include="Source\Framework.hpp" />
@@ -45,6 +45,9 @@
     <ClInclude Include="Source\OpenGL\VertexShader.hpp" />
     <ClInclude Include="Source\System\Error.hpp" />
     <ClInclude Include="Source\System\Game.hpp" />
+    <ClInclude Include="Source\System\Globals.hpp" />
+    <ClInclude Include="Source\System\Random.hpp" />
+    <ClInclude Include="Source\System\TimePoint.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\3D\Meshes\Cube.cpp" />
@@ -67,6 +70,8 @@
     <ClCompile Include="Source\OpenGL\VertexBufferObject.cpp" />
     <ClCompile Include="Source\OpenGL\VertexShader.cpp" />
     <ClCompile Include="Source\System\Game.cpp" />
+    <ClCompile Include="Source\System\Random.cpp" />
+    <ClCompile Include="Source\System\TimePoint.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

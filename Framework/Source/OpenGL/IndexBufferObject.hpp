@@ -7,6 +7,6 @@ namespace Framework
 	class IndexBufferObject : public OpenGLObject
 	{
 	public:
-		IndexBufferObject(int numberOfIndices, const unsigned int* indices = nullptr);
+		IndexBufferObject(int numberOfIndices, const GLushort* indices = nullptr);
 	};
 }

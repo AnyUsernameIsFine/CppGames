@@ -41,12 +41,12 @@ namespace Game
 			float radius;
 		};
 
-		CoordinateSystem* parent_;
-		std::vector<std::shared_ptr<CoordinateSystem>> children_;
-		std::string name_;
-		float radius_;
+		CoordinateSystem* parent;
+		std::vector<std::shared_ptr<CoordinateSystem>> children;
+		std::string name;
+		float radius;
 
-		void drawWithChildren_(
+		void drawWithChildren(
 			std::vector<std::vector<std::vector<DrawConfiguration>>>& toDrawList,
 			const std::vector<Camera::CameraHierarchyLevel>& cameraHierarchy,
 			int hierarchyIndex = -1,
@@ -57,12 +57,12 @@ namespace Game
 			int descendantGenerationsToDraw = 0
 		);
 
-		static GLuint vertexArray_;
-		static GLuint vertexBuffer_;
-		static GLuint indexBuffer_;
-		static GLuint instanceBuffer_;
-		static ShaderProgram* shaderProgram_;
+		static GLuint vertexArray;
+		static GLuint vertexBuffer;
+		static GLuint indexBuffer;
+		static GLuint instanceBuffer;
+		static ShaderProgram* shaderProgram;
 
-		static void draw_(const std::vector<std::vector<std::vector<DrawConfiguration>>>& drawConfigurations, const Camera& camera, float deltaSeconds);
+		static void myDraw(const std::vector<std::vector<std::vector<DrawConfiguration>>>& drawConfigurations, const Camera& camera);
 	};
 }

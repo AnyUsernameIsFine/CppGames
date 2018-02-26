@@ -3,147 +3,211 @@
 
 #include <GL\glew.h>
 
-#include <ostream>
-#include <sstream>
-
 namespace Framework
 {
-	void Window::setTitle(const std::string& title)
+	Window::Window()
 	{
-		title_ = title;
+		sdlCheck(SDL_Init(SDL_INIT_VIDEO));
 
-		if (window_) {
-			sdlCheck(SDL_SetWindowTitle(window_, title.c_str()));
+		sdlCheck(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3));
+		sdlCheck(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3));
+	}
+
+	void Window::setTitle(const string& title)
+	{
+		if (title != this->title) {
+			this->title = title;
+
+			if (window) {
+				sdlCheck(SDL_SetWindowTitle(window, title.c_str()));
+			}
 		}
 	}
 
 	void Window::setSize(int width, int height)
 	{
-		width_ = width;
-		height_ = height;
+		if (width != this->width || height != this->height) {
+			this->width = width;
+			this->height = height;
 
-		if (window_) {
-			sdlCheck(SDL_SetWindowSize(window_, width, height));
+			sdlCheck(SDL_GetDesktopDisplayMode(0, &closestDisplayMode));
+			closestDisplayMode.w = width;
+			closestDisplayMode.h = height;
+			sdlCheck(SDL_GetClosestDisplayMode(0, &closestDisplayMode, &closestDisplayMode));
+
+			if (window) {
+				applySize();
+			}
 		}
 	}
 
-	void Window::hideCursor(bool hide)
+	void Window::enableFullscreen(bool enable)
 	{
-		hideCursor_ = hide;
+		if (enable != fullscreen) {
+			fullscreen = enable;
 
-		sdlCheck(SDL_SetRelativeMouseMode(hide ? SDL_TRUE : SDL_FALSE));
+			if (window) {
+				sdlCheck(SDL_SetWindowFullscreen(window, enable ? SDL_WINDOW_FULLSCREEN : 0));
+				applySize();
+			}
+		}
+	}
+
+	void Window::enableResizing(bool enable)
+	{
+		if (enable != resizing) {
+			resizing = enable;
+
+			if (window) {
+				sdlCheck(SDL_SetWindowResizable(window, enable ? SDL_TRUE : SDL_FALSE));
+			}
+		}
+	}
+
+	void Window::enableCursor(bool enable)
+	{
+		if (enable != cursor) {
+			cursor = enable;
+
+			if (window) {
+				sdlCheck(SDL_SetRelativeMouseMode(enable ? SDL_FALSE : SDL_TRUE));
+			}
+		}
 	}
 
 	void Window::enableVSync(bool enable)
 	{
-		enableVSync_ = enable;
+		if (enable != vSync) {
+			vSync = enable;
 
-		if (window_) {
-			sdlCheck(SDL_GL_SetSwapInterval(enable ? 1 : 0));
+			if (window) {
+				sdlCheck(SDL_GL_SetSwapInterval(enable ? 1 : 0));
+			}
 		}
 	}
 
 	void Window::enableAntiAliasing(bool enable)
 	{
-		if (!window_) {
-			antiAliasing_ = enable;
-		}
-	}
-
-	void Window::setFullscreen(bool set)
-	{
-		setFullscreen_ = set;
-
-		if (window_) {
-			sdlCheck(SDL_SetWindowFullscreen(window_, set ? SDL_WINDOW_FULLSCREEN : 0));
+		if (enable != antiAliasing) {
+			if (!window) {
+				antiAliasing = enable;
+			}
+			else {
+				error("Can't change anti-aliasing setting after window has been created");
+			}
 		}
 	}
 
 	int Window::getWidth() const
 	{
-		int width;
-		sdlCheck(SDL_GL_GetDrawableSize(window_, &width, nullptr));
-
-		return width;
+		return fullscreen ? closestDisplayMode.w : width;
 	}
 
 	int Window::getHeight() const
 	{
-		int height;
-		sdlCheck(SDL_GL_GetDrawableSize(window_, nullptr, &height));
-
-		return height;
+		return fullscreen ? closestDisplayMode.h : height;
 	}
 
-	int Window::open_()
+	int Window::open()
 	{
-		sdlCheck(SDL_Init(SDL_INIT_VIDEO));
-		sdlCheck(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3));
-		sdlCheck(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3));
-
-		if (antiAliasing_) {
+		if (antiAliasing) {
 			sdlCheck(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1));
 			sdlCheck(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4));
 		}
 
-		window_ = sdlCheckV(SDL_CreateWindow(
-			title_.c_str(),
+		window = sdlCheckV(SDL_CreateWindow(
+			title.c_str(),
 			SDL_WINDOWPOS_UNDEFINED,
 			SDL_WINDOWPOS_UNDEFINED,
-			width_,
-			height_,
-			SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL | (setFullscreen_ ? SDL_WINDOW_FULLSCREEN : 0)
+			width,
+			height,
+			SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL | (resizing ? SDL_WINDOW_RESIZABLE : 0)
 		));
 
-		if (window_ == NULL) {
+		if (window == NULL) {
 			return 1;
 		}
 
-		if (hideCursor_ && sdlCheckV(SDL_SetRelativeMouseMode(SDL_TRUE)) < 0) {
+		if (fullscreen) {
+			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+		}
+
+		if (!cursor && sdlCheckV(SDL_SetRelativeMouseMode(SDL_TRUE)) < 0) {
 			return 1;
 		}
 
 		return 0;
 	}
 
-	void Window::close_()
+	void Window::close()
 	{
-		sdlCheck(SDL_DestroyWindow(window_));
+		sdlCheck(SDL_DestroyWindow(window));
 		sdlCheck(SDL_Quit());
 	}
 
-	int Window::activateOpenGL_()
+	int Window::activateOpenGL()
 	{
-		if (sdlCheckV(SDL_GL_CreateContext(window_)) == NULL) {
+		if (sdlCheckV(SDL_GL_CreateContext(window)) == NULL) {
 			return 1;
 		}
 
-		if (sdlCheckV(SDL_GL_SetSwapInterval(enableVSync_ ? 1 : 0)) != 0) {
+		if (sdlCheckV(SDL_GL_SetSwapInterval(vSync ? 1 : 0)) != 0) {
 			return 1;
 		}
 
 		GLenum e;
 		if ((e = glewInit()) != GLEW_OK) {
-			error("glewInit failed: " + std::string((const char*)glewGetErrorString(e)));
+			error("glewInit failed: " + string((const char*)glewGetErrorString(e)));
 			return 1;
 		}
 
 		return 0;
 	}
 
-	void Window::update_()
+	void Window::update()
 	{
-		if (hidden_) {
-			sdlCheck(SDL_ShowWindow(window_));
-			sdlCheck(SDL_RaiseWindow(window_));
+		if (isHidden) {
+			isHidden = false;
 
-			if (antiAliasing_) {
+			sdlCheck(SDL_ShowWindow(window));
+			sdlCheck(SDL_RaiseWindow(window));
+
+			if (antiAliasing) {
 				glCheck(glEnable(GL_MULTISAMPLE));
 			}
-
-			hidden_ = false;
 		}
 
-		sdlCheck(SDL_GL_SwapWindow(window_));
+		if (hasResized) {
+			hasResized = false;
+
+			if (!fullscreen) {
+				width = resizedWidth;
+				height = resizedHeight;
+			}
+
+			glCheck(glViewport(0, 0, resizedWidth, resizedHeight));
+		}
+
+		sdlCheck(SDL_GL_SwapWindow(window));
+	}
+
+	void Window::onResize(int width, int height)
+	{
+		hasResized = true;
+
+		resizedWidth = width;
+		resizedHeight = height;
+	}
+
+	void Window::applySize()
+	{
+		if (fullscreen) {
+			sdlCheck(SDL_SetWindowDisplayMode(window, &closestDisplayMode));
+			glCheck(glViewport(0, 0, closestDisplayMode.w, closestDisplayMode.h));
+		}
+		else {
+			sdlCheck(SDL_SetWindowSize(window, width, height));
+			glCheck(glViewport(0, 0, width, height));
+		}
 	}
 }

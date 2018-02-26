@@ -7,78 +7,89 @@ namespace Framework
 {
 	int Game::run()
 	{
-		if (isRunning_) {
+		if (isRunning || graphics.openWindow() != 0) {
 			return 1;
 		}
 
-		if (graphics.openWindow_() != 0) {
-			return 1;
-		}
+		isRunning = true;
 
-		isRunning_ = true;
+		std::thread thread(&Game::gameLoop, this);
 
-		std::thread thread(&Game::gameLoop_, this);
+		SDL_AddEventWatch(onWindowResize, this);
 
-		while (isRunning_) {
+		while (isRunning) {
 			SDL_Event event;
 
 			while (sdlCheckV(SDL_PollEvent(&event)) != 0) {
-				input.processEvent_(event);
+				input.processEvent(event);
 
 				switch (event.type) {
 				case SDL_WINDOWEVENT:
 					if (event.window.event == SDL_WINDOWEVENT_MINIMIZED) {
-						isActive_ = false;
+						isWindowActive = false;
 					}
 					else if (event.window.event == SDL_WINDOWEVENT_RESTORED) {
-						isActive_ = true;
+						isWindowActive = true;
 					}
 					break;
-				case SDL_KEYDOWN:
-					onKeyDown(event.key.keysym.sym);
-					break;
-				case SDL_MOUSEMOTION:
-					onMouseMove(event.motion.xrel, event.motion.yrel);
-					break;
-				case SDL_MOUSEWHEEL:
-					onMouseWheel(event.wheel.y);
-					break;
+
 				case SDL_QUIT:
-					isRunning_ = false;
+					isRunning = false;
 				}
 			}
 
-			std::this_thread::sleep_for(std::chrono::milliseconds(MILLISECONDS_YIELD_));
+			sleep(MILLISECONDS_YIELD);
 		}
 
 		thread.join();
 
-		graphics.closeWindow_();
+		graphics.closeWindow();
 
 		return 0;
 	}
 
-	void Game::gameLoop_()
+	float Game::getGameTimeInSeconds() const
 	{
-		if (graphics.initialize_() != 0) {
-			isRunning_ = false;
+		return TimePoint().differenceInSeconds(startTime);
+	}
+
+	void Game::gameLoop()
+	{
+		if (graphics.initialize() != 0) {
+			isRunning = false;
 		}
 		else {
-			start();
+			initialize();
+			updateTimeInSeconds = getGameTimeInSeconds();
 
-			while (isRunning_) {
-				update();
+			while (isRunning) {
+				float gameSeconds = getGameTimeInSeconds();
+				update(gameSeconds - updateTimeInSeconds);
+				input.clear();
+				updateTimeInSeconds = gameSeconds;
 
-				if (isActive_) {
+				if (isWindowActive) {
 					draw();
-					graphics.update_();
+					graphics.update();
 				}
 				else {
-					std::this_thread::sleep_for(std::chrono::milliseconds(MILLISECONDS_YIELD_));
+					sleep(MILLISECONDS_YIELD);
 				}
 			}
 
-			stop();
+			finalize();
 		}
+	}
+
+	void Game::sleep(int milliseconds) const
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+	}
+
+	int Game::onWindowResize(void* game, SDL_Event* event)
+	{
+		((Game*)game)->graphics.onWindowResize(*event);
+
+		return 0;
 	}
 }
