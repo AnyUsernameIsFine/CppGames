@@ -167,7 +167,7 @@ namespace Framework
 	Vector3Type<T> Vector3Type<T>::operator-(const Vector3Type& v) const
 	{
 		return {
-			x - v.x, 
+			x - v.x,
 			y - v.y,
 			z - v.z
 		};
@@ -176,10 +176,10 @@ namespace Framework
 	template<typename T>
 	Vector3Type<T> Vector3Type<T>::operator*(const Vector3Type& v) const
 	{
-		return { 
+		return {
 			x * v.x,
 			y * v.y,
-			z * v.z 
+			z * v.z
 		};
 	}
 

@@ -11,7 +11,7 @@ namespace Framework
 
 	float Graphics::getFps() const
 	{
-		return numberOfFrameLengths / frameLengthsTotal;
+		return std::fmaxf(0, numberOfFrameLengths / frameLengthsTotal);
 	}
 
 	int Graphics::openWindow()

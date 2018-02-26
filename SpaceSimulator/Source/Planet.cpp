@@ -32,7 +32,7 @@ namespace Game
 	{
 		this->parent = parent;
 		this->radius = radius;
-		name = "Planet #" + std::to_string((unsigned int)Random::randInt());
+		name = "Planet #" + std::to_string((uint)Random::randInt());
 		mesh = new DodecahedronMesh();
 	}
 

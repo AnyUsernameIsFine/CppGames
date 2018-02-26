@@ -6,7 +6,6 @@
 #include <glm\gtx\norm.hpp>
 
 #include <limits>
-//#include <cmath>
 #include <sstream>
 #include <iomanip>
 

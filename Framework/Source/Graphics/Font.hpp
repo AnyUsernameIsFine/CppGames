@@ -15,7 +15,7 @@ namespace Framework
 		void setSize(int size);
 		FT_String* getFamilyName() const;
 		FT_Pos getHeight() const;
-		const Glyph* getGlyph(char character) const;
+		const Glyph* getGlyph(FT_ULong character) const;
 		GLuint getTextureId() const;
 
 	private:

@@ -52,7 +52,7 @@ namespace Framework
 		return face->size->metrics.height >> 6;
 	}
 
-	const Glyph* Font::getGlyph(char character) const
+	const Glyph* Font::getGlyph(FT_ULong character) const
 	{
 		const Glyph* glyph = fontSize->getGlyph(character);
 

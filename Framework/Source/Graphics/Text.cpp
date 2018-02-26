@@ -61,7 +61,12 @@ namespace Framework
 		return font->getHeight();
 	}
 
-	void Text::draw(float x, float y, const string& text)
+	TextStream Text::draw(float x, float y)
+	{
+		return TextStream(this, x, y);
+	}
+
+	void Text::draw(float x, float y, const std::u32string& text)
 	{
 		if (font) {
 			if (windowHasResized) {
@@ -83,10 +88,11 @@ namespace Framework
 					float xpos = lineX + glyph->left;
 					float ypos = glyph->top - lineY - glyph->height;
 
-					float textureLeft = glyph->textureX / 1024.0f;
-					float textureTop = glyph->textureY / 1024.0f;
-					float textureRight = textureLeft + glyph->width / 1024.0f;
-					float textureBottom = textureTop + glyph->height / 1024.0f;
+					float d = 1.0f / 1024;
+					float textureLeft = glyph->textureX * d;
+					float textureTop = glyph->textureY * d;
+					float textureRight = textureLeft + glyph->width * d;
+					float textureBottom = textureTop + glyph->height * d;
 
 					vertices[numberOfGlyphs] = {
 						xpos, ypos,									textureLeft, textureBottom,

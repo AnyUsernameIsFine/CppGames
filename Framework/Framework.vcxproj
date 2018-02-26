@@ -48,6 +48,7 @@
     <ClInclude Include="Source\System\Globals.hpp" />
     <ClInclude Include="Source\System\Random.hpp" />
     <ClInclude Include="Source\System\TimePoint.hpp" />
+    <ClInclude Include="Source\Graphics\TextStream.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\3D\Meshes\Cube.cpp" />
@@ -72,6 +73,7 @@
     <ClCompile Include="Source\System\Game.cpp" />
     <ClCompile Include="Source\System\Random.cpp" />
     <ClCompile Include="Source\System\TimePoint.cpp" />
+    <ClCompile Include="Source\Graphics\TextStream.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

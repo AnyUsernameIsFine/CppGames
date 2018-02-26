@@ -42,7 +42,7 @@ namespace Framework
 		return textureId;
 	}
 
-	const Glyph* FontSize::getGlyph(char character)
+	const Glyph* FontSize::getGlyph(FT_ULong character)
 	{
 		auto glyph = glyphs.find(character);
 
@@ -54,14 +54,16 @@ namespace Framework
 		}
 	}
 
-	const Glyph* FontSize::addGlyph(char character, FT_GlyphSlot glyph)
+	const Glyph* FontSize::addGlyph(FT_ULong character, FT_GlyphSlot glyph)
 	{
 		glActiveTexture(GL_TEXTURE0);
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-		int textureX = (int)(((unsigned char)character % 16) * (1024 / 16.0f));
-		int textureY = (int)(((unsigned char)character / 16) * (1024 / 16.0f));
+		int textureX = (int)(((unsigned char)numberOfGlyphs % 16) * (1024 / 16.0f));
+		int textureY = (int)(((unsigned char)numberOfGlyphs / 16) * (1024 / 16.0f));
+
+		numberOfGlyphs++;
 
 		glTextureSubImage2D(
 			textureId,
@@ -77,7 +79,7 @@ namespace Framework
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
-		glyphs.insert({ character, {
+		glyphs[character] = {
 			textureX,
 			textureY,
 			glyph->bitmap.width,
@@ -85,7 +87,7 @@ namespace Framework
 			glyph->bitmap_left,
 			glyph->bitmap_top,
 			glyph->advance.x >> 6,
-		} });
+		};
 
 		return &glyphs[character];
 	}

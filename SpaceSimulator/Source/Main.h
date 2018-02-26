@@ -41,7 +41,7 @@ namespace Game
 
 		void generateUniverse()
 		{
-			Random::setRandSeed((unsigned int)(getGameTimeInSeconds() * 1000) * 0);
+			Random::setRandSeed((uint)(getGameTimeInSeconds() * 1000) * 0);
 			seed = Random::randInt();
 			Random::setHashSeed(seed);
 
@@ -96,22 +96,17 @@ namespace Game
 
 		void draw()
 		{
-			graphics.clearScreen(0, 0, 0);
+			graphics.clearScreen();
 
 			universe.draw(camera);
 
-			int fps = (int)round(graphics.getFps());
-			Vector3 position = camera.transform.getPosition();
-			glm::ivec3 o = camera.transform.getEulerAngles();
+			TextStream stream;
+			stream << "seed     " << seed << '\n';
+			stream << "speed    " << camera.getSpeedString() << '\n';
+			stream << "system   " << camera.getCoordinateSystem()->getName();
 
-			std::string fpsString = std::to_string(fps) + " fps";
-			std::string seedString = "seed     " + std::to_string(seed);
-			std::string speedString = "speed    " + camera.getSpeedString();
-			std::string csString = "system   " + camera.getCoordinateSystem()->getName();
-
-			graphics.text.draw(2, -5, fpsString);
-			graphics.text.draw(2, -5 + graphics.window.getHeight() - 3.0f * graphics.text.getFontHeight(),
-				seedString + "\n" + speedString + "\n" + csString + "\n");
+			graphics.text.draw(2, -5) << (int)round(graphics.getFps()) << " fps";
+			graphics.text.draw(2, -5 + graphics.window.getHeight() - 3.0f * graphics.text.getFontHeight()) << stream;
 		}
 	};
 }

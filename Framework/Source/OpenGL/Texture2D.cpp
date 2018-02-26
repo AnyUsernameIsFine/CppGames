@@ -17,7 +17,7 @@ namespace Framework
 		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 		int width, height, nrChannels;
 		stbi_set_flip_vertically_on_load(true);
-		unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 3);
+		byte* data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 3);
 		//if (data) {
 		glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
 		glCheck(glGenerateMipmap(GL_TEXTURE_2D));

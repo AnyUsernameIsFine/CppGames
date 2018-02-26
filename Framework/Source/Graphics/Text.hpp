@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Font.hpp"
+#include "TextStream.hpp"
 #include "OpenGL\ShaderProgram.hpp"
 #include "OpenGL\VertexBufferObject.hpp"
+#include "System\Error.hpp"
 
 namespace Framework
 {
@@ -15,7 +17,8 @@ namespace Framework
 		void setFont(const string& family, int size);
 		void setColor(float r, float g, float b, float a = 1);
 		int getFontHeight() const;
-		void draw(float x, float y, const string& text);
+		TextStream draw(float x, float y);
+		void draw(float x, float y, const std::u32string& text);
 
 	private:
 		struct GlyphQuad

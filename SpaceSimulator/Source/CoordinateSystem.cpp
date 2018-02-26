@@ -1,7 +1,5 @@
 #include "CoordinateSystem.h"
 
-//#include <cmath>
-
 namespace Game
 {
 	CoordinateSystem::~CoordinateSystem()
@@ -174,7 +172,7 @@ namespace Game
 		glGenBuffers(1, &indexBuffer);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 		// TODO: for some unknown reason, there needs to be room for one extra index
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 1 + 12 * 3 * 3 * sizeof(unsigned short), nullptr, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 1 + 12 * 3 * 3 * sizeof(GLushort), nullptr, GL_DYNAMIC_DRAW);
 
 		glGenBuffers(1, &instanceBuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);

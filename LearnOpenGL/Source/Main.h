@@ -37,10 +37,10 @@ namespace Game
 
 		void initialize()
 		{
-			Random::setRandSeed(getGameTimeInSeconds());
+			Random::setRandSeed((uint)getGameTimeInSeconds());
 
 			graphics.text.loadFont("Resources/consola.ttf");
-			graphics.text.setFont("Consolas", 10);
+			graphics.text.setFont("Consolas", 16);
 
 			camera.transform.moveZ(10);
 
@@ -153,53 +153,6 @@ namespace Game
 
 			drawScene();
 			drawInfo();
-			//console((int)round(graphics.getFps()));
-			//graphics.text.draw(0, 0,
-			//	"[32] Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium\n"
-			//	"doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis\n"
-			//	"et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem,\n"
-			//	"quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores\n"
-			//	"eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem\n"
-			//	"ipsum, quia dolor sit amet consectetur adipisci[ng] velit, sed quia non-numquam [do]\n"
-			//	"eius modi tempora inci[di]dunt, ut labore et dolore magnam aliquam quaerat voluptatem.\n"
-			//	"Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam,\n"
-			//	"nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit,\n"
-			//	"qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem\n"
-			//	"eum fugiat, quo voluptas nulla pariatur?\n"
-			//	"[32] Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium\n"
-			//	"doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis\n"
-			//	"et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem,\n"
-			//	"quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores\n"
-			//	"eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem\n"
-			//	"ipsum, quia dolor sit amet consectetur adipisci[ng] velit, sed quia non-numquam [do]\n"
-			//	"eius modi tempora inci[di]dunt, ut labore et dolore magnam aliquam quaerat voluptatem.\n"
-			//	"Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam,\n"
-			//	"nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit,\n"
-			//	"qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem\n"
-			//	"eum fugiat, quo voluptas nulla pariatur?\n"
-			//	"[32] Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium\n"
-			//	"doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis\n"
-			//	"et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem,\n"
-			//	"quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores\n"
-			//	"eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem\n"
-			//	"ipsum, quia dolor sit amet consectetur adipisci[ng] velit, sed quia non-numquam [do]\n"
-			//	"eius modi tempora inci[di]dunt, ut labore et dolore magnam aliquam quaerat voluptatem.\n"
-			//	"Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam,\n"
-			//	"nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit,\n"
-			//	"qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem\n"
-			//	"eum fugiat, quo voluptas nulla pariatur?\n"
-			//	"[32] Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium\n"
-			//	"doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis\n"
-			//	"et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem,\n"
-			//	"quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores\n"
-			//	"eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem\n"
-			//	"ipsum, quia dolor sit amet consectetur adipisci[ng] velit, sed quia non-numquam [do]\n"
-			//	"eius modi tempora inci[di]dunt, ut labore et dolore magnam aliquam quaerat voluptatem.\n"
-			//	"Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam,\n"
-			//	"nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit,\n"
-			//	"qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem\n"
-			//	"eum fugiat, quo voluptas nulla pariatur?\n"
-			//);
 		}
 
 		void drawScene()
@@ -242,15 +195,15 @@ namespace Game
 
 		void drawInfo()
 		{
-			int fps = (int)round(graphics.getFps());
 			Vector3 position = camera.transform.getPosition();
 			glm::ivec3 o = camera.transform.getEulerAngles();
 
-			std::string fpsString = std::to_string(fps) + "fps";
-			std::string positionString = "x: " + std::to_string(position.x) + " y: " + std::to_string(position.y) + " z: " + std::to_string(position.z);
-			std::string orientatonString = "yaw: " + std::to_string(o.y) + "° pitch: " + std::to_string(o.x) + "° roll: " + std::to_string(o.z) + "°";
+			TextStream stream;
+			stream << (int)round(graphics.getFps()) << "fps" << '\n';
+			stream << "x: " << position.x << " y: " << position.y << " z: " << position.z << '\n';
+			stream << "yaw: " << o.y << u8"° pitch: " << o.x << u8"° roll: " << o.z << u8"°";
 
-			graphics.text.draw(0, 0, fpsString + "\n" + positionString + "\n" + orientatonString);
+			graphics.text.draw(0, 0) << stream;
 		}
 	};
 }
