@@ -3,33 +3,9 @@
 
 namespace Framework
 {
-	FontSize::FontSize(int size)
+	FontSize::FontSize(int size) : fontPacker(64, 1024)
 	{
 		this->size = size;
-
-		// Generate texture
-		glActiveTexture(GL_TEXTURE0);
-		glGenTextures(1, &textureId);
-		glBindTexture(GL_TEXTURE_2D, textureId);
-		glTexImage2D(
-			GL_TEXTURE_2D,
-			0,
-			GL_RED,
-			1024,
-			1024,
-			0,
-			GL_RED,
-			GL_UNSIGNED_BYTE,
-			nullptr
-		);
-
-		// Set texture options
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	int FontSize::getSize() const
@@ -39,7 +15,12 @@ namespace Framework
 
 	GLuint FontSize::getTextureId() const
 	{
-		return textureId;
+		return fontPacker.getTextureId();
+	}
+
+	int FontSize::getTextureSize() const
+	{
+		return fontPacker.getCapacity();
 	}
 
 	const Glyph* FontSize::getGlyph(FT_ULong character)
@@ -56,39 +37,25 @@ namespace Framework
 
 	const Glyph* FontSize::addGlyph(FT_ULong character, FT_GlyphSlot glyph)
 	{
-		glActiveTexture(GL_TEXTURE0);
+		int left, top;
 
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		if (fontPacker.addBitmap(glyph->bitmap.width, glyph->bitmap.rows, glyph->bitmap.buffer, left, top)) {
+			glyphs[character] = {
+				left,
+				top,
+				glyph->bitmap.width,
+				glyph->bitmap.rows,
+				glyph->bitmap_left,
+				glyph->bitmap_top,
+				glyph->advance.x >> 6,
+			};
 
-		int textureX = (int)(((unsigned char)numberOfGlyphs % 16) * (1024 / 16.0f));
-		int textureY = (int)(((unsigned char)numberOfGlyphs / 16) * (1024 / 16.0f));
+			return &glyphs[character];
+		}
+		else {
+			error("Font texture full");
 
-		numberOfGlyphs++;
-
-		glTextureSubImage2D(
-			textureId,
-			0,
-			textureX,
-			textureY,
-			glyph->bitmap.width,
-			glyph->bitmap.rows,
-			GL_RED,
-			GL_UNSIGNED_BYTE,
-			glyph->bitmap.buffer
-		);
-
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-
-		glyphs[character] = {
-			textureX,
-			textureY,
-			glyph->bitmap.width,
-			glyph->bitmap.rows,
-			glyph->bitmap_left,
-			glyph->bitmap_top,
-			glyph->advance.x >> 6,
-		};
-
-		return &glyphs[character];
+			return nullptr;
+		}
 	}
 }

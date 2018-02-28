@@ -25,7 +25,7 @@ namespace Framework
 		void setUniform(const string& name, const glm::ivec2& value) const;
 		void setUniform(const string& name, const glm::ivec3& value) const;
 		void setUniform(const string& name, const glm::ivec4& value) const;
-		void setUniform(const string& name, uint value) const;
+		void setUniform(const string& name, uInt value) const;
 		void setUniform(const string& name, const glm::uvec2& value) const;
 		void setUniform(const string& name, const glm::uvec3& value) const;
 		void setUniform(const string& name, const glm::uvec4& value) const;

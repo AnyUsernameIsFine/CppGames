@@ -28,7 +28,7 @@ namespace Game
 
 		void initialize()
 		{
-			graphics.text.loadFont("Resources/consola.ttf");
+			graphics.text.loadFont("Resources/consola.ttf", "Consolas");
 			graphics.text.setFont("Consolas", graphics.window.getHeight() / 32);
 			graphics.text.setColor(0.39f, 0.58f, 0.93f);
 
@@ -41,10 +41,6 @@ namespace Game
 
 		void generateUniverse()
 		{
-			Random::setRandSeed((uint)(getGameTimeInSeconds() * 1000) * 0);
-			seed = Random::randInt();
-			Random::setHashSeed(seed);
-
 			universe.create();
 
 			CoordinateSystem* cs = &universe;
@@ -73,6 +69,10 @@ namespace Game
 		void update(float deltaSeconds)
 		{
 			if (input.isKeyDown(SDLK_g)) {
+				Random::setRandSeed((uInt)(getGameTimeInSeconds() * 1000));
+				seed = Random::randInt();
+				Random::setHashSeed(seed);
+
 				generateUniverse();
 			}
 
@@ -100,13 +100,13 @@ namespace Game
 
 			universe.draw(camera);
 
-			TextStream stream;
-			stream << "seed     " << seed << '\n';
-			stream << "speed    " << camera.getSpeedString() << '\n';
-			stream << "system   " << camera.getCoordinateSystem()->getName();
+			StringStream stream;
+			stream << "seed    " << seed << std::endl;
+			stream << "speed   " << camera.getSpeedString() << std::endl;
+			stream << "system  " << camera.getCoordinateSystem()->getName();
 
-			graphics.text.draw(2, -5) << (int)round(graphics.getFps()) << " fps";
-			graphics.text.draw(2, -5 + graphics.window.getHeight() - 3.0f * graphics.text.getFontHeight()) << stream;
+			graphics.text(2, -5) << (int)round(graphics.getFps()) << " fps";
+			graphics.text(2, -5 + graphics.window.getHeight() - 3.0f * graphics.text.getFontHeight()) << stream;
 		}
 	};
 }

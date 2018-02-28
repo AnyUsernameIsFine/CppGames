@@ -29,7 +29,7 @@ namespace Game
 	{
 		this->parent = parent;
 		this->radius = radius;
-		name = "Galaxy #" + std::to_string((uint)Random::randInt());
+		name = "Galaxy #" + std::to_string((uInt)Random::randInt());
 		mesh = new CubeMesh();
 	}
 

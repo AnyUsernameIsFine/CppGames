@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Graphics\FontPacker.hpp" />
     <ClInclude Include="Source\3D\Camera.hpp" />
     <ClInclude Include="Source\3D\Mesh.hpp" />
     <ClInclude Include="Source\3D\Meshes\Cube.hpp" />
@@ -48,9 +49,10 @@
     <ClInclude Include="Source\System\Globals.hpp" />
     <ClInclude Include="Source\System\Random.hpp" />
     <ClInclude Include="Source\System\TimePoint.hpp" />
-    <ClInclude Include="Source\Graphics\TextStream.hpp" />
+    <ClInclude Include="Source\System\StringStream.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Graphics\FontPacker.cpp" />
     <ClCompile Include="Source\3D\Meshes\Cube.cpp" />
     <ClCompile Include="Source\3D\Meshes\Dodecahedron.cpp" />
     <ClCompile Include="Source\3D\Meshes\Icosahedron.cpp" />
@@ -73,7 +75,7 @@
     <ClCompile Include="Source\System\Game.cpp" />
     <ClCompile Include="Source\System\Random.cpp" />
     <ClCompile Include="Source\System\TimePoint.cpp" />
-    <ClCompile Include="Source\Graphics\TextStream.cpp" />
+    <ClCompile Include="Source\System\StringStream.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

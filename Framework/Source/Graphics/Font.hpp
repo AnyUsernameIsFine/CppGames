@@ -10,17 +10,18 @@ namespace Framework
 	class Font
 	{
 	public:
-		Font(const string& filename);
 		~Font();
+		int loadFromFile(const string& filename);
 		void setSize(int size);
-		FT_String* getFamilyName() const;
+		const string getFamilyName() const;
 		FT_Pos getHeight() const;
 		const Glyph* getGlyph(FT_ULong character) const;
 		GLuint getTextureId() const;
+		int getTextureSize() const;
 
 	private:
 		FT_Library freeType;
-		FT_Face face;
+		FT_Face face = nullptr;
 		vector<std::shared_ptr<FontSize>> fontSizes;
 		FontSize* fontSize = nullptr;
 

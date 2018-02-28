@@ -33,7 +33,7 @@ namespace Game
 	{
 		this->parent = parent;
 		this->radius = radius;
-		name = "Star #" + std::to_string((uint)Random::randInt());
+		name = "Star #" + std::to_string((uInt)Random::randInt());
 		mesh = new OctahedronMesh();
 	}
 

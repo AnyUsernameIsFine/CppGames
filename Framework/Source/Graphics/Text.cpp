@@ -7,18 +7,27 @@
 
 namespace Framework
 {
-	void Text::loadFont(const string& filename)
+	void Text::loadFont(const string& filename, const string& family)
 	{
-		auto font = std::make_shared<Font>(filename);
+		if (family.empty()) {
+			auto font = std::make_shared<Font>();
 
-		if (!findFont(font->getFamilyName())) {
-			fonts.push_back(font);
+			if (font->loadFromFile(filename) == 0 && !findFont(font->getFamilyName())) {
+				fonts[font->getFamilyName()] = font;
+			}
+		}
+		else if (!findFont(family)) {
+			auto font = std::make_shared<Font>();
+
+			if (font->loadFromFile(filename) == 0) {
+				fonts[family] = font;
+			}
 		}
 	}
 
 	void Text::setFontFamily(const string& family)
 	{
-		Font* font = findFont(family.c_str());
+		Font* font = findFont(family);
 
 		if (font) {
 			if (font != this->font) {
@@ -33,14 +42,14 @@ namespace Framework
 
 	void Text::setFontSize(int size)
 	{
-		if (font) {
+		if (!font) {
+			error("No font set");
+		}
+		else {
 			if (size != this->size) {
 				this->size = size;
 				font->setSize(size);
 			}
-		}
-		else {
-			error("No font set");
 		}
 	}
 
@@ -61,109 +70,24 @@ namespace Framework
 		return font->getHeight();
 	}
 
-	TextStream Text::draw(float x, float y)
+	GLuint Text::getFontTextureId() const
 	{
-		return TextStream(this, x, y);
+		if (!font) {
+			return 0;
+		}
+
+		return font->getTextureId();
 	}
 
-	void Text::draw(float x, float y, const std::u32string& text)
+	StringStream Text::operator()(float x, float y)
 	{
-		if (font) {
-			if (windowHasResized) {
-				windowHasResized = false;
-				applyWindowSize();
-			}
+		DrawConfiguration drawConfiguration = { this, x, y };
 
-			FT_Pos lineHeight = font->getHeight();
-
-			float lineX = x;
-			float lineY = y + lineHeight;
-
-			int numberOfGlyphs = 0;
-
-			for (auto c : text) {
-				if (c != '\n') {
-					const Glyph* glyph = font->getGlyph(c);
-
-					float xpos = lineX + glyph->left;
-					float ypos = glyph->top - lineY - glyph->height;
-
-					float d = 1.0f / 1024;
-					float textureLeft = glyph->textureX * d;
-					float textureTop = glyph->textureY * d;
-					float textureRight = textureLeft + glyph->width * d;
-					float textureBottom = textureTop + glyph->height * d;
-
-					vertices[numberOfGlyphs] = {
-						xpos, ypos,									textureLeft, textureBottom,
-						xpos + glyph->width, ypos,					textureRight, textureBottom,
-						xpos, ypos + glyph->height,					textureLeft, textureTop,
-						xpos + glyph->width, ypos + glyph->height,	textureRight, textureTop,
-						xpos, ypos + glyph->height,					textureLeft, textureTop,
-						xpos + glyph->width, ypos,					textureRight, textureBottom,
-					};
-
-					numberOfGlyphs++;
-
-					lineX += glyph->advanceX;
-				}
-				else {
-					lineX = x;
-					lineY += lineHeight;
-				}
-			}
-
-			// disable depth testing
-			GLboolean depthTest;
-			glGetBooleanv(GL_DEPTH_TEST, &depthTest);
-			glDisable(GL_DEPTH_TEST);
-
-			// disable depth writing
-			GLboolean depthMask;
-			glGetBooleanv(GL_DEPTH_WRITEMASK, &depthMask);
-			glDepthMask(false);
-
-			// enable blending
-			GLboolean blend;
-			glGetBooleanv(GL_BLEND, &blend);
-			glEnable(GL_BLEND);
-
-			// set correct alpha blending
-			GLint blendSrcAlpha, blendDstAlpha;
-			glGetIntegerv(GL_BLEND_SRC_ALPHA, &blendSrcAlpha);
-			glGetIntegerv(GL_BLEND_DST_ALPHA, &blendDstAlpha);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-			program->use();
-
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, font->getTextureId());
-
-			glBindVertexArray(vao);
-			glBindBuffer(GL_ARRAY_BUFFER, vbo->getId());
-
-			glBufferSubData(GL_ARRAY_BUFFER, 0, 96 * numberOfGlyphs, &vertices[0]);
-			glDrawArrays(GL_TRIANGLES, 0, 6 * numberOfGlyphs);
-
-			// enable depth testing if it was enabled
-			if (depthTest == GL_TRUE) {
-				glEnable(GL_DEPTH_TEST);
-			}
-
-			// restore the previous depth mask
-			glDepthMask(depthMask);
-
-			// disable blending if it was disabled
-			if (blend == GL_FALSE) {
-				glDisable(GL_BLEND);
-			}
-
-			// reset alpha blending to the previous setting
-			glBlendFunc(blendSrcAlpha, blendDstAlpha);
-		}
-		else {
-			error("No font set");
-		}
+		return {
+			drawFromStream,
+			&drawConfiguration,
+			sizeof(DrawConfiguration)
+		};
 	}
 
 	void Text::initialize(int windowWidth, int windowHeight)
@@ -222,19 +146,121 @@ namespace Framework
 		windowHeight = height;
 	}
 
-	Font* Text::findFont(const FT_String* family) const
+	Font* Text::findFont(const string& family) const
 	{
 		bool found = false;
 		Font* result = nullptr;
 
-		for (auto i = fonts.begin(); i != fonts.end() && !found; i++) {
-			if (strcmp(i->get()->getFamilyName(), family) == 0) {
-				found = true;
-				result = i->get();
-			}
+		fonts.find(family);
+
+		auto it = fonts.find(family);
+		if (it != fonts.end()) {
+			found = true;
+			result = it->second.get();
 		}
 
 		return result;
+	}
+
+	void Text::draw(float x, float y, const std::u32string& text)
+	{
+		if (!font) {
+			error("No font set");
+
+			return;
+		}
+
+		if (windowHasResized) {
+			windowHasResized = false;
+			applyWindowSize();
+		}
+
+		FT_Pos lineHeight = font->getHeight();
+
+		float lineX = x;
+		float lineY = y + lineHeight;
+
+		int numberOfGlyphs = 0;
+
+		float s = 1.0f / font->getTextureSize();
+
+		for (auto c : text) {
+			if (c == '\n') {
+				lineX = x;
+				lineY += lineHeight;
+			}
+			else {
+				const Glyph* glyph = font->getGlyph(c);
+
+				if (glyph) {
+					float xpos = lineX + glyph->left;
+					float ypos = glyph->top - lineY - glyph->height;
+
+					float textureLeft = glyph->textureX * s;
+					float textureTop = glyph->textureY * s;
+					float textureRight = textureLeft + glyph->width * s;
+					float textureBottom = textureTop + glyph->height * s;
+
+					vertices[numberOfGlyphs] = {
+						xpos, ypos,									textureLeft, textureBottom,
+						xpos + glyph->width, ypos,					textureRight, textureBottom,
+						xpos, ypos + glyph->height,					textureLeft, textureTop,
+						xpos + glyph->width, ypos + glyph->height,	textureRight, textureTop,
+						xpos, ypos + glyph->height,					textureLeft, textureTop,
+						xpos + glyph->width, ypos,					textureRight, textureBottom,
+					};
+
+					numberOfGlyphs++;
+
+					lineX += glyph->advanceX;
+				}
+			}
+		}
+
+		// disable depth testing
+		GLboolean depthTest;
+		glGetBooleanv(GL_DEPTH_TEST, &depthTest);
+		glDisable(GL_DEPTH_TEST);
+
+		// disable depth writing
+		GLboolean depthMask;
+		glGetBooleanv(GL_DEPTH_WRITEMASK, &depthMask);
+		glDepthMask(false);
+
+		// enable blending
+		GLboolean blend;
+		glGetBooleanv(GL_BLEND, &blend);
+		glEnable(GL_BLEND);
+
+		// set correct alpha blending
+		GLint blendSrcAlpha, blendDstAlpha;
+		glGetIntegerv(GL_BLEND_SRC_ALPHA, &blendSrcAlpha);
+		glGetIntegerv(GL_BLEND_DST_ALPHA, &blendDstAlpha);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		program->use();
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, font->getTextureId());
+		glBindVertexArray(vao);
+		glNamedBufferSubData(vbo->getId(), 0, 96 * numberOfGlyphs, &vertices[0]);
+		glDrawArrays(GL_TRIANGLES, 0, 6 * numberOfGlyphs);
+
+		// enable depth testing if it was enabled
+		if (depthTest == GL_TRUE) {
+			glEnable(GL_DEPTH_TEST);
+		}
+
+		// restore the previous depth mask
+		glDepthMask(depthMask);
+
+		// disable blending if it was disabled
+		if (blend == GL_FALSE) {
+			glDisable(GL_BLEND);
+		}
+
+		// reset alpha blending to the previous setting
+		glBlendFunc(blendSrcAlpha, blendDstAlpha);
 	}
 
 	void Text::applyWindowSize()
@@ -243,5 +269,11 @@ namespace Framework
 
 		program->use();
 		program->setUniform("projection", projection);
+	}
+
+	void Text::drawFromStream(const StringStream& stream, void* params)
+	{
+		DrawConfiguration* config = (DrawConfiguration*)params;
+		((Text*)config->text)->draw(config->x, config->y, stream.getUtf8String());
 	}
 }

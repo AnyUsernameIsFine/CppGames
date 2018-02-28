@@ -3,15 +3,23 @@
 
 namespace Framework
 {
-	Font::Font(const string& filename)
+	int Font::loadFromFile(const string& filename)
 	{
-		if (FT_Init_FreeType(&freeType)) {
-			error("Could not initialize FreeType");
+		if (!face) {
+			if (FT_Init_FreeType(&freeType)) {
+				error("Could not initialize FreeType");
+
+				return 1;
+			}
+
+			if (FT_New_Face(freeType, filename.c_str(), 0, &face)) {
+				error("Could not load font from file " + filename);
+
+				return 1;
+			}
 		}
 
-		if (FT_New_Face(freeType, filename.c_str(), 0, &face)) {
-			error("Could not load font from file " + filename);
-		}
+		return 0;
 	}
 
 	Font::~Font()
@@ -42,7 +50,7 @@ namespace Framework
 		}
 	}
 
-	FT_String* Font::getFamilyName() const
+	const string Font::getFamilyName() const
 	{
 		return face->family_name;
 	}
@@ -70,6 +78,11 @@ namespace Framework
 	GLuint Font::getTextureId() const
 	{
 		return fontSize->getTextureId();
+	}
+
+	int Font::getTextureSize() const
+	{
+		return fontSize->getTextureSize();
 	}
 
 	FontSize* Font::findFontSize(int size) const

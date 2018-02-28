@@ -27,12 +27,20 @@
     <None Include="Resources\cube.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Resources\font.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\font.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\consola.ttf">
       <Filter>Resource Files</Filter>
     </Font>
-    <Font Include="Resources\calibri.ttf" />
+    <Font Include="Resources\calibri.ttf">
+      <Filter>Resource Files</Filter>
+    </Font>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\flow.jpg">

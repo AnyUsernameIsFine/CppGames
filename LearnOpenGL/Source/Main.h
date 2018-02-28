@@ -15,10 +15,12 @@ namespace Game
 	public:
 		Camera camera;
 
+		ShaderProgram* fontShader;
 		ShaderProgram* cubeShader;
 		ShaderProgram* lightShader;
 		Texture2D* texture1;
 		Texture2D* texture2;
+		GLuint fontVao;
 		GLuint cubeVao;
 		GLuint lightVao;
 		std::vector<Transform> cubes;
@@ -37,10 +39,10 @@ namespace Game
 
 		void initialize()
 		{
-			Random::setRandSeed((uint)getGameTimeInSeconds());
+			Random::setRandSeed((uInt)getGameTimeInSeconds());
 
-			graphics.text.loadFont("Resources/consola.ttf");
-			graphics.text.setFont("Consolas", 16);
+			graphics.text.loadFont("Resources/consola.ttf", "Font");
+			graphics.text.setFont("Font", 20);
 
 			camera.transform.moveZ(10);
 
@@ -54,18 +56,30 @@ namespace Game
 
 			light.scale(0.2f);
 
-			texture1 = new Texture2D("Resources/journey.jpg");
-			texture2 = new Texture2D("Resources/flow.jpg");
+			fontShader = new ShaderProgram("Resources/font.vert", "Resources/font.frag");
+			fontShader->use();
+			fontShader->setUniform("fontTexture", 0);
+
+			float fontVertices[] = {
+				-1, -1,		0, 1,
+				 1, -1,		1, 1,
+				-1,  1,		0, 0,
+				 1,  1,		1, 0,
+			};
+
+			glGenVertexArrays(1, &fontVao);
+			glBindVertexArray(fontVao);
+			VertexBufferObject({ 2, 2 }, 4, fontVertices);
+			glBindVertexArray(0);
 
 			cubeShader = new ShaderProgram("Resources/cube.vert", "Resources/cube.frag");
-
+			texture1 = new Texture2D("Resources/journey.jpg");
+			texture2 = new Texture2D("Resources/flow.jpg");
 			cubeShader->use();
 			cubeShader->setUniform("texture1", 0);
 			cubeShader->setUniform("texture2", 1);
 
-			lightShader = new ShaderProgram("Resources/light.vert", "Resources/light.frag");
-
-			float vertices[] = {
+			float cubeVertices[] = {
 				-0.5, -0.5, -0.5,	 0,  0, -1,		0, 0,
 				-0.5, -0.5, -0.5,	 0, -1,  0,		0, 0,
 				-0.5, -0.5, -0.5,	-1,  0,  0,		0, 0,
@@ -103,9 +117,11 @@ namespace Game
 
 			glGenVertexArrays(1, &cubeVao);
 			glBindVertexArray(cubeVao);
-			VertexBufferObject vbo({ 3, 3, 2 }, 24, vertices);
+			VertexBufferObject vbo({ 3, 3, 2 }, 24, cubeVertices);
 			IndexBufferObject ibo(36, indices);
 			glBindVertexArray(0);
+
+			lightShader = new ShaderProgram("Resources/light.vert", "Resources/light.frag");
 
 			glGenVertexArrays(1, &lightVao);
 			glBindVertexArray(lightVao);
@@ -151,8 +167,20 @@ namespace Game
 		{
 			graphics.clearScreen(0.12f, 0, 0.06f, true);
 
+			//drawFont();
 			drawScene();
 			drawInfo();
+		}
+
+		void drawFont()
+		{
+			fontShader->use();
+
+			glCheck(glActiveTexture(GL_TEXTURE0));
+			glCheck(glBindTexture(GL_TEXTURE_2D, graphics.text.getFontTextureId()));
+
+			glBindVertexArray(fontVao);
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		}
 
 		void drawScene()
@@ -198,12 +226,12 @@ namespace Game
 			Vector3 position = camera.transform.getPosition();
 			glm::ivec3 o = camera.transform.getEulerAngles();
 
-			TextStream stream;
-			stream << (int)round(graphics.getFps()) << "fps" << '\n';
-			stream << "x: " << position.x << " y: " << position.y << " z: " << position.z << '\n';
+			StringStream stream;
+			stream << (int)round(graphics.getFps()) << "fps" << std::endl;
+			stream << "x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
 			stream << "yaw: " << o.y << u8"° pitch: " << o.x << u8"° roll: " << o.z << u8"°";
 
-			graphics.text.draw(0, 0) << stream;
+			graphics.text(0, 0) << stream;
 		}
 	};
 }

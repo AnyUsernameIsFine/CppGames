@@ -5,13 +5,13 @@
 
 namespace Framework
 {
-	void Random::setRandSeed(uint seed)
+	void Random::setRandSeed(uInt seed)
 	{
 		rng.seed(seed);
 		srand(seed);
 	}
 
-	void Random::setHashSeed(uint32 seed)
+	void Random::setHashSeed(uInt32 seed)
 	{
 		hashSeed = seed;
 	}
@@ -33,18 +33,18 @@ namespace Framework
 		return distribution(rng);
 	}
 
-	uint32 Random::uint32FromByteArray(const void* byteArray, uint length)
+	uInt32 Random::uInt32FromByteArray(const void* byteArray, uInt length)
 	{
-		const uint8* p = (const uint8*)byteArray;
-		const uint8* bEnd = p + length;
-		uint32 h32;
+		const uInt8* p = (const uInt8*)byteArray;
+		const uInt8* bEnd = p + length;
+		uInt32 h32;
 
 		if (length >= 16) {
-			const uint8* const limit = bEnd - 16;
-			uint32 v1 = hashSeed + PRIME_1 + PRIME_2;
-			uint32 v2 = hashSeed + PRIME_2;
-			uint32 v3 = hashSeed + 0;
-			uint32 v4 = hashSeed - PRIME_1;
+			const uInt8* const limit = bEnd - 16;
+			uInt32 v1 = hashSeed + PRIME_1 + PRIME_2;
+			uInt32 v2 = hashSeed + PRIME_2;
+			uInt32 v3 = hashSeed + 0;
+			uInt32 v4 = hashSeed - PRIME_1;
 
 			do {
 				v1 = XXH32_round(v1, XXH_readLE32(p));
@@ -63,7 +63,7 @@ namespace Framework
 			h32 = hashSeed + PRIME_5;
 		}
 
-		h32 += (uint32)length;
+		h32 += (uInt32)length;
 
 		while (p + 4 <= bEnd) {
 			h32 += XXH_readLE32(p) * PRIME_3;
@@ -87,18 +87,18 @@ namespace Framework
 	}
 
 	Random::RNG Random::rng;
-	uint32 Random::hashSeed;
+	uInt32 Random::hashSeed;
 	const bool Random::LITTLE_ENDIAN = *(const char*)(&ONE);
 
-	uint32 Random::XXH_readLE32(const void* ptr)
+	uInt32 Random::XXH_readLE32(const void* ptr)
 	{
-		uint32 val;
+		uInt32 val;
 		memcpy(&val, ptr, sizeof(val));
 
 		return LITTLE_ENDIAN ? val : _byteswap_ulong(val);
 	}
 
-	uint32 Random::XXH32_round(uint32 seed, uint32 input)
+	uInt32 Random::XXH32_round(uInt32 seed, uInt32 input)
 	{
 		seed += input * PRIME_2;
 		seed = _rotl(seed, 13);

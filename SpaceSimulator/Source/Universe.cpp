@@ -133,7 +133,7 @@ namespace Game
 							(z + GALAXIES_PER_SIDE - updateIndex.z) % GALAXIES_PER_SIDE
 						);
 
-						Random::setRandSeed(Random::uint32FromByteArray(&(updateCameraPosition + p), 24));
+						Random::setRandSeed(Random::uInt32FromByteArray(&(updateCameraPosition + p), 24));
 
 						float r = Random::randFloat();
 						float maxRadius = Galaxy::MAX_RADIUS * Galaxy::SCALE / SCALE;

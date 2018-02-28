@@ -102,7 +102,7 @@ namespace Framework
 		glCheck(glUniform4i(getUniformLocation(name), value.x, value.y, value.z, value.w));
 	}
 
-	void ShaderProgram::setUniform(const string& name, uint value) const
+	void ShaderProgram::setUniform(const string& name, uInt value) const
 	{
 		glCheck(glUniform1ui(getUniformLocation(name), value));
 	}
