@@ -1,4 +1,4 @@
-#include "Window.hpp"
+#include "Window.h"
 
 namespace Framework
 {
@@ -8,6 +8,14 @@ namespace Framework
 
 		sdlCheck(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3));
 		sdlCheck(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3));
+
+		sdlCheck(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
+	}
+
+	Window::~Window()
+	{
+		sdlCheck(SDL_DestroyWindow(window));
+		sdlCheck(SDL_Quit());
 	}
 
 	void Window::setTitle(const string& title)
@@ -105,7 +113,7 @@ namespace Framework
 		return fullscreen ? closestDisplayMode.h : height;
 	}
 
-	bool Window::open()
+	bool Window::create()
 	{
 		if (antiAliasing) {
 			sdlCheck(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1));
@@ -121,7 +129,7 @@ namespace Framework
 			SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL | (resizing ? SDL_WINDOW_RESIZABLE : 0)
 		));
 
-		if (window == NULL) {
+		if (window == nullptr) {
 			error("Could not create window");
 			return false;
 		}
@@ -139,12 +147,6 @@ namespace Framework
 		return true;
 	}
 
-	void Window::close()
-	{
-		sdlCheck(SDL_DestroyWindow(window));
-		sdlCheck(SDL_Quit());
-	}
-
 	bool Window::activateOpenGL()
 	{
 		if (sdlCheckValue(SDL_GL_CreateContext(window)) == nullptr) {
@@ -159,7 +161,7 @@ namespace Framework
 
 		GLenum e;
 		if ((e = glewInit()) != GLEW_OK) {
-			error("glewInit failed: " + string((const char*)glewGetErrorString(e)));
+			error("Could not initialize GLEW: " + string((const char*)glewGetErrorString(e)));
 			return false;
 		}
 

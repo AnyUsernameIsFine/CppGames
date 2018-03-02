@@ -1,4 +1,4 @@
-#include "IndexBufferObject.hpp"
+#include "IndexBufferObject.h"
 
 namespace Framework
 {
@@ -9,13 +9,17 @@ namespace Framework
 
 	IndexBufferObject::~IndexBufferObject()
 	{
-		if (sdlCheckValue(SDL_WasInit(SDL_INIT_VIDEO))) {
+		if (sdlCheckValue(SDL_GL_GetCurrentContext())) {
 			glCheck(glDeleteBuffers(1, &id));
 		}
 	}
 
 	void IndexBufferObject::create(int numberOfIndices, const GLushort* indices)
 	{
+		if (!hasContext("Could not create index buffer object")) {
+			return;
+		}
+
 		if (id) {
 			error("Index buffer object has already been created");
 			return;
@@ -23,6 +27,6 @@ namespace Framework
 
 		glCheck(glGenBuffers(1, &id));
 		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id));
-		glCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, numberOfIndices * sizeof(GLushort), indices, indices == nullptr ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW));
+		glCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, numberOfIndices * sizeof(GLushort), indices, indices ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW));
 	}
 }

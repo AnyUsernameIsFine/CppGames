@@ -1,7 +1,7 @@
 #include "Galaxy.h"
 #include "Universe.h"
 
-#include <Framework.hpp>
+#include <Framework.h>
 
 namespace SpaceSimulator
 {

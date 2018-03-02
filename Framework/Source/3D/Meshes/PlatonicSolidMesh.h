@@ -1,6 +1,6 @@
 #pragma once
 
-#include "3D/Mesh.hpp"
+#include "3D/Mesh.h"
 
 namespace Framework
 {

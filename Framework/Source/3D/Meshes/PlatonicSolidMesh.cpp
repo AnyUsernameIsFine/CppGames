@@ -1,4 +1,4 @@
-#include "PlatonicSolidMesh.hpp"
+#include "PlatonicSolidMesh.h"
 
 #include <glm\glm.hpp>
 

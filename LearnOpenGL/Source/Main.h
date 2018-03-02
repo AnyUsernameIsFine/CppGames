@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include <Framework.hpp>
+#include <Framework.h>
 
 #include <glm\gtc\random.hpp>
 
@@ -20,9 +20,9 @@ namespace LearnOpenGL
 		Shader lightShader;
 		Texture2D texture1;
 		Texture2D texture2;
-		GLuint fontVao;
-		GLuint cubeVao;
-		GLuint lightVao;
+		VertexArrayObject fontVao;
+		VertexArrayObject cubeVao;
+		VertexArrayObject lightVao;
 		std::vector<Transform> cubes;
 		Transform light;
 
@@ -67,10 +67,8 @@ namespace LearnOpenGL
 				 1,  1,		1, 0,
 			};
 
-			glGenVertexArrays(1, &fontVao);
-			glBindVertexArray(fontVao);
+			fontVao.create();
 			VertexBufferObject fontVbo({ 2, 2 }, 4, fontVertices);
-			glBindVertexArray(0);
 
 			cubeShader.createFromFiles("Resources/cube.vert", "Resources/cube.frag");
 			texture1.create("Resources/journey.jpg");
@@ -115,19 +113,17 @@ namespace LearnOpenGL
 				12, 15, 18, 18, 15, 21,
 			};
 
-			glGenVertexArrays(1, &cubeVao);
-			glBindVertexArray(cubeVao);
+			cubeVao.create();
 			VertexBufferObject cubeVbo({ 3, 3, 2 }, 24, cubeVertices);
 			IndexBufferObject cubeIbo(36, indices);
-			glBindVertexArray(0);
 
 			lightShader.createFromFiles("Resources/light.vert", "Resources/light.frag");
-			glGenVertexArrays(1, &lightVao);
-			glBindVertexArray(lightVao);
+			lightVao.create();
 			glBindBuffer(GL_ARRAY_BUFFER, cubeVbo.getId());
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeIbo.getId());
 			glEnableVertexAttribArray(0);
+
 			glBindVertexArray(0);
 		}
 
@@ -178,8 +174,8 @@ namespace LearnOpenGL
 			glCheck(glActiveTexture(GL_TEXTURE0));
 			glCheck(glBindTexture(GL_TEXTURE_2D, graphics.text.getFontTextureId()));
 
-			glBindVertexArray(fontVao);
-			//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+			fontVao.use();
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		}
 
 		void drawScene()
@@ -202,7 +198,7 @@ namespace LearnOpenGL
 			texture1.use(0);
 			texture2.use(1);
 
-			glBindVertexArray(cubeVao);
+			cubeVao.use();
 			for (auto& cube : cubes) {
 				glm::mat4 model = cube.getModelMatrix();
 				cubeShader.setUniform("model", model);
@@ -216,7 +212,7 @@ namespace LearnOpenGL
 			lightShader.setUniform("view", view);
 			lightShader.setUniform("projection", projection);
 
-			glBindVertexArray(lightVao);
+			lightVao.use();
 			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, nullptr);
 		}
 

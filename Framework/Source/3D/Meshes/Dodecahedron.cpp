@@ -1,4 +1,4 @@
-#include "Dodecahedron.hpp"
+#include "Dodecahedron.h"
 
 namespace Framework
 {

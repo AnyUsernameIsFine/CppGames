@@ -1,4 +1,4 @@
-#include "Graphics.hpp"
+#include "Graphics.h"
 
 namespace Framework
 {
@@ -13,14 +13,9 @@ namespace Framework
 		return std::fmaxf(0, numberOfFrameLengths / frameLengthsTotal);
 	}
 
-	bool Graphics::openWindow()
+	bool Graphics::createWindow()
 	{
-		return window.open();
-	}
-
-	void Graphics::closeWindow()
-	{
-		window.close();
+		return window.create();
 	}
 
 	bool Graphics::initialize()
@@ -67,8 +62,10 @@ namespace Framework
 		case SDL_WINDOWEVENT_RESIZED:
 			window.resizedEventHandler(width, height);
 			break;
+
 		case SDL_WINDOWEVENT_SIZE_CHANGED:
 			text.windowResizedEventHandler(width, height);
+			break;
 		}
 	}
 }

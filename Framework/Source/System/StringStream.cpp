@@ -1,4 +1,4 @@
-#include "StringStream.hpp"
+#include "StringStream.h"
 
 namespace Framework
 {

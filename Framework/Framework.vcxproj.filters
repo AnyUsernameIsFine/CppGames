@@ -74,87 +74,93 @@
     <ClCompile Include="Source\OpenGL\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\OpenGL\VertexArrayObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Graphics\Window.hpp">
+    <ClInclude Include="Source\Graphics\Text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\3D\Camera.hpp">
+    <ClInclude Include="Source\3D\Meshes\Cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\3D\Meshes\Cube.hpp">
+    <ClInclude Include="Source\3D\Meshes\Dodecahedron.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\3D\Meshes\Dodecahedron.hpp">
+    <ClInclude Include="Source\3D\Meshes\Icosahedron.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Font.hpp">
+    <ClInclude Include="Source\3D\Meshes\Octahedron.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\FontSize.hpp">
+    <ClInclude Include="Source\3D\Meshes\PlatonicSolidMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Framework.hpp">
+    <ClInclude Include="Source\3D\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\System\Game.hpp">
+    <ClInclude Include="Source\3D\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Graphics.hpp">
+    <ClInclude Include="Source\3D\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\3D\Meshes\Icosahedron.hpp">
+    <ClInclude Include="Source\3D\Vector3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\OpenGL\IndexBufferObject.hpp">
+    <ClInclude Include="Source\Graphics\Font.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Input\Input.hpp">
+    <ClInclude Include="Source\Graphics\FontPacker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\3D\Mesh.hpp">
+    <ClInclude Include="Source\Graphics\FontSize.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\3D\Meshes\Octahedron.hpp">
+    <ClInclude Include="Source\Graphics\Graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\OpenGL\OpenGLObject.hpp">
+    <ClInclude Include="Source\Graphics\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\3D\Meshes\PlatonicSolidMesh.hpp">
+    <ClInclude Include="Source\Input\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\System\Random.hpp">
+    <ClInclude Include="Source\OpenGL\IndexBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\Text.hpp">
+    <ClInclude Include="Source\OpenGL\OpenGLObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\OpenGL\Texture2D.hpp">
+    <ClInclude Include="Source\OpenGL\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\System\TimePoint.hpp">
+    <ClInclude Include="Source\OpenGL\Texture2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\3D\Transform.hpp">
+    <ClInclude Include="Source\OpenGL\VertexArrayObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\3D\Vector3.hpp">
+    <ClInclude Include="Source\OpenGL\VertexBufferObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\OpenGL\VertexBufferObject.hpp">
+    <ClInclude Include="Source\System\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\System\StringStream.hpp">
+    <ClInclude Include="Source\System\Globals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\FontPacker.hpp">
+    <ClInclude Include="Source\System\Random.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\OpenGL\Shader.hpp">
+    <ClInclude Include="Source\System\StringStream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\System\Globals.hpp">
+    <ClInclude Include="Source\System\TimePoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

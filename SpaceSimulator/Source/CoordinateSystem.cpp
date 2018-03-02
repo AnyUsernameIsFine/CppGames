@@ -4,7 +4,7 @@ namespace SpaceSimulator
 {
 	CoordinateSystem::~CoordinateSystem()
 	{
-		if (mesh != nullptr) {
+		if (mesh) {
 			delete mesh;
 		}
 	}
@@ -234,7 +234,7 @@ namespace SpaceSimulator
 				if (!(list.empty())) {
 					Mesh* mesh = list[0].cs->mesh;
 
-					if (mesh != nullptr && !mesh->getVertices().empty()) {
+					if (mesh && !mesh->getVertices().empty()) {
 						auto vertices = mesh->getVertices();
 						glNamedBufferSubData(vertexBuffer, 0, vertices.size() * sizeof(vertices[0]), &vertices[0]);
 

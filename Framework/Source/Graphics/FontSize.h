@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Graphics\FontPacker.hpp"
+#include "Graphics\FontPacker.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H

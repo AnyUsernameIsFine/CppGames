@@ -1,7 +1,7 @@
 #include "Planet.h"
 #include "Star.h"
 
-#include <Framework.hpp>
+#include <Framework.h>
 
 namespace SpaceSimulator
 {

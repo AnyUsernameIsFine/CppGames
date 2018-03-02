@@ -19,33 +19,34 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Graphics\FontPacker.hpp" />
-    <ClInclude Include="Source\3D\Camera.hpp" />
-    <ClInclude Include="Source\3D\Mesh.hpp" />
-    <ClInclude Include="Source\3D\Meshes\Cube.hpp" />
-    <ClInclude Include="Source\3D\Meshes\Dodecahedron.hpp" />
-    <ClInclude Include="Source\3D\Meshes\Icosahedron.hpp" />
-    <ClInclude Include="Source\3D\Meshes\Octahedron.hpp" />
-    <ClInclude Include="Source\3D\Meshes\PlatonicSolidMesh.hpp" />
-    <ClInclude Include="Source\3D\Transform.hpp" />
-    <ClInclude Include="Source\3D\Vector3.hpp" />
-    <ClInclude Include="Source\Framework.hpp" />
-    <ClInclude Include="Source\Graphics\Font.hpp" />
-    <ClInclude Include="Source\Graphics\FontSize.hpp" />
-    <ClInclude Include="Source\Graphics\Graphics.hpp" />
-    <ClInclude Include="Source\Graphics\Text.hpp" />
-    <ClInclude Include="Source\Graphics\Window.hpp" />
-    <ClInclude Include="Source\Input\Input.hpp" />
-    <ClInclude Include="Source\OpenGL\IndexBufferObject.hpp" />
-    <ClInclude Include="Source\OpenGL\OpenGLObject.hpp" />
-    <ClInclude Include="Source\OpenGL\Shader.hpp" />
-    <ClInclude Include="Source\OpenGL\Texture2D.hpp" />
-    <ClInclude Include="Source\OpenGL\VertexBufferObject.hpp" />
-    <ClInclude Include="Source\System\Game.hpp" />
-    <ClInclude Include="Source\System\Globals.hpp" />
-    <ClInclude Include="Source\System\Random.hpp" />
-    <ClInclude Include="Source\System\TimePoint.hpp" />
-    <ClInclude Include="Source\System\StringStream.hpp" />
+    <ClInclude Include="Source\Graphics\FontPacker.h" />
+    <ClInclude Include="Source\3D\Camera.h" />
+    <ClInclude Include="Source\3D\Mesh.h" />
+    <ClInclude Include="Source\3D\Meshes\Cube.h" />
+    <ClInclude Include="Source\3D\Meshes\Dodecahedron.h" />
+    <ClInclude Include="Source\3D\Meshes\Icosahedron.h" />
+    <ClInclude Include="Source\3D\Meshes\Octahedron.h" />
+    <ClInclude Include="Source\3D\Meshes\PlatonicSolidMesh.h" />
+    <ClInclude Include="Source\3D\Transform.h" />
+    <ClInclude Include="Source\3D\Vector3.h" />
+    <ClInclude Include="Source\Framework.h" />
+    <ClInclude Include="Source\Graphics\Font.h" />
+    <ClInclude Include="Source\Graphics\FontSize.h" />
+    <ClInclude Include="Source\Graphics\Graphics.h" />
+    <ClInclude Include="Source\Graphics\Text.h" />
+    <ClInclude Include="Source\Graphics\Window.h" />
+    <ClInclude Include="Source\Input\Input.h" />
+    <ClInclude Include="Source\OpenGL\IndexBufferObject.h" />
+    <ClInclude Include="Source\OpenGL\OpenGLObject.h" />
+    <ClInclude Include="Source\OpenGL\Shader.h" />
+    <ClInclude Include="Source\OpenGL\Texture2D.h" />
+    <ClInclude Include="Source\OpenGL\VertexBufferObject.h" />
+    <ClInclude Include="Source\System\Game.h" />
+    <ClInclude Include="Source\System\Globals.h" />
+    <ClInclude Include="Source\System\Random.h" />
+    <ClInclude Include="Source\System\TimePoint.h" />
+    <ClInclude Include="Source\System\StringStream.h" />
+    <ClInclude Include="Source\OpenGL\VertexArrayObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Graphics\FontPacker.cpp" />
@@ -69,6 +70,7 @@
     <ClCompile Include="Source\System\Random.cpp" />
     <ClCompile Include="Source\System\TimePoint.cpp" />
     <ClCompile Include="Source\System\StringStream.cpp" />
+    <ClCompile Include="Source\OpenGL\VertexArrayObject.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

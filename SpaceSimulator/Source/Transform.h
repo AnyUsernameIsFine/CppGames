@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Framework.hpp>
+#include <Framework.h>
 
 namespace SpaceSimulator
 {

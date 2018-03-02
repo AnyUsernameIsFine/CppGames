@@ -1,4 +1,4 @@
-#include "Texture2D.hpp"
+#include "Texture2D.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -12,7 +12,7 @@ namespace Framework
 
 	Texture2D::~Texture2D()
 	{
-		if (sdlCheckValue(SDL_WasInit(SDL_INIT_VIDEO))) {
+		if (sdlCheckValue(SDL_GL_GetCurrentContext())) {
 			console(id);
 			glCheck(glDeleteTextures(1, &id));
 		}
@@ -20,6 +20,10 @@ namespace Framework
 	
 	void Texture2D::create(const string& filename)
 	{
+		if (!hasContext("Could not create 2D texture")) {
+			return;
+		}
+
 		if (id) {
 			error("2D texture has already been created");
 			return;

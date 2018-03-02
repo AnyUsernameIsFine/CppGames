@@ -2,11 +2,11 @@
 
 #include "CoordinateSystem.h"
 
-#include <System\Random.hpp>
-#include <3D\Meshes\Cube.hpp>
-#include <3D\Meshes\Octahedron.hpp>
-#include <3D\Meshes\Dodecahedron.hpp>
-#include <3D\Meshes\Icosahedron.hpp>
+#include <System\Random.h>
+#include <3D\Meshes\Cube.h>
+#include <3D\Meshes\Octahedron.h>
+#include <3D\Meshes\Dodecahedron.h>
+#include <3D\Meshes\Icosahedron.h>
 
 #include <glm\gtc\random.hpp>
 

@@ -1,4 +1,4 @@
-#include "Game.hpp"
+#include "Game.h"
 
 #include <thread>
 
@@ -6,7 +6,7 @@ namespace Framework
 {
 	int Game::run()
 	{
-		if (isRunning || !graphics.openWindow()) {
+		if (isRunning || !graphics.createWindow()) {
 			return 1;
 		}
 
@@ -34,6 +34,7 @@ namespace Framework
 
 				case SDL_QUIT:
 					isRunning = false;
+					break;
 				}
 			}
 
@@ -41,8 +42,6 @@ namespace Framework
 		}
 
 		thread.join();
-
-		graphics.closeWindow();
 
 		return 0;
 	}

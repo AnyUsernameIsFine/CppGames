@@ -1,4 +1,4 @@
-#include "Shader.hpp"
+#include "Shader.h"
 
 #include <glm\gtc\type_ptr.hpp>
 
@@ -8,7 +8,7 @@ namespace Framework
 {
 	Shader::~Shader()
 	{
-		if (sdlCheckValue(SDL_WasInit(SDL_INIT_VIDEO))) {
+		if (sdlCheckValue(SDL_GL_GetCurrentContext())) {
 			glCheck(glDeleteShader(id));
 		};
 	}
@@ -28,6 +28,10 @@ namespace Framework
 
 	void Shader::createFromSource(const string& vertexShaderSource, const string& fragmentShaderSource)
 	{
+		if (!hasContext("Could not create shader")) {
+			return;
+		}
+
 		if (id) {
 			error("Shader has already been created");
 			return;

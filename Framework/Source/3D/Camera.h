@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Transform.hpp"
+#include "Transform.h"
 
 namespace Framework
 {
@@ -26,7 +26,7 @@ namespace Framework
 		bool perspective = true;
 		float fieldOfView = 60.0f;
 		float aspectRatio = 1.0f;
-		float nearClippingPlane = 1.0f;
+		float nearClippingPlane = 0.1f;
 		float farClippingPlane = 100.0f;
 		float size = 10.0f;
 	};

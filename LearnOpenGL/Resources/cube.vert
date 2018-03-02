@@ -1,6 +1,6 @@
 #version 330 core
 
-layout (location = 0) in vec3 vertPosition;
+layout (location = 0) in vec4 vertPosition;
 layout (location = 1) in vec3 vertNormal;
 layout (location = 2) in vec2 vertTexCoords;
 
@@ -14,9 +14,9 @@ uniform mat4 projection;
 
 void main()
 {
-	gl_Position = projection * view * model * vec4(vertPosition, 1);
+	gl_Position = projection * view * model * vertPosition;
 
-	fragPosition = vec3(view * model * vec4(vertPosition, 1));
+	fragPosition = vec3(view * model * vertPosition);
 	fragNormal = mat3(transpose(inverse(view * model))) * vertNormal;
 	fragTexCoords = vertTexCoords;
 }

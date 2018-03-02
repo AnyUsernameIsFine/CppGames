@@ -1,8 +1,8 @@
 #pragma once
 
-#include "System\TimePoint.hpp"
-#include "Window.hpp"
-#include "Text.hpp"
+#include "System\TimePoint.h"
+#include "Window.h"
+#include "Text.h"
 
 #include <SDL_events.h>
 
@@ -27,8 +27,7 @@ namespace Framework
 		TimePoint frameTimePoint;
 
 		Graphics() {}
-		bool openWindow();
-		void closeWindow();
+		bool createWindow();
 		bool initialize();
 		void update();
 		void windowEventHandler(SDL_WindowEvent event);

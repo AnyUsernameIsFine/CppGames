@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Font.hpp"
-#include "System\StringStream.hpp"
-#include "OpenGL\Shader.hpp"
-#include "OpenGL\VertexBufferObject.hpp"
+#include "Font.h"
+#include "System\StringStream.h"
+#include "OpenGL\Shader.h"
+#include "OpenGL\VertexBufferObject.h"
 
 namespace Framework
 {

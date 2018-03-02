@@ -1,13 +1,13 @@
 #pragma once
 
-#include "PlatonicSolidMesh.hpp"
+#include "PlatonicSolidMesh.h"
 
 namespace Framework
 {
-	class OctahedronMesh : public PlatonicSolidMesh
+	class DodecahedronMesh : public PlatonicSolidMesh
 	{
 	public:
-		OctahedronMesh();
+		DodecahedronMesh();
 		const vector<Vertex>& getVertices() const;
 		const vector<GLushort>& getIndices() const;
 

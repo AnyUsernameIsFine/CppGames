@@ -1,4 +1,4 @@
-#include "Octahedron.hpp"
+#include "Octahedron.h"
 
 namespace Framework
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "System\Globals.hpp"
+#include "System\Globals.h"
 
 #include <random>
 

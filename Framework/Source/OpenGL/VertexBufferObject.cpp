@@ -1,4 +1,4 @@
-#include "VertexBufferObject.hpp"
+#include "VertexBufferObject.h"
 
 namespace Framework
 {
@@ -9,13 +9,18 @@ namespace Framework
 
 	VertexBufferObject::~VertexBufferObject()
 	{
-		if (sdlCheckValue(SDL_WasInit(SDL_INIT_VIDEO))) {
+		if (sdlCheckValue(SDL_GL_GetCurrentContext())) {
 			glCheck(glDeleteBuffers(1, &id));
 		}
 	}
 
 	void VertexBufferObject::create(const vector<int>& attributes, int numberOfVertices, const void* vertices)
 	{
+		if (!hasContext("Could not create vertex buffer object")) {
+			return;
+		}
+
+
 		if (id) {
 			error("Vertex buffer object has already been created");
 			return;
@@ -29,7 +34,7 @@ namespace Framework
 			size += attribute * sizeof(GLfloat);
 		}
 
-		glCheck(glBufferData(GL_ARRAY_BUFFER, numberOfVertices * size, vertices, vertices == nullptr ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW));
+		glCheck(glBufferData(GL_ARRAY_BUFFER, numberOfVertices * size, vertices, vertices ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW));
 
 		int offset = 0;
 		for (int i = 0; i < (int)attributes.size(); i++) {

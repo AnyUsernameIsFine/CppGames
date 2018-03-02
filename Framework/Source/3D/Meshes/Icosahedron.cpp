@@ -1,4 +1,4 @@
-#include "Icosahedron.hpp"
+#include "Icosahedron.h"
 
 namespace Framework
 {

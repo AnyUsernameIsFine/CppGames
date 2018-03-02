@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Input\Input.hpp"
+#include "Input\Input.h"
 
 #include <SDL.h>
 
@@ -9,6 +9,7 @@ namespace Framework
 	class Window
 	{
 	public:
+		~Window();
 		void setTitle(const string& title);
 		void setSize(int width, int height);
 		void enableFullscreen(bool enable = true);
@@ -36,8 +37,7 @@ namespace Framework
 		int resizedHeight;
 
 		Window();
-		bool open();
-		void close();
+		bool create();
 		bool activateOpenGL();
 		void update();
 		void resizedEventHandler(int width, int height);
