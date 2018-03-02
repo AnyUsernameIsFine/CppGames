@@ -69,7 +69,7 @@ namespace LearnOpenGL
 
 			glGenVertexArrays(1, &fontVao);
 			glBindVertexArray(fontVao);
-			VertexBufferObject({ 2, 2 }, 4, fontVertices);
+			VertexBufferObject fontVbo({ 2, 2 }, 4, fontVertices);
 			glBindVertexArray(0);
 
 			cubeShader.createFromFiles("Resources/cube.vert", "Resources/cube.frag");
@@ -117,17 +117,16 @@ namespace LearnOpenGL
 
 			glGenVertexArrays(1, &cubeVao);
 			glBindVertexArray(cubeVao);
-			VertexBufferObject vbo({ 3, 3, 2 }, 24, cubeVertices);
-			IndexBufferObject ibo(36, indices);
+			VertexBufferObject cubeVbo({ 3, 3, 2 }, 24, cubeVertices);
+			IndexBufferObject cubeIbo(36, indices);
 			glBindVertexArray(0);
 
 			lightShader.createFromFiles("Resources/light.vert", "Resources/light.frag");
-
 			glGenVertexArrays(1, &lightVao);
 			glBindVertexArray(lightVao);
-			glBindBuffer(GL_ARRAY_BUFFER, vbo.getId());
+			glBindBuffer(GL_ARRAY_BUFFER, cubeVbo.getId());
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo.getId());
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeIbo.getId());
 			glEnableVertexAttribArray(0);
 			glBindVertexArray(0);
 		}
@@ -180,7 +179,7 @@ namespace LearnOpenGL
 			glCheck(glBindTexture(GL_TEXTURE_2D, graphics.text.getFontTextureId()));
 
 			glBindVertexArray(fontVao);
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+			//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		}
 
 		void drawScene()

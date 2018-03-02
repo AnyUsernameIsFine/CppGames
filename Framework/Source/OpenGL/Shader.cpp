@@ -9,12 +9,8 @@ namespace Framework
 	Shader::~Shader()
 	{
 		if (sdlCheckValue(SDL_WasInit(SDL_INIT_VIDEO))) {
-			glCheck(glDeleteProgram(id));
+			glCheck(glDeleteShader(id));
 		};
-
-		//if (sdlCheckValue(SDL_GL_GetCurrentContext())) {
-		//	glCheck(glDeleteProgram(id));
-		//}
 	}
 
 	void Shader::createFromFiles(const string& vertexShaderFilename, const string& fragmentShaderFilename)

@@ -10,14 +10,14 @@ namespace Framework
 	IndexBufferObject::~IndexBufferObject()
 	{
 		if (sdlCheckValue(SDL_WasInit(SDL_INIT_VIDEO))) {
-			glCheck(glDeleteProgram(id));
+			glCheck(glDeleteBuffers(1, &id));
 		}
 	}
 
 	void IndexBufferObject::create(int numberOfIndices, const GLushort* indices)
 	{
 		if (id) {
-			error("Index buffer object has alread been created");
+			error("Index buffer object has already been created");
 			return;
 		}
 

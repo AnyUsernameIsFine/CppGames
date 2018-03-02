@@ -10,7 +10,7 @@ namespace Framework
 	VertexBufferObject::~VertexBufferObject()
 	{
 		if (sdlCheckValue(SDL_WasInit(SDL_INIT_VIDEO))) {
-			glCheck(glDeleteProgram(id));
+			glCheck(glDeleteBuffers(1, &id));
 		}
 	}
 
