@@ -18,7 +18,7 @@ namespace SpaceSimulator
 		Transform transform;
 		Mesh* mesh = nullptr;
 
-		static const int MAX_IN_DRAW_LIST_ = 8192;
+		static const int MAX_IN_DRAW_LIST = 8192;
 
 		static void initialize();
 
@@ -34,11 +34,11 @@ namespace SpaceSimulator
 	protected:
 		struct DrawConfiguration
 		{
-			CoordinateSystem* cs;
 			glm::mat4 m1;
 			glm::mat4 m2;
 			glm::vec4 color;
 			float radius;
+			CoordinateSystem* cs;
 		};
 
 		CoordinateSystem* parent;
@@ -57,10 +57,7 @@ namespace SpaceSimulator
 			int descendantGenerationsToDraw = 0
 		);
 
-		static GLuint vertexArray;
-		static GLuint vertexBuffer;
-		static GLuint indexBuffer;
-		static GLuint instanceBuffer;
+		static VertexArray vertexArray;
 		static Shader shader;
 
 		static void myDraw(const std::vector<std::vector<std::vector<DrawConfiguration>>>& drawConfigurations, const Camera& camera);

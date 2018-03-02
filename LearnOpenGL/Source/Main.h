@@ -14,15 +14,14 @@ namespace LearnOpenGL
 	{
 	public:
 		Camera camera;
-
 		Shader fontShader;
 		Shader cubeShader;
 		Shader lightShader;
 		Texture2D texture1;
 		Texture2D texture2;
-		VertexArrayObject fontVao;
-		VertexArrayObject cubeVao;
-		VertexArrayObject lightVao;
+		VertexArray fontVertexArray;
+		VertexArray cubeVertexArray;
+		VertexArray lightVertexArray;
 		std::vector<Transform> cubes;
 		Transform light;
 
@@ -56,10 +55,6 @@ namespace LearnOpenGL
 
 			light.scale(0.2f);
 
-			fontShader.createFromFiles("Resources/font.vert", "Resources/font.frag");
-			fontShader.use();
-			fontShader.setUniform("fontTexture", 0);
-
 			float fontVertices[] = {
 				-1, -1,		0, 1,
 				 1, -1,		1, 1,
@@ -67,15 +62,10 @@ namespace LearnOpenGL
 				 1,  1,		1, 0,
 			};
 
-			fontVao.create();
-			VertexBufferObject fontVbo({ 2, 2 }, 4, fontVertices);
-
-			cubeShader.createFromFiles("Resources/cube.vert", "Resources/cube.frag");
-			texture1.createFromFile("Resources/journey.jpg");
-			texture2.createFromFile("Resources/flow.jpg");
-			cubeShader.use();
-			cubeShader.setUniform("texture1", 0);
-			cubeShader.setUniform("texture2", 1);
+			fontShader.createFromFiles("Resources/font.vert", "Resources/font.frag");
+			fontShader.use();
+			fontShader.setUniform("fontTexture", 0);
+			fontVertexArray.setVertexBuffer({ 2, 2 }, 4, fontVertices);
 
 			float cubeVertices[] = {
 				-0.5, -0.5, -0.5,	 0,  0, -1,		0, 1,
@@ -113,18 +103,19 @@ namespace LearnOpenGL
 				12, 15, 18, 18, 15, 21,
 			};
 
-			cubeVao.create();
-			VertexBufferObject cubeVbo({ 3, 3, 2 }, 24, cubeVertices);
-			IndexBufferObject cubeIbo(36, indices);
+			texture1.createFromFile("Resources/journey.jpg");
+			texture2.createFromFile("Resources/flow.jpg");
+
+			cubeShader.createFromFiles("Resources/cube.vert", "Resources/cube.frag");
+			cubeShader.use();
+			cubeShader.setUniform("texture1", 0);
+			cubeShader.setUniform("texture2", 1);
+			cubeVertexArray.setVertexBuffer({ 3, 3, 2 }, 24, cubeVertices);
+			cubeVertexArray.setIndexBuffer(36, indices);
 
 			lightShader.createFromFiles("Resources/light.vert", "Resources/light.frag");
-			lightVao.create();
-			glBindBuffer(GL_ARRAY_BUFFER, cubeVbo.getId());
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, cubeIbo.getId());
-			glEnableVertexAttribArray(0);
-
-			glBindVertexArray(0);
+			lightVertexArray.setExistingVertexBuffer(cubeVertexArray.getVertexBufferId());
+			lightVertexArray.setExistingIndexBuffer(cubeVertexArray.getIndexBufferId());
 		}
 
 		void update(float deltaSeconds)
@@ -162,7 +153,7 @@ namespace LearnOpenGL
 		{
 			graphics.clearScreen(0.12f, 0, 0.06f, true);
 
-			drawFont();
+			//drawFont();
 			drawScene();
 			drawInfo();
 		}
@@ -171,8 +162,7 @@ namespace LearnOpenGL
 		{
 			fontShader.use();
 			graphics.text.useFontTexture();
-			fontVao.use();
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+			fontVertexArray.draw(GL_TRIANGLE_STRIP);
 		}
 
 		void drawScene()
@@ -195,11 +185,10 @@ namespace LearnOpenGL
 			texture1.use(0);
 			texture2.use(1);
 
-			cubeVao.use();
 			for (auto& cube : cubes) {
 				glm::mat4 model = cube.getModelMatrix();
 				cubeShader.setUniform("model", model);
-				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, nullptr);
+				cubeVertexArray.draw(GL_TRIANGLES);
 			}
 
 			glm::mat4 model = light.getModelMatrix();
@@ -209,8 +198,7 @@ namespace LearnOpenGL
 			lightShader.setUniform("view", view);
 			lightShader.setUniform("projection", projection);
 
-			lightVao.use();
-			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, nullptr);
+			lightVertexArray.draw(GL_TRIANGLES);
 		}
 
 		void drawInfo()
@@ -223,7 +211,7 @@ namespace LearnOpenGL
 			stream << "x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
 			stream << "yaw: " << o.y << u8"° pitch: " << o.x << u8"° roll: " << o.z << u8"°";
 
-			graphics.text(0, 0) << stream << "shfjgftsghjT#$^&*Y(&Ry456768743hgfjETTRUIJCNDFSG";
+			graphics.text(0, 0) << stream;
 		}
 	};
 }

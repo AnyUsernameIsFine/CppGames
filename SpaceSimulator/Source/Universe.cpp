@@ -137,7 +137,7 @@ namespace SpaceSimulator
 
 						float r = Random::randFloat();
 						float maxRadius = Galaxy::MAX_RADIUS * Galaxy::SCALE / SCALE;
-						float galaxyRadius = maxRadius *(0.5f + 0.5f * r * r);
+						float galaxyRadius = maxRadius * (0.5f + 0.5f * r * r);
 
 						auto galaxy = std::make_shared<Galaxy>(this, galaxyRadius);
 

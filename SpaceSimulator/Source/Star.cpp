@@ -65,7 +65,7 @@ namespace SpaceSimulator
 
 		for (int i = 0; i < numberOfPlanets; i++) {
 			float r = Random::randFloat();
-			float planetRadius = maxRadius *(0.5f + 0.5f * r * r);
+			float planetRadius = maxRadius * (0.5f + 0.5f * r * r);
 
 			auto planet = std::make_shared<Planet>(this, planetRadius);
 

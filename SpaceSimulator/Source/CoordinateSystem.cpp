@@ -31,11 +31,15 @@ namespace SpaceSimulator
 
 	void CoordinateSystem::drawWithChildren(
 		std::vector<std::vector<std::vector<DrawConfiguration>>>& toDrawList,
-		const std::vector<Camera::CameraHierarchyLevel>& hierarchy,	// list of the camera's positions and rotations relative to all its coordinate system's ancestors from outside in
-		int hierarchyIndex,											// which level of the camera hierarchy should we use for inverse rotations
-		glm::mat4 rotations,										// matrix of the combined rotations of all this coordinate system's ancestors
+		// list of the camera's positions and rotations relative to all its coordinate system's ancestors from outside in
+		const std::vector<Camera::CameraHierarchyLevel>& hierarchy,
+		// which level of the camera hierarchy should we use for inverse rotations
+		int hierarchyIndex,
+		// matrix of the combined rotations of all this coordinate system's ancestors
+		glm::mat4 rotations,
 		glm::mat4 anotherMatrix,
-		glm::vec3 camPos,											// camera position relative to this coordinate system's parent (we have to use floating point precision because this will be used for coordinate systems the camera is outside of)
+		// camera position relative to this coordinate system's parent (we have to use floating point precision because this will be used for coordinate systems the camera is outside of)
+		glm::vec3 camPos,
 		bool useHighRes,
 		int descendantGenerationsToDraw
 	)
@@ -80,7 +84,7 @@ namespace SpaceSimulator
 				modelMatrix = glm::translate(modelMatrix, v);
 			}
 
-			drawConfiguration = { this, glm::mat4(1), modelMatrix, getColor(), radius };
+			drawConfiguration = { glm::mat4(1), modelMatrix, getColor(), radius, this };
 		}
 
 		// if this coordinate system is not in the hierarchy of the camera's coordinate systems
@@ -117,7 +121,7 @@ namespace SpaceSimulator
 				camPos = camPos * glm::conjugate(transform.getOrientation()) * parent->getScale() / getScale();
 			}
 
-			drawConfiguration = { this, anotherMatrix, modelMatrix, getColor(), radius };
+			drawConfiguration = { anotherMatrix, modelMatrix, getColor(), radius, this };
 		}
 
 		// add this coordinate system to the list of coordinate systems to draw
@@ -154,55 +158,10 @@ namespace SpaceSimulator
 
 	void CoordinateSystem::initialize()
 	{
-		glGenVertexArrays(1, &vertexArray);
-		glBindVertexArray(vertexArray);
-
-		glGenBuffers(1, &vertexBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-		glBufferData(GL_ARRAY_BUFFER, 60 * 6 * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
-
-		// vec3
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)(0 * sizeof(float)));
-
-		// vec3
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)(3 * sizeof(float)));
-
-		glGenBuffers(1, &indexBuffer);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+		vertexArray.setVertexBuffer({ 3, 3 }, 60);
 		// TODO: for some unknown reason, there needs to be room for one extra index
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 1 + 12 * 3 * 3 * sizeof(GLushort), nullptr, GL_DYNAMIC_DRAW);
-
-		glGenBuffers(1, &instanceBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer);
-		glBufferData(GL_ARRAY_BUFFER, MAX_IN_DRAW_LIST_ * sizeof(DrawConfiguration), nullptr, GL_DYNAMIC_DRAW);
-
-		GLsizei vec4Size = sizeof(glm::vec4);
-
-		// mat4
-		for (int i = 0; i < 4; i++) {
-			glEnableVertexAttribArray(i + 2);
-			glVertexAttribPointer(i + 2, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(i * vec4Size + sizeof(CoordinateSystem*)));
-			glVertexAttribDivisor(i + 2, 1);
-		}
-		// mat4
-		for (int i = 0; i < 4; i++) {
-			glEnableVertexAttribArray(i + 6);
-			glVertexAttribPointer(i + 6, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)((i + 4) * vec4Size + sizeof(CoordinateSystem*)));
-			glVertexAttribDivisor(i + 6, 1);
-		}
-		// vec4
-		glEnableVertexAttribArray(10);
-		glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(8 * vec4Size + sizeof(CoordinateSystem*)));
-		glVertexAttribDivisor(10, 1);
-		// float
-		glEnableVertexAttribArray(11);
-		glVertexAttribPointer(11, 1, GL_FLOAT, GL_FALSE, sizeof(DrawConfiguration), (GLvoid*)(9 * vec4Size + sizeof(CoordinateSystem*)));
-		glVertexAttribDivisor(11, 1);
-
-		glBindVertexArray(0);
-
+		vertexArray.setIndexBuffer(1 + 12 * 3 * 3);
+		vertexArray.setInstanceBuffer({ 16, 16, 4, 1, 1 }, MAX_IN_DRAW_LIST);
 		shader.createFromFiles("Resources/coordinateSystem.vert", "Resources/coordinateSystem.frag");
 	}
 
@@ -220,8 +179,6 @@ namespace SpaceSimulator
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-		glBindVertexArray(vertexArray);
 
 		for (int i = 0; i < (int)toDrawList.size(); i++) {
 			glClear(GL_DEPTH_BUFFER_BIT);
@@ -236,28 +193,18 @@ namespace SpaceSimulator
 
 					if (mesh && !mesh->getVertices().empty()) {
 						auto vertices = mesh->getVertices();
-						glNamedBufferSubData(vertexBuffer, 0, vertices.size() * sizeof(vertices[0]), &vertices[0]);
-
-						glNamedBufferSubData(instanceBuffer, 0, list.size() * sizeof(DrawConfiguration), &list[0]);
-
 						auto indices = mesh->getIndices();
 
-						if (!indices.empty()) {
-							glNamedBufferSubData(indexBuffer, 0, indices.size() * sizeof(indices[0]), &indices[0]);
-							glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_SHORT, nullptr, list.size());
-						}
-						else {
-							glDrawArraysInstanced(GL_TRIANGLES, 0, vertices.size(), list.size());
-						}
+						vertexArray.updateVertexBuffer(vertices.size(), &vertices[0]);
+						vertexArray.updateIndexBuffer(indices.size(), indices.empty() ? nullptr : &indices[0]);
+						vertexArray.updateInstanceBuffer(list.size(), &list[0]);
+						vertexArray.draw(GL_TRIANGLES);
 					}
 				}
 			}
 		}
 	}
 
-	GLuint CoordinateSystem::vertexArray;
-	GLuint CoordinateSystem::vertexBuffer;
-	GLuint CoordinateSystem::indexBuffer;
-	GLuint CoordinateSystem::instanceBuffer;
+	VertexArray CoordinateSystem::vertexArray;
 	Shader CoordinateSystem::shader;
 }

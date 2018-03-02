@@ -64,7 +64,7 @@ namespace SpaceSimulator
 
 		for (int i = 0; i < numberOfMoons; i++) {
 			float r = Random::randFloat();
-			float moonRadius = maxRadius *(0.5f + 0.5f * r * r);
+			float moonRadius = maxRadius * (0.5f + 0.5f * r * r);
 
 			auto moon = std::make_shared<Moon>(this, moonRadius);
 

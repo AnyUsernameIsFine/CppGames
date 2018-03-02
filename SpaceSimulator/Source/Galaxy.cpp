@@ -65,7 +65,7 @@ namespace SpaceSimulator
 
 		for (int i = 0; i < numberOfStars; i++) {
 			float r = Random::randFloat();
-			float starRadius = maxRadius *(0.5f + 0.5f * r * r);
+			float starRadius = maxRadius * (0.5f + 0.5f * r * r);
 
 			auto star = std::make_shared<Star>(this, starRadius);
 

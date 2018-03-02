@@ -143,9 +143,7 @@ namespace Framework
 
 		setColor(0.5f, 0.5f, 0.5f);
 
-		vao.create();
-		vbo.create({ 4 }, MAX_STRING_LENGTH * sizeof(GlyphQuad));
-		//glBindVertexArray(0);
+		vertexArray.setVertexBuffer({ 4 }, MAX_STRING_LENGTH * sizeof(GlyphQuad) / sizeof(GLfloat));
 	}
 
 	void Text::windowResizedEventHandler(int width, int height)
@@ -232,11 +230,9 @@ namespace Framework
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		shader.use();
-
 		useFontTexture();
-		vao.use();
-		glNamedBufferSubData(vbo.getId(), 0, 96 * numberOfGlyphs, &vertices[0]);
-		glDrawArrays(GL_TRIANGLES, 0, 6 * numberOfGlyphs);
+		vertexArray.updateVertexBuffer(numberOfGlyphs * sizeof(GlyphQuad) / sizeof(GLfloat), &vertices[0]);
+		vertexArray.draw(GL_TRIANGLES);
 
 		// enable depth testing if it was enabled
 		if (depthTest == GL_TRUE) {

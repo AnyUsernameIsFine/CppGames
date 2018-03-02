@@ -9,23 +9,16 @@ namespace Framework
 {
 	Texture2D::~Texture2D()
 	{
-		if (sdlCheckValue(SDL_GL_GetCurrentContext())) {
+		if (SDL_GL_GetCurrentContext()) {
 			glCheck(glDeleteTextures(1, &id));
 		}
 	}
 
-	void Texture2D::createEmpty(int width, int height) {
+	void Texture2D::createEmpty(int width, int height)
+	{
 		create(width, height, GL_RED, GL_RED);
-	}
 
-	int Texture2D::getWidth() const
-	{
-		return width;
-	}
-
-	int Texture2D::getHeight() const
-	{
-		return height;
+		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
 	}
 
 	void Texture2D::createFromFile(const string& filename)
@@ -39,6 +32,17 @@ namespace Framework
 		stbi_image_free(data);
 
 		glCheck(glGenerateMipmap(GL_TEXTURE_2D));
+		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+	}
+
+	int Texture2D::getWidth() const
+	{
+		return width;
+	}
+
+	int Texture2D::getHeight() const
+	{
+		return height;
 	}
 
 	void Texture2D::use(int unit) const
@@ -88,6 +92,7 @@ namespace Framework
 		glCheck(glGetTexImage(GL_TEXTURE_2D, 0, format, GL_UNSIGNED_BYTE, data));
 		glCheck(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr));
 		glCheck(glTextureSubImage2D(id, 0, 0, 0, std::min(width, this->width), std::min(height, this->height), format, GL_UNSIGNED_BYTE, data));
+		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
 
 		if (width < this->width) {
 			glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
@@ -101,12 +106,12 @@ namespace Framework
 
 	void Texture2D::create(int width, int height, GLint internalFormat, GLenum format, const byte pixels[])
 	{
-		if (!hasContext("Could not create 2D texture")) {
+		if (id) {
+			error("2D texture has already been created");
 			return;
 		}
 
-		if (id) {
-			error("2D texture has already been created");
+		if (!hasContext("Could not create 2D texture")) {
 			return;
 		}
 

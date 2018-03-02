@@ -3,7 +3,7 @@
 #include "Font.h"
 #include "System\StringStream.h"
 #include "OpenGL\Shader.h"
-#include "OpenGL\VertexArrayObject.h"
+#include "OpenGL\VertexArray.h"
 
 namespace Framework
 {
@@ -34,14 +34,13 @@ namespace Framework
 			float x, y;
 		};
 
-		static const int MAX_STRING_LENGTH = 65536;
+		static const int MAX_STRING_LENGTH = 1024;
 
 		int windowWidth;
 		int windowHeight;
 		vector<GlyphQuad> vertices = vector<GlyphQuad>(MAX_STRING_LENGTH);
 		Shader shader;
-		VertexArrayObject vao;
-		VertexBufferObject vbo;
+		VertexArray vertexArray;
 		bool windowHasResized = false;
 		std::unordered_map<string, std::shared_ptr<Font>> fonts;
 		std::shared_ptr<Font> font = nullptr;

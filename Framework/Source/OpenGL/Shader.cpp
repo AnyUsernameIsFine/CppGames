@@ -8,7 +8,7 @@ namespace Framework
 {
 	Shader::~Shader()
 	{
-		if (sdlCheckValue(SDL_GL_GetCurrentContext())) {
+		if (SDL_GL_GetCurrentContext()) {
 			glCheck(glDeleteShader(id));
 		};
 	}
@@ -28,12 +28,12 @@ namespace Framework
 
 	void Shader::createFromSource(const string& vertexShaderSource, const string& fragmentShaderSource)
 	{
-		if (!hasContext("Could not create shader")) {
+		if (id) {
+			error("Shader has already been created");
 			return;
 		}
 
-		if (id) {
-			error("Shader has already been created");
+		if (!hasContext("Could not create shader")) {
 			return;
 		}
 
@@ -71,12 +71,10 @@ namespace Framework
 
 		if (!ifs) {
 			error("File \"" + filename + "\" could not be opened");
-
 			return "";
 		}
-		else {
-			return string((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
-		}
+
+		return string((std::istreambuf_iterator<char>(ifs)), (std::istreambuf_iterator<char>()));
 	}
 
 	GLuint Shader::shaderFromSource(GLenum type, const string& source) const

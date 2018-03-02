@@ -36,17 +36,15 @@
     <ClInclude Include="Source\Graphics\Text.h" />
     <ClInclude Include="Source\Graphics\Window.h" />
     <ClInclude Include="Source\Input\Input.h" />
-    <ClInclude Include="Source\OpenGL\IndexBufferObject.h" />
     <ClInclude Include="Source\OpenGL\OpenGLObject.h" />
     <ClInclude Include="Source\OpenGL\Shader.h" />
     <ClInclude Include="Source\OpenGL\Texture2D.h" />
-    <ClInclude Include="Source\OpenGL\VertexBufferObject.h" />
     <ClInclude Include="Source\System\Game.h" />
     <ClInclude Include="Source\System\Globals.h" />
     <ClInclude Include="Source\System\Random.h" />
     <ClInclude Include="Source\System\TimePoint.h" />
     <ClInclude Include="Source\System\StringStream.h" />
-    <ClInclude Include="Source\OpenGL\VertexArrayObject.h" />
+    <ClInclude Include="Source\OpenGL\VertexArray.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Graphics\FontPacker.cpp" />
@@ -61,16 +59,14 @@
     <ClCompile Include="Source\Graphics\Text.cpp" />
     <ClCompile Include="Source\Graphics\Window.cpp" />
     <ClCompile Include="Source\Input\Input.cpp" />
-    <ClCompile Include="Source\OpenGL\IndexBufferObject.cpp" />
     <ClCompile Include="Source\OpenGL\OpenGLObject.cpp" />
     <ClCompile Include="Source\OpenGL\Shader.cpp" />
     <ClCompile Include="Source\OpenGL\Texture2D.cpp" />
-    <ClCompile Include="Source\OpenGL\VertexBufferObject.cpp" />
     <ClCompile Include="Source\System\Game.cpp" />
     <ClCompile Include="Source\System\Random.cpp" />
     <ClCompile Include="Source\System\TimePoint.cpp" />
     <ClCompile Include="Source\System\StringStream.cpp" />
-    <ClCompile Include="Source\OpenGL\VertexArrayObject.cpp" />
+    <ClCompile Include="Source\OpenGL\VertexArray.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
