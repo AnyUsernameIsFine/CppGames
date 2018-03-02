@@ -2,7 +2,7 @@
 
 #include "Moon.h"
 
-namespace Game
+namespace SpaceSimulator
 {
 	class Planet : public CoordinateSystem
 	{

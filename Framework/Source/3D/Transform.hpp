@@ -2,7 +2,6 @@
 
 #include "Vector3.hpp"
 
-#define GLM_FORCE_INLINE 
 #include <glm\gtc\quaternion.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 
@@ -167,10 +166,10 @@ namespace Framework
 	void TransformType<T>::move(const glm::vec3& vector)
 	{
 		if (modelAxes) {
-			position += vector * orientation;
+			position += Vector3Type<T>::fromVec3(vector * orientation);
 		}
 		else {
-			position += vector;
+			position += Vector3Type<T>::fromVec3(vector);
 		}
 	}
 

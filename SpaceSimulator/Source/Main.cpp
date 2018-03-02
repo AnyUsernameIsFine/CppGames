@@ -2,7 +2,7 @@
 
 int main(int argc, char* argv[])
 {
-	Game::Game game;
+	SpaceSimulator::Game game;
 
 	return game.run();
 }

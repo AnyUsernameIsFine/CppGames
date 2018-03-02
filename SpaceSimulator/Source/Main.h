@@ -4,7 +4,7 @@
 
 #include "Universe.h"
 
-namespace Game
+namespace SpaceSimulator
 {
 	using namespace Framework;
 
@@ -43,16 +43,16 @@ namespace Game
 		{
 			universe.create();
 
-			CoordinateSystem* cs = &universe;
-			camera.setCoordinateSystem(cs);
-
 #ifdef UNIVERSE_SCALEZ
 			auto galaxies = universe.getChildren();
 			auto stars = galaxies[0]->getChildren();
 			auto planets = stars[0]->getChildren();
-			cs = planets[0].get();
-			camera.setCoordinateSystem(cs);
+			CoordinateSystem* cs = planets[0].get();
+#else
+			CoordinateSystem* cs = &universe;
 #endif
+			camera.setCoordinateSystem(cs);
+
 			auto children = cs->getChildren();
 			if (!children.empty()) {
 				CoordinateSystem* toPutCameraNextTo = children[children.size() / 2].get();

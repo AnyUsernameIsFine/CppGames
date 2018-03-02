@@ -2,7 +2,7 @@
 
 #include <Framework.hpp>
 
-namespace Game
+namespace SpaceSimulator
 {
 #ifdef UNIVERSE_SCALE
 #	if UNIVERSE_SCALE == 0
@@ -151,7 +151,7 @@ namespace Game
 							)
 						};
 
-						galaxy->transform.setPosition(p * PERIOD + v * PERIOD);
+						galaxy->transform.setPosition(p * PERIOD + Vector3::fromVec3(v * PERIOD));
 
 						r = Random::randFloat();
 						galaxy->transform.rotate(360 * r, glm::sphericalRand(1.0f));

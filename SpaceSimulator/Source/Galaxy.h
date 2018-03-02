@@ -2,7 +2,7 @@
 
 #include "Star.h"
 
-namespace Game
+namespace SpaceSimulator
 {
 	class Galaxy : public CoordinateSystem
 	{

@@ -2,16 +2,16 @@
 
 #include "Font.hpp"
 #include "System\StringStream.hpp"
-#include "OpenGL\ShaderProgram.hpp"
+#include "OpenGL\Shader.hpp"
 #include "OpenGL\VertexBufferObject.hpp"
-#include "System\Error.hpp"
 
 namespace Framework
 {
 	class Text
 	{
 	public:
-		void loadFont(const string& filename, const string& family = string());
+		void loadFont(const string& filename);
+		void loadFont(const string& filename, const string& family);
 		void setFontFamily(const string& family);
 		void setFontSize(int size);
 		void setFont(const string& family, int size);
@@ -21,6 +21,8 @@ namespace Framework
 		StringStream operator()(float x, float y);
 
 	private:
+		typedef std::unordered_map<string, std::shared_ptr<Font>> Fonts;
+
 		struct GlyphQuad
 		{
 			GLfloat data[24];
@@ -34,25 +36,25 @@ namespace Framework
 
 		static const int MAX_STRING_LENGTH = 65536;
 
-		ShaderProgram* program;
-		GLuint vao;
-		GlyphQuad* vertices;
-		VertexBufferObject* vbo;
-		bool windowHasResized = false;
 		int windowWidth;
 		int windowHeight;
+		vector<GlyphQuad> vertices = vector<GlyphQuad>(MAX_STRING_LENGTH);
+		Shader shader;
+		GLuint vao;
+		VertexBufferObject vbo;
+		bool windowHasResized = false;
 		std::unordered_map<string, std::shared_ptr<Font>> fonts;
-		Font* font = nullptr;
+		std::shared_ptr<Font> font = nullptr;
 		int size = 30;
 
 		Text() {}
+		std::shared_ptr<Font> findFont(const string& family) const;
 		void initialize(int windowWidth, int windowHeight);
-		void onWindowResize(int width, int height);
-		Font* findFont(const string& family) const;
+		void windowResizedEventHandler(int width, int height);
 		void draw(float x, float y, const std::u32string& text);
 		void applyWindowSize();
 
-		static void drawFromStream(const StringStream& stream, void* params);
+		static void drawFromStreamCallback(const StringStream& stream, void* data);
 
 		friend class Graphics;
 	};

@@ -1,7 +1,5 @@
 #include "Texture2D.hpp"
-#include "System\Error.hpp"
 
-#include <GL\glew.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
@@ -9,6 +7,16 @@ namespace Framework
 {
 	Texture2D::Texture2D(const string& filename)
 	{
+		create(filename);
+	}
+
+	void Texture2D::create(const string& filename)
+	{
+		if (id) {
+			error("2D texture has already been created");
+			return;
+		}
+
 		glCheck(glGenTextures(1, &id));
 		glCheck(glBindTexture(GL_TEXTURE_2D, id));
 		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));

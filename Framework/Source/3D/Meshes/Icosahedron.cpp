@@ -30,7 +30,7 @@ namespace Framework
 
 			for (int i = -1; i <= +1; i += 2) {
 				for (int j = -1; j <= +1; j += 2) {
-					auto permutations = evenPermutationsOfVertex(glm::vec3(i, j * phi, 0) * s);
+					auto permutations = getEvenPermutationsOfVertex(glm::vec3(i, j * phi, 0) * s);
 					positions.insert(positions.end(), permutations.begin(), permutations.end());
 				}
 			}

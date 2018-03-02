@@ -6,7 +6,7 @@
 
 #include <ctime>
 
-namespace Game
+namespace LearnOpenGL
 {
 	using namespace Framework;
 
@@ -15,11 +15,11 @@ namespace Game
 	public:
 		Camera camera;
 
-		ShaderProgram* fontShader;
-		ShaderProgram* cubeShader;
-		ShaderProgram* lightShader;
-		Texture2D* texture1;
-		Texture2D* texture2;
+		Shader fontShader;
+		Shader cubeShader;
+		Shader lightShader;
+		Texture2D texture1;
+		Texture2D texture2;
 		GLuint fontVao;
 		GLuint cubeVao;
 		GLuint lightVao;
@@ -47,7 +47,7 @@ namespace Game
 			camera.transform.moveZ(10);
 
 			for (int i = 0; i < 10; i++) {
-				Transform cube(glm::sphericalRand(3.0f));
+				Transform cube(Vector3::fromVec3(glm::sphericalRand(3.0f)));
 				cube.scale(2, 1, 0.5f);
 				cube.rotate(i * 20.0f, { -1.0f, 0.3f, 0.5f });
 
@@ -56,9 +56,9 @@ namespace Game
 
 			light.scale(0.2f);
 
-			fontShader = new ShaderProgram("Resources/font.vert", "Resources/font.frag");
-			fontShader->use();
-			fontShader->setUniform("fontTexture", 0);
+			fontShader.createFromFiles("Resources/font.vert", "Resources/font.frag");
+			fontShader.use();
+			fontShader.setUniform("fontTexture", 0);
 
 			float fontVertices[] = {
 				-1, -1,		0, 1,
@@ -72,12 +72,12 @@ namespace Game
 			VertexBufferObject({ 2, 2 }, 4, fontVertices);
 			glBindVertexArray(0);
 
-			cubeShader = new ShaderProgram("Resources/cube.vert", "Resources/cube.frag");
-			texture1 = new Texture2D("Resources/journey.jpg");
-			texture2 = new Texture2D("Resources/flow.jpg");
-			cubeShader->use();
-			cubeShader->setUniform("texture1", 0);
-			cubeShader->setUniform("texture2", 1);
+			cubeShader.createFromFiles("Resources/cube.vert", "Resources/cube.frag");
+			texture1.create("Resources/journey.jpg");
+			texture2.create("Resources/flow.jpg");
+			cubeShader.use();
+			cubeShader.setUniform("texture1", 0);
+			cubeShader.setUniform("texture2", 1);
 
 			float cubeVertices[] = {
 				-0.5, -0.5, -0.5,	 0,  0, -1,		0, 0,
@@ -121,7 +121,7 @@ namespace Game
 			IndexBufferObject ibo(36, indices);
 			glBindVertexArray(0);
 
-			lightShader = new ShaderProgram("Resources/light.vert", "Resources/light.frag");
+			lightShader.createFromFiles("Resources/light.vert", "Resources/light.frag");
 
 			glGenVertexArrays(1, &lightVao);
 			glBindVertexArray(lightVao);
@@ -167,14 +167,14 @@ namespace Game
 		{
 			graphics.clearScreen(0.12f, 0, 0.06f, true);
 
-			//drawFont();
+			drawFont();
 			drawScene();
 			drawInfo();
 		}
 
 		void drawFont()
 		{
-			fontShader->use();
+			fontShader.use();
 
 			glCheck(glActiveTexture(GL_TEXTURE0));
 			glCheck(glBindTexture(GL_TEXTURE_2D, graphics.text.getFontTextureId()));
@@ -191,31 +191,31 @@ namespace Game
 			glm::mat4 view = camera.getViewMatrix();
 			glm::mat4 projection = camera.getProjectionMatrix();
 
-			cubeShader->use();
-			cubeShader->setUniform("view", view);
-			cubeShader->setUniform("projection", projection);
-			cubeShader->setUniform("mix", (sin(getGameTimeInSeconds()) + 1) * 0.5f);
-			cubeShader->setUniform("lightColor", glm::vec3(1, 1, 1));
+			cubeShader.use();
+			cubeShader.setUniform("view", view);
+			cubeShader.setUniform("projection", projection);
+			cubeShader.setUniform("mix", (sin(getGameTimeInSeconds()) + 1) * 0.5f);
+			cubeShader.setUniform("lightColor", glm::vec3(1, 1, 1));
 
 			glm::vec3 p = light.getPosition().toVec3();
-			cubeShader->setUniform("lightPosition", glm::vec3(view * glm::vec4(p.x, p.y, p.z, 1)));
+			cubeShader.setUniform("lightPosition", glm::vec3(view * glm::vec4(p.x, p.y, p.z, 1)));
 
-			texture1->use(0);
-			texture2->use(1);
+			texture1.use(0);
+			texture2.use(1);
 
 			glBindVertexArray(cubeVao);
 			for (auto& cube : cubes) {
 				glm::mat4 model = cube.getModelMatrix();
-				cubeShader->setUniform("model", model);
+				cubeShader.setUniform("model", model);
 				glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, nullptr);
 			}
 
 			glm::mat4 model = light.getModelMatrix();
 
-			lightShader->use();
-			lightShader->setUniform("model", model);
-			lightShader->setUniform("view", view);
-			lightShader->setUniform("projection", projection);
+			lightShader.use();
+			lightShader.setUniform("model", model);
+			lightShader.setUniform("view", view);
+			lightShader.setUniform("projection", projection);
 
 			glBindVertexArray(lightVao);
 			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, nullptr);

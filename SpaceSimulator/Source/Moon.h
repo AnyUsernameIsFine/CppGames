@@ -10,7 +10,7 @@
 
 #include <glm\gtc\random.hpp>
 
-namespace Game
+namespace SpaceSimulator
 {
 	class Moon : public CoordinateSystem
 	{

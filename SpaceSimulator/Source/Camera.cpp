@@ -9,7 +9,7 @@
 #include <sstream>
 #include <iomanip>
 
-namespace Game
+namespace SpaceSimulator
 {
 	void Camera::setCoordinateSystem(CoordinateSystem* coordinateSystem)
 	{

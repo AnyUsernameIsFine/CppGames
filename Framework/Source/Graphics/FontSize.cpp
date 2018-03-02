@@ -1,5 +1,4 @@
 #include "FontSize.hpp"
-#include "System\Error.hpp"
 
 namespace Framework
 {
@@ -23,7 +22,7 @@ namespace Framework
 		return fontPacker.getCapacity();
 	}
 
-	const Glyph* FontSize::getGlyph(FT_ULong character)
+	const Glyph* FontSize::getGlyph(uInt32 character) const
 	{
 		auto glyph = glyphs.find(character);
 
@@ -35,7 +34,7 @@ namespace Framework
 		}
 	}
 
-	const Glyph* FontSize::addGlyph(FT_ULong character, FT_GlyphSlot glyph)
+	const Glyph* FontSize::addGlyph(uInt32 character, FT_GlyphSlot glyph)
 	{
 		int left, top;
 

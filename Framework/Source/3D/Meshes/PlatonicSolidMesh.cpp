@@ -1,11 +1,10 @@
 #include "PlatonicSolidMesh.hpp"
 
-#define GLM_FORCE_INLINE
 #include <glm\glm.hpp>
 
 namespace Framework
 {
-	vector<glm::vec3> PlatonicSolidMesh::evenPermutationsOfVertex(const glm::vec3& v)
+	vector<glm::vec3> PlatonicSolidMesh::getEvenPermutationsOfVertex(const glm::vec3& v)
 	{
 		return {
 			{ v.x, v.y, v.z },
@@ -14,7 +13,7 @@ namespace Framework
 		};
 	}
 
-	vector<glm::vec3> PlatonicSolidMesh::oddPermutationsOfVertex(const glm::vec3& v)
+	vector<glm::vec3> PlatonicSolidMesh::getOddPermutationsOfVertex(const glm::vec3& v)
 	{
 		return {
 			{ v.x, v.z, v.y },
@@ -23,7 +22,7 @@ namespace Framework
 		};
 	}
 
-	vector<glm::vec3> PlatonicSolidMesh::evenAndOddPermutationsOfVertex(const glm::vec3& v)
+	vector<glm::vec3> PlatonicSolidMesh::getEvenAndOddPermutationsOfVertex(const glm::vec3& v)
 	{
 		return {
 			{ v.x, v.y, v.z },

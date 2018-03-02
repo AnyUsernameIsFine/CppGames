@@ -1,25 +1,25 @@
 #include "Font.hpp"
-#include "System\Error.hpp"
 
 namespace Framework
 {
-	int Font::loadFromFile(const string& filename)
+	bool Font::loadFromFile(const string& filename)
 	{
-		if (!face) {
-			if (FT_Init_FreeType(&freeType)) {
-				error("Could not initialize FreeType");
-
-				return 1;
-			}
-
-			if (FT_New_Face(freeType, filename.c_str(), 0, &face)) {
-				error("Could not load font from file " + filename);
-
-				return 1;
-			}
+		if (face) {
+			error("Font has already been loaded");
+			return false;
 		}
 
-		return 0;
+		if (FT_Init_FreeType(&freeType) != 0) {
+			error("Could not initialize FreeType");
+			return false;
+		}
+
+		if (FT_New_Face(freeType, filename.c_str(), 0, &face) != 0) {
+			error("Could not load font from file " + filename);
+			return false;
+		}
+
+		return true;
 	}
 
 	Font::~Font()
@@ -45,27 +45,27 @@ namespace Framework
 
 				auto fontSize = std::make_shared<FontSize>(size);
 				fontSizes.push_back(fontSize);
-				this->fontSize = fontSize.get();
+				this->fontSize = fontSize;
 			}
 		}
 	}
 
-	const string Font::getFamilyName() const
+	string Font::getFamilyName() const
 	{
 		return face->family_name;
 	}
 
-	FT_Pos Font::getHeight() const
+	int Font::getHeight() const
 	{
 		return face->size->metrics.height >> 6;
 	}
 
-	const Glyph* Font::getGlyph(FT_ULong character) const
+	const Glyph* Font::getGlyph(uInt32 character) const
 	{
 		const Glyph* glyph = fontSize->getGlyph(character);
 
 		if (!glyph) {
-			if (FT_Load_Char(face, character, FT_LOAD_RENDER)) {
+			if (FT_Load_Char(face, character, FT_LOAD_RENDER) != 0) {
 				error("Could not load glyph " + character);
 			}
 
@@ -85,18 +85,14 @@ namespace Framework
 		return fontSize->getTextureSize();
 	}
 
-	FontSize* Font::findFontSize(int size) const
+	std::shared_ptr<FontSize> Font::findFontSize(int size) const
 	{
-		bool found = false;
-		FontSize* result = nullptr;
-
-		for (auto i = fontSizes.begin(); i != fontSizes.end() && !found; i++) {
-			if (i->get()->getSize() == size) {
-				found = true;
-				result = i->get();
+		for (auto& fontSize : fontSizes) {
+			if (fontSize->getSize() == size) {
+				return fontSize;
 			}
 		}
 
-		return result;
+		return nullptr;
 	}
 }

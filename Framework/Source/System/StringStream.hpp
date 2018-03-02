@@ -12,7 +12,7 @@ namespace Framework
 	{
 	public:
 		StringStream() {}
-		StringStream(void callback(const StringStream&, void*), const void* data, uInt length);
+		StringStream(void callback(const StringStream&, void*), const void* data, uInt dataLength);
 		~StringStream();
 		string getString() const;
 		std::u32string getUtf8String() const;
@@ -29,8 +29,7 @@ namespace Framework
 	private:
 		std::ostringstream oStringStream;
 		void(*callback)(const StringStream&, void*);
-		void* data;
-		uInt dataLength;
+		void* callbackData;
 
 #if _MSC_VER >= 1900
 		typedef std::wstring_convert<std::codecvt_utf8<int32_t>, int32_t> Utf8Converter;

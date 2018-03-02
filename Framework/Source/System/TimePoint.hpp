@@ -1,5 +1,7 @@
 #pragma once
 
+#include "System\Globals.hpp"
+
 #include <chrono>
 
 namespace Framework

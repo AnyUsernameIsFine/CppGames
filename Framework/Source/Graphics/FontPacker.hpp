@@ -2,8 +2,6 @@
 
 #include "System\Globals.hpp"
 
-#include <GL\glew.h>
-
 namespace Framework
 {
 	class FontPacker
@@ -13,7 +11,7 @@ namespace Framework
 		~FontPacker();
 		int getCapacity() const;
 		GLuint getTextureId() const;
-		bool addBitmap(uInt width, uInt height, byte* bitmap, int& left, int& top);
+		bool addBitmap(uInt width, uInt height, byte bitmap[], int& left, int& top);
 
 	private:
 		class Node
@@ -23,7 +21,7 @@ namespace Framework
 			~Node();
 			int getLeft() const;
 			int getTop() const;
-			Node* findEmptyNode(int width, int height);
+			const Node* findEmptyNode(int width, int height);
 			void increaseCapacity(int newCapacity);
 
 		private:

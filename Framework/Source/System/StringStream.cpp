@@ -1,23 +1,19 @@
 #include "StringStream.hpp"
-#include "Error.hpp"
 
 namespace Framework
 {
-	StringStream::StringStream(void callback(const StringStream&, void*), const void* data, uInt length)
+	StringStream::StringStream(void callback(const StringStream&, void*), const void* data, uInt dataLength)
 	{
 		this->callback = callback;
-		this->dataLength = length;
-
-		this->data = new byte[length];
-		memcpy(this->data, data, length);
+		this->callbackData = new byte[dataLength];
+		memcpy(this->callbackData, data, dataLength);
 	}
 
 	StringStream::~StringStream()
 	{
-		if (this->callback) {
-			this->callback(*this, data);
-
-			delete[] this->data;
+		if (callback) {
+			callback(*this, callbackData);
+			delete[] callbackData;
 		}
 	}
 
@@ -38,7 +34,6 @@ namespace Framework
 		}
 		catch (std::range_error) {
 			error("String conversion failed");
-
 			return U"";
 		}
 	}

@@ -37,9 +37,9 @@ namespace Framework
 		return textureId;
 	}
 
-	bool FontPacker::addBitmap(uInt width, uInt height, byte* bitmap, int& left, int& top)
+	bool FontPacker::addBitmap(uInt width, uInt height, byte bitmap[], int& left, int& top)
 	{
-		Node* node = root->findEmptyNode(width, height);
+		const Node* node = root->findEmptyNode(width, height);
 
 		if (node) {
 			left = node->getLeft();
@@ -106,17 +106,17 @@ namespace Framework
 		return top;
 	}
 
-	FontPacker::Node* FontPacker::Node::findEmptyNode(int width, int height)
+	const FontPacker::Node* FontPacker::Node::findEmptyNode(int width, int height)
 	{
 		if (childA/* || childB*/) {
-			Node* node = childA->findEmptyNode(width, height);
+			const Node* node = childA->findEmptyNode(width, height);
 			return node ? node : childB->findEmptyNode(width, height);
 		}
 		else {
 			int dw = right - left - width;
 			int dh = bottom - top - height;
 
-			if (filled || dw < (int)(right == fontPacker->getCapacity()) || dh < (int)(bottom == fontPacker->getCapacity())) {
+			if (filled || dw < (int)(right == fontPacker->capacity) || dh < (int)(bottom == fontPacker->capacity)) {
 				return nullptr;
 			}
 
@@ -140,11 +140,11 @@ namespace Framework
 
 	void FontPacker::Node::increaseCapacity(int newCapacity)
 	{
-		if (right == fontPacker->getCapacity()) {
+		if (right == fontPacker->capacity) {
 			right = newCapacity;
 		}
 
-		if (bottom == fontPacker->getCapacity()) {
+		if (bottom == fontPacker->capacity) {
 			bottom = newCapacity;
 		}
 

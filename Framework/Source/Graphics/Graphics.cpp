@@ -1,5 +1,4 @@
 #include "Graphics.hpp"
-#include "System\Error.hpp"
 
 namespace Framework
 {
@@ -14,7 +13,7 @@ namespace Framework
 		return std::fmaxf(0, numberOfFrameLengths / frameLengthsTotal);
 	}
 
-	int Graphics::openWindow()
+	bool Graphics::openWindow()
 	{
 		return window.open();
 	}
@@ -24,10 +23,10 @@ namespace Framework
 		window.close();
 	}
 
-	int Graphics::initialize()
+	bool Graphics::initialize()
 	{
-		if (window.activateOpenGL() != 0) {
-			return 1;
+		if (!window.activateOpenGL()) {
+			return false;
 		}
 
 		text.initialize(window.getWidth(), window.getHeight());
@@ -38,7 +37,7 @@ namespace Framework
 
 		frameTimePoint.setToNow();
 
-		return 0;
+		return true;
 	}
 
 	void Graphics::update()
@@ -59,19 +58,17 @@ namespace Framework
 		}
 	}
 
-	void Graphics::onWindowResize(SDL_Event event)
+	void Graphics::windowEventHandler(SDL_WindowEvent event)
 	{
-		if (event.type == SDL_WINDOWEVENT) {
-			int width = event.window.data1;
-			int height = event.window.data2;
+		int width = event.data1;
+		int height = event.data2;
 
-			switch (event.window.event) {
-			case SDL_WINDOWEVENT_RESIZED:
-				window.onResize(width, height);
-				break;
-			case SDL_WINDOWEVENT_SIZE_CHANGED:
-				text.onWindowResize(width, height);
-			}
+		switch (event.event) {
+		case SDL_WINDOWEVENT_RESIZED:
+			window.resizedEventHandler(width, height);
+			break;
+		case SDL_WINDOWEVENT_SIZE_CHANGED:
+			text.windowResizedEventHandler(width, height);
 		}
 	}
 }

@@ -2,7 +2,7 @@
 
 #include "Transform.h"
 
-namespace Game
+namespace SpaceSimulator
 {
 	class CoordinateSystem;
 

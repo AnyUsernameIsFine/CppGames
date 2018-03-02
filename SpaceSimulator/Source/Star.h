@@ -2,7 +2,7 @@
 
 #include "Planet.h"
 
-namespace Game
+namespace SpaceSimulator
 {
 	class Star : public CoordinateSystem
 	{

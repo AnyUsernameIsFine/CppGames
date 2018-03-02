@@ -1,6 +1,6 @@
 #include "CoordinateSystem.h"
 
-namespace Game
+namespace SpaceSimulator
 {
 	CoordinateSystem::~CoordinateSystem()
 	{
@@ -203,7 +203,7 @@ namespace Game
 
 		glBindVertexArray(0);
 
-		shaderProgram = new ShaderProgram("Resources/coordinateSystem.vert", "Resources/coordinateSystem.frag");
+		shader.createFromFiles("Resources/coordinateSystem.vert", "Resources/coordinateSystem.frag");
 	}
 
 	void CoordinateSystem::myDraw(const std::vector<std::vector<std::vector<DrawConfiguration>>>& toDrawList, const Camera& camera)
@@ -213,8 +213,8 @@ namespace Game
 		float fov = glm::radians(camera.getFieldOfView());
 		float ratio = camera.getAspectRatio();
 
-		shaderProgram->use();
-		shaderProgram->setUniform("view", camera.getViewMatrix(true));
+		shader.use();
+		shader.setUniform("view", camera.getRotationMatrix());
 
 		//glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
@@ -228,7 +228,7 @@ namespace Game
 
 			float near = 0.1f * hierarchy[i].coordinateSystem->getCameraNearPlane();
 			float far = near * 100000.0f;
-			shaderProgram->setUniform("projection", glm::perspective(fov, ratio, near, far));
+			shader.setUniform("projection", glm::perspective(fov, ratio, near, far));
 
 			for (auto& list : toDrawList[i]) {
 				if (!(list.empty())) {
@@ -259,5 +259,5 @@ namespace Game
 	GLuint CoordinateSystem::vertexBuffer;
 	GLuint CoordinateSystem::indexBuffer;
 	GLuint CoordinateSystem::instanceBuffer;
-	ShaderProgram* CoordinateSystem::shaderProgram;
+	Shader CoordinateSystem::shader;
 }

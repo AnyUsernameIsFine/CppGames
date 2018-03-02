@@ -68,6 +68,6 @@ namespace Framework
 		void gameLoop();
 		void sleep(int milliseconds) const;
 
-		static int onWindowResize(void* data, SDL_Event* event);
+		static int sdlEventHandler(void* data, SDL_Event* event);
 	};
 }

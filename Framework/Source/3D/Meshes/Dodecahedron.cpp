@@ -35,7 +35,7 @@ namespace Framework
 					for (int k = -1; k <= +1; k += 2) {
 						positions.emplace_back(glm::vec3(i, j, k) * s);
 					}
-					auto permutations = evenPermutationsOfVertex(glm::vec3(i * onePlusH, j * oneMinusH2, 0) * s);
+					auto permutations = getEvenPermutationsOfVertex(glm::vec3(i * onePlusH, j * oneMinusH2, 0) * s);
 					positions.insert(positions.end(), permutations.begin(), permutations.end());
 				}
 			}

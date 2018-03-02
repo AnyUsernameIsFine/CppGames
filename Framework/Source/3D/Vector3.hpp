@@ -1,6 +1,7 @@
 #pragma once
 
-#define GLM_FORCE_INLINE 
+#include "System\Globals.hpp"
+
 #include <glm\vec3.hpp>
 
 namespace Framework
@@ -13,11 +14,10 @@ namespace Framework
 
 		Vector3Type<T>(T t = 0);
 		Vector3Type<T>(T x, T y, T z);
-		Vector3Type<T>(const glm::vec3& v);
+		Vector3Type<T> operator+() const;
 		Vector3Type<T> operator-() const;
 		Vector3Type<T>& operator+=(const Vector3Type& v);
 		Vector3Type<T>& operator-=(const Vector3Type& v);
-		Vector3Type<T>& operator*=(const Vector3Type& v);
 		Vector3Type<T>& operator*=(const glm::quat& q);
 		Vector3Type<T>& operator*=(float f);
 		Vector3Type<T>& operator*=(double d);
@@ -25,7 +25,6 @@ namespace Framework
 		Vector3Type<T>& operator/=(double d);
 		Vector3Type<T> operator+(const Vector3Type& v) const;
 		Vector3Type<T> operator-(const Vector3Type& v) const;
-		Vector3Type<T> operator*(const Vector3Type& v) const;
 		Vector3Type<T> operator*(const glm::quat& q) const;
 		Vector3Type<T> operator*(float f) const;
 		Vector3Type<T> operator*(double d) const;
@@ -33,13 +32,15 @@ namespace Framework
 		Vector3Type<T> operator/(double d) const;
 		bool operator==(const Vector3Type& v) const;
 		bool operator!=(const Vector3Type& v) const;
-		glm::vec3 toVec3() const;
-		float lengthSquared() const;
-		float length() const;
 		float dot(const Vector3Type& v) const;
 		Vector3Type<T> cross(const Vector3Type& v) const;
+		float lengthSquared() const;
+		float length() const;
 		float distanceSquared(const Vector3Type& v) const;
 		float distance(const Vector3Type& v) const;
+		glm::vec3 toVec3() const;
+
+		static Vector3Type<T> fromVec3(const glm::vec3& v);
 	};
 
 	typedef Vector3Type<float> Vector3;
@@ -64,11 +65,9 @@ namespace Framework
 	}
 
 	template<typename T>
-	Vector3Type<T>::Vector3Type(const glm::vec3& v)
+	Vector3Type<T> Vector3Type<T>::operator+() const
 	{
-		x = static_cast<T>(v.x);
-		y = static_cast<T>(v.y);
-		z = static_cast<T>(v.z);
+		return { x, y, z };
 	}
 
 	template<typename T>
@@ -92,15 +91,6 @@ namespace Framework
 		x -= v.x;
 		y -= v.y;
 		z -= v.z;
-		return *this;
-	}
-
-	template<typename T>
-	Vector3Type<T>& Vector3Type<T>::operator*=(const Vector3Type& v)
-	{
-		x *= v.x;
-		y *= v.y;
-		z *= v.z;
 		return *this;
 	}
 
@@ -174,16 +164,6 @@ namespace Framework
 	}
 
 	template<typename T>
-	Vector3Type<T> Vector3Type<T>::operator*(const Vector3Type& v) const
-	{
-		return {
-			x * v.x,
-			y * v.y,
-			z * v.z
-		};
-	}
-
-	template<typename T>
 	Vector3Type<T> Vector3Type<T>::operator*(const glm::quat& q) const
 	{
 		// TODO: implement custom calculations for added precision?
@@ -250,24 +230,6 @@ namespace Framework
 	}
 
 	template<typename T>
-	glm::vec3 Vector3Type<T>::toVec3() const
-	{
-		return { x, y, z };
-	}
-
-	template<typename T>
-	float Vector3Type<T>::lengthSquared() const
-	{
-		return (float)x * (float)x + (float)y * (float)y + (float)z * (float)z;
-	}
-
-	template<typename T>
-	float Vector3Type<T>::length() const
-	{
-		return sqrt(lengthSquared());
-	}
-
-	template<typename T>
 	float Vector3Type<T>::dot(const Vector3Type& v) const
 	{
 		return x * v.x + y * v.y + z * v.z;
@@ -284,6 +246,18 @@ namespace Framework
 	}
 
 	template<typename T>
+	float Vector3Type<T>::lengthSquared() const
+	{
+		return (float)x * (float)x + (float)y * (float)y + (float)z * (float)z;
+	}
+
+	template<typename T>
+	float Vector3Type<T>::length() const
+	{
+		return sqrt(lengthSquared());
+	}
+
+	template<typename T>
 	float Vector3Type<T>::distanceSquared(const Vector3Type& v) const
 	{
 		return (*this - v).lengthSquared();
@@ -293,5 +267,21 @@ namespace Framework
 	float Vector3Type<T>::distance(const Vector3Type& v) const
 	{
 		return sqrt(distanceSquared(v));
+	}
+
+	template<typename T>
+	glm::vec3 Vector3Type<T>::toVec3() const
+	{
+		return { x, y, z };
+	}
+
+	template<typename T>
+	Vector3Type<T> Vector3Type<T>::fromVec3(const glm::vec3& v)
+	{
+		return {
+			static_cast<T>(v.x),
+			static_cast<T>(v.y),
+			static_cast<T>(v.z),
+		};
 	}
 }

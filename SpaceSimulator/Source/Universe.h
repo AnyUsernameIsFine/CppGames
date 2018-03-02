@@ -2,7 +2,7 @@
 
 #include "Galaxy.h"
 
-namespace Game
+namespace SpaceSimulator
 {
 	class Universe : public CoordinateSystem
 	{

@@ -1,8 +1,5 @@
 #include "Random.hpp"
 
-//#include <stdlib.h>
-//#include <string.h>
-
 namespace Framework
 {
 	void Random::setRandSeed(uInt seed)

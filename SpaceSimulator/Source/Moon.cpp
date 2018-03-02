@@ -2,7 +2,7 @@
 
 #include <Framework.hpp>
 
-namespace Game
+namespace SpaceSimulator
 {
 #ifdef UNIVERSE_SCALE
 	const float Moon::SCALE = 1;

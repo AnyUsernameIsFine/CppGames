@@ -3,7 +3,7 @@
 
 #include <Framework.hpp>
 
-namespace Game
+namespace SpaceSimulator
 {
 #ifdef UNIVERSE_SCALE
 #	if UNIVERSE_SCALE == 0

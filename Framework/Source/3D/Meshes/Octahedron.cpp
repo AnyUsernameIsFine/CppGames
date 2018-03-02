@@ -25,7 +25,7 @@ namespace Framework
 			float s = sqrtf(3);
 
 			for (int i = -1; i <= +1; i += 2) {
-				auto permutations = evenPermutationsOfVertex(glm::vec3(i, 0, 0) * s);
+				auto permutations = getEvenPermutationsOfVertex(glm::vec3(i, 0, 0) * s);
 				positions.insert(positions.end(), permutations.begin(), permutations.end());
 			}
 

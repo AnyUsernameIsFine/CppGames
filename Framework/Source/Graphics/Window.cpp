@@ -1,7 +1,4 @@
 #include "Window.hpp"
-#include "System\Error.hpp"
-
-#include <GL\glew.h>
 
 namespace Framework
 {
@@ -89,11 +86,11 @@ namespace Framework
 	void Window::enableAntiAliasing(bool enable)
 	{
 		if (enable != antiAliasing) {
-			if (!window) {
-				antiAliasing = enable;
+			if (window) {
+				error("Can't change anti-aliasing setting after window has been created");
 			}
 			else {
-				error("Can't change anti-aliasing setting after window has been created");
+				antiAliasing = enable;
 			}
 		}
 	}
@@ -108,14 +105,14 @@ namespace Framework
 		return fullscreen ? closestDisplayMode.h : height;
 	}
 
-	int Window::open()
+	bool Window::open()
 	{
 		if (antiAliasing) {
 			sdlCheck(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1));
 			sdlCheck(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4));
 		}
 
-		window = sdlCheckV(SDL_CreateWindow(
+		window = sdlCheckValue(SDL_CreateWindow(
 			title.c_str(),
 			SDL_WINDOWPOS_UNDEFINED,
 			SDL_WINDOWPOS_UNDEFINED,
@@ -125,18 +122,21 @@ namespace Framework
 		));
 
 		if (window == NULL) {
-			return 1;
+			error("Could not create window");
+			return false;
 		}
 
-		if (fullscreen) {
-			SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+		if (fullscreen && sdlCheckValue(SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN)) < 0) {
+			error("Could not enable fullscreen mode");
+			return false;
 		}
 
-		if (!cursor && sdlCheckV(SDL_SetRelativeMouseMode(SDL_TRUE)) < 0) {
-			return 1;
+		if (!cursor && sdlCheckValue(SDL_SetRelativeMouseMode(SDL_TRUE)) < 0) {
+			error("Could not set relative mouse mode");
+			return false;
 		}
 
-		return 0;
+		return true;
 	}
 
 	void Window::close()
@@ -145,23 +145,25 @@ namespace Framework
 		sdlCheck(SDL_Quit());
 	}
 
-	int Window::activateOpenGL()
+	bool Window::activateOpenGL()
 	{
-		if (sdlCheckV(SDL_GL_CreateContext(window)) == NULL) {
-			return 1;
+		if (sdlCheckValue(SDL_GL_CreateContext(window)) == nullptr) {
+			error("Could not create OpenGL context");
+			return false;
 		}
 
-		if (sdlCheckV(SDL_GL_SetSwapInterval(vSync ? 1 : 0)) != 0) {
-			return 1;
+		if (sdlCheckValue(SDL_GL_SetSwapInterval(vSync ? 1 : 0)) < 0) {
+			error("Could not set swap interval");
+			return false;
 		}
 
 		GLenum e;
 		if ((e = glewInit()) != GLEW_OK) {
 			error("glewInit failed: " + string((const char*)glewGetErrorString(e)));
-			return 1;
+			return false;
 		}
 
-		return 0;
+		return true;
 	}
 
 	void Window::update()
@@ -191,10 +193,9 @@ namespace Framework
 		sdlCheck(SDL_GL_SwapWindow(window));
 	}
 
-	void Window::onResize(int width, int height)
+	void Window::resizedEventHandler(int width, int height)
 	{
 		hasResized = true;
-
 		resizedWidth = width;
 		resizedHeight = height;
 	}

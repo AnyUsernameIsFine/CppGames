@@ -13,9 +13,9 @@ namespace Framework
 			vector<GLushort> indices;
 		};
 
-		static vector<glm::vec3> evenPermutationsOfVertex(const glm::vec3& v);
-		static vector<glm::vec3> oddPermutationsOfVertex(const glm::vec3& v);
-		static vector<glm::vec3> evenAndOddPermutationsOfVertex(const glm::vec3& v);
+		static vector<glm::vec3> getEvenPermutationsOfVertex(const glm::vec3& v);
+		static vector<glm::vec3> getOddPermutationsOfVertex(const glm::vec3& v);
+		static vector<glm::vec3> getEvenAndOddPermutationsOfVertex(const glm::vec3& v);
 		static CreatedMesh createMesh(const vector<glm::vec3>& positions, const vector<vector<int>>& faces);
 	};
 }

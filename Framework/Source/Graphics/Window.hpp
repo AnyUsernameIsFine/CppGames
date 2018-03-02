@@ -1,6 +1,5 @@
 #pragma once
 
-#include "System\Globals.hpp"
 #include "Input\Input.hpp"
 
 #include <SDL.h>
@@ -37,11 +36,11 @@ namespace Framework
 		int resizedHeight;
 
 		Window();
-		int open();
+		bool open();
 		void close();
-		int activateOpenGL();
+		bool activateOpenGL();
 		void update();
-		void onResize(int width, int height);
+		void resizedEventHandler(int width, int height);
 		void applySize();
 
 		friend class Graphics;

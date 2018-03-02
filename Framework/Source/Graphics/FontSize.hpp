@@ -1,6 +1,5 @@
 #pragma once
 
-#include "System\Globals.hpp"
 #include "Graphics\FontPacker.hpp"
 
 #include <ft2build.h>
@@ -12,13 +11,10 @@ namespace Framework
 {
 	struct Glyph
 	{
-		int textureX;
-		int textureY;
-		uInt width;
-		uInt height;
-		FT_Int left;
-		FT_Int top;
-		FT_Pos advanceX;
+		int x, y;
+		uInt width, height;
+		int left, top;
+		int advanceX;
 	};
 
 	class FontSize
@@ -28,8 +24,8 @@ namespace Framework
 		int getSize() const;
 		GLuint getTextureId() const;
 		int getTextureSize() const;
-		const Glyph* getGlyph(FT_ULong character);
-		const Glyph* addGlyph(FT_ULong character, FT_GlyphSlot glyph);
+		const Glyph* getGlyph(uInt32 character) const;
+		const Glyph* addGlyph(uInt32 character, FT_GlyphSlot glyph);
 
 	private:
 		int size;

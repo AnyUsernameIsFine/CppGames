@@ -2,9 +2,6 @@
 
 #include "System\Globals.hpp"
 
-#include <GL\glew.h>
-
-#define GLM_FORCE_INLINE 
 #include <glm\vec3.hpp>
 
 namespace Framework

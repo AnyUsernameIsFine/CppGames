@@ -8,7 +8,7 @@
 
 #include <memory>
 
-namespace Game
+namespace SpaceSimulator
 {
 	using namespace Framework;
 
@@ -61,7 +61,7 @@ namespace Game
 		static GLuint vertexBuffer;
 		static GLuint indexBuffer;
 		static GLuint instanceBuffer;
-		static ShaderProgram* shaderProgram;
+		static Shader shader;
 
 		static void myDraw(const std::vector<std::vector<std::vector<DrawConfiguration>>>& drawConfigurations, const Camera& camera);
 	};

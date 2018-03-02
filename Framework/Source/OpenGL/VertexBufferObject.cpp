@@ -1,12 +1,19 @@
 #include "VertexBufferObject.hpp"
-#include "System\Error.hpp"
-
-#include <GL\glew.h>
 
 namespace Framework
 {
 	VertexBufferObject::VertexBufferObject(const vector<int>& attributes, int numberOfVertices, const void* vertices)
 	{
+		create(attributes, numberOfVertices, vertices);
+	}
+
+	void VertexBufferObject::create(const vector<int>& attributes, int numberOfVertices, const void* vertices)
+	{
+		if (id) {
+			error("Vertex buffer object has already been created");
+			return;
+		}
+
 		glCheck(glGenBuffers(1, &id));
 		glCheck(glBindBuffer(GL_ARRAY_BUFFER, id));
 

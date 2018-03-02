@@ -1,5 +1,7 @@
 #pragma once
 
+#include "System\Globals.hpp"
+
 #include <SDL_events.h>
 
 namespace Framework

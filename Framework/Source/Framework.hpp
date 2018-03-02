@@ -1,7 +1,6 @@
 #pragma once
 
 #include "System\Game.hpp"
-#include "System\Error.hpp"
 #include "System\Random.hpp"
 #include "OpenGL\IndexBufferObject.hpp"
 #include "OpenGL\Texture2D.hpp"

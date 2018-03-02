@@ -1,5 +1,4 @@
 #include "Game.hpp"
-#include "Error.hpp"
 
 #include <thread>
 
@@ -7,7 +6,7 @@ namespace Framework
 {
 	int Game::run()
 	{
-		if (isRunning || graphics.openWindow() != 0) {
+		if (isRunning || !graphics.openWindow()) {
 			return 1;
 		}
 
@@ -15,12 +14,12 @@ namespace Framework
 
 		std::thread thread(&Game::gameLoop, this);
 
-		SDL_AddEventWatch(onWindowResize, this);
+		SDL_AddEventWatch(sdlEventHandler, this);
 
 		while (isRunning) {
 			SDL_Event event;
 
-			while (sdlCheckV(SDL_PollEvent(&event)) != 0) {
+			while (sdlCheckValue(SDL_PollEvent(&event)) != 0) {
 				input.processEvent(event);
 
 				switch (event.type) {
@@ -55,7 +54,7 @@ namespace Framework
 
 	void Game::gameLoop()
 	{
-		if (graphics.initialize() != 0) {
+		if (!graphics.initialize()) {
 			isRunning = false;
 		}
 		else {
@@ -86,9 +85,11 @@ namespace Framework
 		std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 	}
 
-	int Game::onWindowResize(void* game, SDL_Event* event)
+	int Game::sdlEventHandler(void* game, SDL_Event* event)
 	{
-		((Game*)game)->graphics.onWindowResize(*event);
+		if (event->type == SDL_WINDOWEVENT) {
+			((Game*)game)->graphics.windowEventHandler(event->window);
+		}
 
 		return 0;
 	}

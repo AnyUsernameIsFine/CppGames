@@ -1,25 +1,33 @@
 #include "Text.hpp"
-#include "System\Error.hpp"
 
-#define GLM_FORCE_INLINE 
 #include <glm\glm.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 
 namespace Framework
 {
-	void Text::loadFont(const string& filename, const string& family)
+	void Text::loadFont(const string& filename)
 	{
-		if (family.empty()) {
-			auto font = std::make_shared<Font>();
+		auto font = std::make_shared<Font>();
 
-			if (font->loadFromFile(filename) == 0 && !findFont(font->getFamilyName())) {
+		if (font->loadFromFile(filename)) {
+			if (findFont(font->getFamilyName())) {
+				error("Font has already been loaded");
+			}
+			else {
 				fonts[font->getFamilyName()] = font;
 			}
 		}
-		else if (!findFont(family)) {
+	}
+
+	void Text::loadFont(const string& filename, const string& family)
+	{
+		if (findFont(family)) {
+			error("Font has already been loaded");
+		}
+		else {
 			auto font = std::make_shared<Font>();
 
-			if (font->loadFromFile(filename) == 0) {
+			if (font->loadFromFile(filename)) {
 				fonts[family] = font;
 			}
 		}
@@ -27,16 +35,16 @@ namespace Framework
 
 	void Text::setFontFamily(const string& family)
 	{
-		Font* font = findFont(family);
+		auto font = findFont(family);
 
-		if (font) {
+		if (!font) {
+			error("Font family not loaded");
+		}
+		else {
 			if (font != this->font) {
 				this->font = font;
 				this->font->setSize(size);
 			}
-		}
-		else {
-			error("Font family not loaded");
 		}
 	}
 
@@ -61,8 +69,8 @@ namespace Framework
 
 	void Text::setColor(float r, float g, float b, float a)
 	{
-		program->use();
-		program->setUniform("color", glm::vec4(r, g, b, a));
+		shader.use();
+		shader.setUniform("color", glm::vec4(r, g, b, a));
 	}
 
 	int Text::getFontHeight() const
@@ -73,6 +81,7 @@ namespace Framework
 	GLuint Text::getFontTextureId() const
 	{
 		if (!font) {
+			error("No font set");
 			return 0;
 		}
 
@@ -84,10 +93,21 @@ namespace Framework
 		DrawConfiguration drawConfiguration = { this, x, y };
 
 		return {
-			drawFromStream,
+			drawFromStreamCallback,
 			&drawConfiguration,
 			sizeof(DrawConfiguration)
 		};
+	}
+
+	std::shared_ptr<Font> Text::findFont(const string& family) const
+	{
+		auto font = fonts.find(family);
+
+		if (font != fonts.end()) {
+			return font->second;
+		}
+
+		return nullptr;
 	}
 
 	void Text::initialize(int windowWidth, int windowHeight)
@@ -95,7 +115,7 @@ namespace Framework
 		this->windowWidth = windowWidth;
 		this->windowHeight = windowHeight;
 
-		const char* vertexShader =
+		string vertexShaderSource =
 			"#version 330 core\n"
 
 			"layout(location = 0) in vec4 attributes;"
@@ -110,7 +130,7 @@ namespace Framework
 			"	vertTexCoords = attributes.zw;"
 			"}";
 
-		const char* fragmentShader =
+		string fragmentShaderSource =
 			"#version 330 core\n"
 
 			"in vec2 vertTexCoords;"
@@ -125,7 +145,7 @@ namespace Framework
 			"	fragColor = color * vec4(1, 1, 1, texture(fontSizeTexture, vertTexCoords).r);"
 			"}";
 
-		program = new ShaderProgram(vertexShader, fragmentShader, false);
+		shader.createFromSource(vertexShaderSource, fragmentShaderSource);
 
 		applyWindowSize();
 
@@ -133,12 +153,11 @@ namespace Framework
 
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
-		vertices = new GlyphQuad[MAX_STRING_LENGTH];
-		vbo = new VertexBufferObject({ 4 }, 6 * MAX_STRING_LENGTH);
+		vbo.create({ 4 }, MAX_STRING_LENGTH * sizeof(GlyphQuad));
 		glBindVertexArray(0);
 	}
 
-	void Text::onWindowResize(int width, int height)
+	void Text::windowResizedEventHandler(int width, int height)
 	{
 		windowHasResized = true;
 
@@ -146,27 +165,10 @@ namespace Framework
 		windowHeight = height;
 	}
 
-	Font* Text::findFont(const string& family) const
-	{
-		bool found = false;
-		Font* result = nullptr;
-
-		fonts.find(family);
-
-		auto it = fonts.find(family);
-		if (it != fonts.end()) {
-			found = true;
-			result = it->second.get();
-		}
-
-		return result;
-	}
-
 	void Text::draw(float x, float y, const std::u32string& text)
 	{
 		if (!font) {
 			error("No font set");
-
 			return;
 		}
 
@@ -182,7 +184,7 @@ namespace Framework
 
 		int numberOfGlyphs = 0;
 
-		float s = 1.0f / font->getTextureSize();
+		float scale = 1.0f / font->getTextureSize();
 
 		for (auto c : text) {
 			if (c == '\n') {
@@ -196,18 +198,18 @@ namespace Framework
 					float xpos = lineX + glyph->left;
 					float ypos = glyph->top - lineY - glyph->height;
 
-					float textureLeft = glyph->textureX * s;
-					float textureTop = glyph->textureY * s;
-					float textureRight = textureLeft + glyph->width * s;
-					float textureBottom = textureTop + glyph->height * s;
+					float left = glyph->x * scale;
+					float top = glyph->y * scale;
+					float right = left + glyph->width * scale;
+					float bottom = top + glyph->height * scale;
 
 					vertices[numberOfGlyphs] = {
-						xpos, ypos,									textureLeft, textureBottom,
-						xpos + glyph->width, ypos,					textureRight, textureBottom,
-						xpos, ypos + glyph->height,					textureLeft, textureTop,
-						xpos + glyph->width, ypos + glyph->height,	textureRight, textureTop,
-						xpos, ypos + glyph->height,					textureLeft, textureTop,
-						xpos + glyph->width, ypos,					textureRight, textureBottom,
+						xpos, ypos,									left, bottom,
+						xpos + glyph->width, ypos,					right, bottom,
+						xpos, ypos + glyph->height,					left, top,
+						xpos + glyph->width, ypos + glyph->height,	right, top,
+						xpos, ypos + glyph->height,					left, top,
+						xpos + glyph->width, ypos,					right, bottom,
 					};
 
 					numberOfGlyphs++;
@@ -238,12 +240,12 @@ namespace Framework
 		glGetIntegerv(GL_BLEND_DST_ALPHA, &blendDstAlpha);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		program->use();
+		shader.use();
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, font->getTextureId());
 		glBindVertexArray(vao);
-		glNamedBufferSubData(vbo->getId(), 0, 96 * numberOfGlyphs, &vertices[0]);
+		glNamedBufferSubData(vbo.getId(), 0, 96 * numberOfGlyphs, &vertices[0]);
 		glDrawArrays(GL_TRIANGLES, 0, 6 * numberOfGlyphs);
 
 		// enable depth testing if it was enabled
@@ -267,13 +269,13 @@ namespace Framework
 	{
 		glm::mat4 projection = glm::ortho(0.0f, (float)windowWidth, -(float)windowHeight, 0.0f);
 
-		program->use();
-		program->setUniform("projection", projection);
+		shader.use();
+		shader.setUniform("projection", projection);
 	}
 
-	void Text::drawFromStream(const StringStream& stream, void* params)
+	void Text::drawFromStreamCallback(const StringStream& stream, void* data)
 	{
-		DrawConfiguration* config = (DrawConfiguration*)params;
+		DrawConfiguration* config = (DrawConfiguration*)data;
 		((Text*)config->text)->draw(config->x, config->y, stream.getUtf8String());
 	}
 }

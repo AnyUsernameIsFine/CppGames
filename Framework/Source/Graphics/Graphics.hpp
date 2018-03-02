@@ -27,11 +27,11 @@ namespace Framework
 		TimePoint frameTimePoint;
 
 		Graphics() {}
-		int openWindow();
+		bool openWindow();
 		void closeWindow();
-		int initialize();
+		bool initialize();
 		void update();
-		void onWindowResize(SDL_Event event);
+		void windowEventHandler(SDL_WindowEvent event);
 
 		friend class Game;
 	};

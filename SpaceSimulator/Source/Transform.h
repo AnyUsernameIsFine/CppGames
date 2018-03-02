@@ -2,7 +2,7 @@
 
 #include <Framework.hpp>
 
-namespace Game
+namespace SpaceSimulator
 {
 	typedef int64 Coordinate;
 

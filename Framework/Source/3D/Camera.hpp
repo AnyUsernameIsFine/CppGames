@@ -18,7 +18,8 @@ namespace Framework
 		bool usesPerspective() const;
 		float getFieldOfView() const;
 		float getAspectRatio() const;
-		glm::mat4 getViewMatrix(bool rotationOnly = false) const;
+		glm::mat4 getRotationMatrix() const;
+		glm::mat4 getViewMatrix() const;
 		glm::mat4 getProjectionMatrix() const;
 
 	private:
@@ -85,16 +86,15 @@ namespace Framework
 	}
 
 	template<typename T>
-	glm::mat4 CameraType<T>::getViewMatrix(bool rotationOnly) const
+	glm::mat4 CameraType<T>::getRotationMatrix() const
 	{
-		glm::mat4 rotation = glm::mat4_cast(transform.getOrientation());
+		return glm::mat4_cast(transform.getOrientation());
+	}
 
-		if (rotationOnly) {
-			return rotation;
-		}
-		else {
-			return glm::translate(rotation, -transform.getPosition().toVec3());
-		}
+	template<typename T>
+	glm::mat4 CameraType<T>::getViewMatrix() const
+	{
+		return glm::translate(getRotationMatrix(), -transform.getPosition().toVec3());
 	}
 
 	template<typename T>
