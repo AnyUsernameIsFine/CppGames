@@ -22,7 +22,7 @@ namespace Framework
 	public:
 		FontSize(int size);
 		int getSize() const;
-		GLuint getTextureId() const;
+		void useTexture() const;
 		int getTextureSize() const;
 		const Glyph* getGlyph(uInt32 character) const;
 		const Glyph* addGlyph(uInt32 character, FT_GlyphSlot glyph);

@@ -15,7 +15,7 @@ namespace Framework
 		string getFamilyName() const;
 		int getHeight() const;
 		const Glyph* getGlyph(uInt32 character) const;
-		GLuint getTextureId() const;
+		void useTexture() const;
 		int getTextureSize() const;
 
 	private:

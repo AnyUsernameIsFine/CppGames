@@ -22,9 +22,9 @@ namespace Framework
 		return capacity;
 	}
 
-	GLuint FontPacker::getTextureId() const
+	void FontPacker::useTexture() const
 	{
-		return texture.getId();
+		texture.use();
 	}
 
 	bool FontPacker::addBitmap(uInt width, uInt height, const byte bitmap[], int& left, int& top)

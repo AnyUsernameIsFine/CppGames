@@ -12,9 +12,9 @@ namespace Framework
 		return size;
 	}
 
-	GLuint FontSize::getTextureId() const
+	void FontSize::useTexture() const
 	{
-		return fontPacker.getTextureId();
+		fontPacker.useTexture();
 	}
 
 	int FontSize::getTextureSize() const

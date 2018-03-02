@@ -10,7 +10,7 @@ namespace Framework
 		FontPacker(int capacity, int maxCapacity);
 		~FontPacker();
 		int getCapacity() const;
-		GLuint getTextureId() const;
+		void useTexture() const;
 		bool addBitmap(uInt width, uInt height, const byte bitmap[], int& left, int& top);
 
 	private:

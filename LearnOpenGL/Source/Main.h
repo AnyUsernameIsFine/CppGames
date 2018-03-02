@@ -162,7 +162,7 @@ namespace LearnOpenGL
 		{
 			graphics.clearScreen(0.12f, 0, 0.06f, true);
 
-			//drawFont();
+			drawFont();
 			drawScene();
 			drawInfo();
 		}
@@ -170,10 +170,7 @@ namespace LearnOpenGL
 		void drawFont()
 		{
 			fontShader.use();
-
-			glCheck(glActiveTexture(GL_TEXTURE0));
-			glCheck(glBindTexture(GL_TEXTURE_2D, graphics.text.getFontTextureId()));
-
+			graphics.text.useFontTexture();
 			fontVao.use();
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		}

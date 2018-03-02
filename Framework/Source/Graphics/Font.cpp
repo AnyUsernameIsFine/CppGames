@@ -75,9 +75,9 @@ namespace Framework
 		return glyph;
 	}
 
-	GLuint Font::getTextureId() const
+	void Font::useTexture() const
 	{
-		return fontSize->getTextureId();
+		return fontSize->useTexture();
 	}
 
 	int Font::getTextureSize() const

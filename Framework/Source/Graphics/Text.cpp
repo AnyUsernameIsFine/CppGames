@@ -23,13 +23,13 @@ namespace Framework
 	{
 		if (findFont(family)) {
 			error("Font has already been loaded");
+			return;
 		}
-		else {
-			auto font = std::make_shared<Font>();
 
-			if (font->loadFromFile(filename)) {
-				fonts[family] = font;
-			}
+		auto font = std::make_shared<Font>();
+
+		if (font->loadFromFile(filename)) {
+			fonts[family] = font;
 		}
 	}
 
@@ -39,12 +39,12 @@ namespace Framework
 
 		if (!font) {
 			error("Font family not loaded");
+			return;
 		}
-		else {
-			if (font != this->font) {
-				this->font = font;
-				this->font->setSize(size);
-			}
+
+		if (font != this->font) {
+			this->font = font;
+			this->font->setSize(size);
 		}
 	}
 
@@ -52,12 +52,12 @@ namespace Framework
 	{
 		if (!font) {
 			error("No font set");
+			return;
 		}
-		else {
-			if (size != this->size) {
-				this->size = size;
-				font->setSize(size);
-			}
+
+		if (size != this->size) {
+			this->size = size;
+			font->setSize(size);
 		}
 	}
 
@@ -78,14 +78,14 @@ namespace Framework
 		return font->getHeight();
 	}
 
-	GLuint Text::getFontTextureId() const
+	void Text::useFontTexture() const
 	{
 		if (!font) {
 			error("No font set");
-			return 0;
+			return;
 		}
 
-		return font->getTextureId();
+		font->useTexture();
 	}
 
 	StringStream Text::operator()(float x, float y)
@@ -117,13 +117,9 @@ namespace Framework
 
 		string vertexShaderSource =
 			"#version 330 core\n"
-
 			"layout(location = 0) in vec4 attributes;"
-
 			"out vec2 vertTexCoords;"
-
 			"uniform mat4 projection;"
-
 			"void main()"
 			"{"
 			"	gl_Position = projection * vec4(attributes.xy, 0, 1);"
@@ -132,14 +128,10 @@ namespace Framework
 
 		string fragmentShaderSource =
 			"#version 330 core\n"
-
 			"in vec2 vertTexCoords;"
-
 			"out vec4 fragColor;"
-
 			"uniform sampler2D fontSizeTexture;"
 			"uniform vec4 color;"
-
 			"void main()"
 			"{"
 			"	fragColor = color * vec4(1, 1, 1, texture(fontSizeTexture, vertTexCoords).r);"
@@ -151,10 +143,9 @@ namespace Framework
 
 		setColor(0.5f, 0.5f, 0.5f);
 
-		glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
+		vao.create();
 		vbo.create({ 4 }, MAX_STRING_LENGTH * sizeof(GlyphQuad));
-		glBindVertexArray(0);
+		//glBindVertexArray(0);
 	}
 
 	void Text::windowResizedEventHandler(int width, int height)
@@ -242,9 +233,8 @@ namespace Framework
 
 		shader.use();
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, font->getTextureId());
-		glBindVertexArray(vao);
+		useFontTexture();
+		vao.use();
 		glNamedBufferSubData(vbo.getId(), 0, 96 * numberOfGlyphs, &vertices[0]);
 		glDrawArrays(GL_TRIANGLES, 0, 6 * numberOfGlyphs);
 

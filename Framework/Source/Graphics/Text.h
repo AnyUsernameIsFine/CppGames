@@ -3,7 +3,7 @@
 #include "Font.h"
 #include "System\StringStream.h"
 #include "OpenGL\Shader.h"
-#include "OpenGL\VertexBufferObject.h"
+#include "OpenGL\VertexArrayObject.h"
 
 namespace Framework
 {
@@ -17,7 +17,7 @@ namespace Framework
 		void setFont(const string& family, int size);
 		void setColor(float r, float g, float b, float a = 1);
 		int getFontHeight() const;
-		GLuint getFontTextureId() const;
+		void useFontTexture() const;
 		StringStream operator()(float x, float y);
 
 	private:
@@ -40,7 +40,7 @@ namespace Framework
 		int windowHeight;
 		vector<GlyphQuad> vertices = vector<GlyphQuad>(MAX_STRING_LENGTH);
 		Shader shader;
-		GLuint vao;
+		VertexArrayObject vao;
 		VertexBufferObject vbo;
 		bool windowHasResized = false;
 		std::unordered_map<string, std::shared_ptr<Font>> fonts;
