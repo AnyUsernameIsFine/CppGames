@@ -9,17 +9,7 @@ namespace Framework
 
 		root = new Node(*this, 0, 0, capacity, capacity);
 
-		glGenTextures(1, &textureId);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, textureId);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, capacity, capacity, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		glBindTexture(GL_TEXTURE_2D, 0);
+		texture.createEmpty(capacity, capacity);
 	}
 
 	FontPacker::~FontPacker()
@@ -34,10 +24,10 @@ namespace Framework
 
 	GLuint FontPacker::getTextureId() const
 	{
-		return textureId;
+		return texture.getId();
 	}
 
-	bool FontPacker::addBitmap(uInt width, uInt height, byte bitmap[], int& left, int& top)
+	bool FontPacker::addBitmap(uInt width, uInt height, const byte bitmap[], int& left, int& top)
 	{
 		const Node* node = root->findEmptyNode(width, height);
 
@@ -45,10 +35,7 @@ namespace Framework
 			left = node->getLeft();
 			top = node->getTop();
 
-			glActiveTexture(GL_TEXTURE0);
-			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-			glTextureSubImage2D(textureId, 0, left, top, width, height, GL_RED, GL_UNSIGNED_BYTE, bitmap);
-			glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+			texture.update(left, top, width, height, bitmap);
 
 			return true;
 		}
@@ -66,17 +53,11 @@ namespace Framework
 			return false;
 		}
 
-		root->increaseCapacity(capacity << 1);
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, textureId);
-		GLubyte* data = new GLubyte[capacity * capacity];
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_RED, GL_UNSIGNED_BYTE, data);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, capacity << 1, capacity << 1, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
-		glTextureSubImage2D(textureId, 0, 0, 0, capacity, capacity, GL_RED, GL_UNSIGNED_BYTE, data);
-		delete[] data;
+		root->increaseCapacity(capacity << 1); // uses this font packer's capacity internally
 
 		capacity <<= 1;
+
+		texture.resize(capacity, capacity);
 
 		return true;
 	}

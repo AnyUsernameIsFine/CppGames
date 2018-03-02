@@ -3,22 +3,103 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#include <algorithm>
+
 namespace Framework
 {
-	Texture2D::Texture2D(const string& filename)
-	{
-		create(filename);
-	}
-
 	Texture2D::~Texture2D()
 	{
 		if (sdlCheckValue(SDL_GL_GetCurrentContext())) {
-			console(id);
 			glCheck(glDeleteTextures(1, &id));
 		}
 	}
-	
-	void Texture2D::create(const string& filename)
+
+	void Texture2D::createEmpty(int width, int height) {
+		create(width, height, GL_RED, GL_RED);
+	}
+
+	int Texture2D::getWidth() const
+	{
+		return width;
+	}
+
+	int Texture2D::getHeight() const
+	{
+		return height;
+	}
+
+	void Texture2D::createFromFile(const string& filename)
+	{
+		int width, height;
+		//stbi_set_flip_vertically_on_load(true);
+		byte* data = stbi_load(filename.c_str(), &width, &height, nullptr, 3);
+
+		create(width, height, GL_RGB, GL_RGB, data);
+
+		stbi_image_free(data);
+
+		glCheck(glGenerateMipmap(GL_TEXTURE_2D));
+	}
+
+	void Texture2D::use(int unit) const
+	{
+		glCheck(glActiveTexture(GL_TEXTURE0 + unit));
+		glCheck(glBindTexture(GL_TEXTURE_2D, id));
+	}
+
+	void Texture2D::update(int x, int y, int width, int height, const byte pixels[])
+	{
+		GLint unpackAlignment;
+		switch (format) {
+		case GL_RED:
+			unpackAlignment = 1;
+			break;
+
+		case GL_RGB:
+			unpackAlignment = 3;
+			break;
+		}
+
+		glCheck(glPixelStorei(GL_UNPACK_ALIGNMENT, unpackAlignment));
+		glCheck(glTextureSubImage2D(id, 0, x, y, width, height, format, GL_UNSIGNED_BYTE, pixels));
+	}
+
+	void Texture2D::resize(int width, int height)
+	{
+		int pixelSize;
+
+		switch (format) {
+		case GL_RED:
+			pixelSize = 1;
+			break;
+
+		case GL_RGB:
+			pixelSize = 3;
+			break;
+		}
+
+		GLubyte* data = new GLubyte[this->width * this->height * pixelSize];
+
+		if (width < this->width) {
+			glPixelStorei(GL_UNPACK_ROW_LENGTH, this->width);
+		}
+
+		glCheck(glBindTexture(GL_TEXTURE_2D, id));
+		glCheck(glGetTexImage(GL_TEXTURE_2D, 0, format, GL_UNSIGNED_BYTE, data));
+		glCheck(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr));
+		glCheck(glTextureSubImage2D(id, 0, 0, 0, std::min(width, this->width), std::min(height, this->height), format, GL_UNSIGNED_BYTE, data));
+
+		if (width < this->width) {
+			glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+		}
+
+		delete[] data;
+
+		this->width = width;
+		this->height = height;
+	}
+
+	void Texture2D::create(int width, int height, GLint internalFormat, GLenum format, const byte pixels[])
 	{
 		if (!hasContext("Could not create 2D texture")) {
 			return;
@@ -29,29 +110,19 @@ namespace Framework
 			return;
 		}
 
+		this->width = width;
+		this->height = height;
+		this->internalFormat = internalFormat;
+		this->format = format;
+
 		glCheck(glGenTextures(1, &id));
 		glCheck(glBindTexture(GL_TEXTURE_2D, id));
+
 		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-		int width, height, nrChannels;
-		stbi_set_flip_vertically_on_load(true);
-		byte* data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 3);
-		//if (data) {
-		glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
-		glCheck(glGenerateMipmap(GL_TEXTURE_2D));
-		//}
-		//else {
-		//	std::cout << "Failed to load texture" << std::endl;
-		//}
-		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
-		stbi_image_free(data);
-	}
 
-	void Texture2D::use(int unit) const
-	{
-		glCheck(glActiveTexture(GL_TEXTURE0 + unit));
-		glCheck(glBindTexture(GL_TEXTURE_2D, id));
+		glCheck(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, pixels));
 	}
 }

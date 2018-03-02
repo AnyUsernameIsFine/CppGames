@@ -1,6 +1,6 @@
 #pragma once
 
-#include "System\Globals.h"
+#include "OpenGL\Texture2D.h"
 
 namespace Framework
 {
@@ -11,7 +11,7 @@ namespace Framework
 		~FontPacker();
 		int getCapacity() const;
 		GLuint getTextureId() const;
-		bool addBitmap(uInt width, uInt height, byte bitmap[], int& left, int& top);
+		bool addBitmap(uInt width, uInt height, const byte bitmap[], int& left, int& top);
 
 	private:
 		class Node
@@ -35,7 +35,7 @@ namespace Framework
 		int capacity;
 		int maxCapacity;
 		Node* root = nullptr;
-		GLuint textureId;
+		Texture2D texture;
 
 		bool increaseCapacity();
 	};

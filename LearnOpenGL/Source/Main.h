@@ -51,7 +51,7 @@ namespace LearnOpenGL
 				cube.scale(2, 1, 0.5f);
 				cube.rotate(i * 20.0f, { -1.0f, 0.3f, 0.5f });
 
-				cubes.push_back(cube);
+				cubes.emplace_back(cube);
 			}
 
 			light.scale(0.2f);
@@ -71,37 +71,37 @@ namespace LearnOpenGL
 			VertexBufferObject fontVbo({ 2, 2 }, 4, fontVertices);
 
 			cubeShader.createFromFiles("Resources/cube.vert", "Resources/cube.frag");
-			texture1.create("Resources/journey.jpg");
-			texture2.create("Resources/flow.jpg");
+			texture1.createFromFile("Resources/journey.jpg");
+			texture2.createFromFile("Resources/flow.jpg");
 			cubeShader.use();
 			cubeShader.setUniform("texture1", 0);
 			cubeShader.setUniform("texture2", 1);
 
 			float cubeVertices[] = {
-				-0.5, -0.5, -0.5,	 0,  0, -1,		0, 0,
-				-0.5, -0.5, -0.5,	 0, -1,  0,		0, 0,
-				-0.5, -0.5, -0.5,	-1,  0,  0,		0, 0,
-				 0.5, -0.5, -0.5,	 0,  0, -1,		1, 0,
-				 0.5, -0.5, -0.5,	 0, -1,  0,		1, 0,
-				 0.5, -0.5, -0.5,	 1,  0,  0,		1, 0,
-				-0.5,  0.5, -0.5,	 0,  0, -1,		0, 1,
-				-0.5,  0.5, -0.5,	 0,  1,  0,		0, 1,
-				-0.5,  0.5, -0.5,	-1,  0,  0,		0, 1,
-				 0.5,  0.5, -0.5,	 0,  0, -1,		1, 1,
-				 0.5,  0.5, -0.5,	 0,  1,  0,		1, 1,
-				 0.5,  0.5, -0.5,	 1,  0,  0,		1, 1,
-				-0.5, -0.5,  0.5,	 0,  0,  1,		0, 0,
-				-0.5, -0.5,  0.5,	 0, -1,  0,		0, 0,
-				-0.5, -0.5,  0.5,	-1,  0,  0,		0, 0,
-				 0.5, -0.5,  0.5,	 0,  0,  1,		1, 0,
-				 0.5, -0.5,  0.5,	 0, -1,  0,		1, 0,
-				 0.5, -0.5,  0.5,	 1,  0,  0,		1, 0,
-				-0.5,  0.5,  0.5,	 0,  0,  1,		0, 1,
-				-0.5,  0.5,  0.5,	 0,  1,  0,		0, 1,
-				-0.5,  0.5,  0.5,	-1,  0,  0,		0, 1,
-				 0.5,  0.5,  0.5,	 0,  0,  1,		1, 1,
-				 0.5,  0.5,  0.5,	 0,  1,  0,		1, 1,
-				 0.5,  0.5,  0.5,	 1,  0,  0,		1, 1,
+				-0.5, -0.5, -0.5,	 0,  0, -1,		0, 1,
+				-0.5, -0.5, -0.5,	 0, -1,  0,		0, 1,
+				-0.5, -0.5, -0.5,	-1,  0,  0,		0, 1,
+				 0.5, -0.5, -0.5,	 0,  0, -1,		1, 1,
+				 0.5, -0.5, -0.5,	 0, -1,  0,		1, 1,
+				 0.5, -0.5, -0.5,	 1,  0,  0,		1, 1,
+				-0.5,  0.5, -0.5,	 0,  0, -1,		0, 0,
+				-0.5,  0.5, -0.5,	 0,  1,  0,		0, 0,
+				-0.5,  0.5, -0.5,	-1,  0,  0,		0, 0,
+				 0.5,  0.5, -0.5,	 0,  0, -1,		1, 0,
+				 0.5,  0.5, -0.5,	 0,  1,  0,		1, 0,
+				 0.5,  0.5, -0.5,	 1,  0,  0,		1, 0,
+				-0.5, -0.5,  0.5,	 0,  0,  1,		0, 1,
+				-0.5, -0.5,  0.5,	 0, -1,  0,		0, 1,
+				-0.5, -0.5,  0.5,	-1,  0,  0,		0, 1,
+				 0.5, -0.5,  0.5,	 0,  0,  1,		1, 1,
+				 0.5, -0.5,  0.5,	 0, -1,  0,		1, 1,
+				 0.5, -0.5,  0.5,	 1,  0,  0,		1, 1,
+				-0.5,  0.5,  0.5,	 0,  0,  1,		0, 0,
+				-0.5,  0.5,  0.5,	 0,  1,  0,		0, 0,
+				-0.5,  0.5,  0.5,	-1,  0,  0,		0, 0,
+				 0.5,  0.5,  0.5,	 0,  0,  1,		1, 0,
+				 0.5,  0.5,  0.5,	 0,  1,  0,		1, 0,
+				 0.5,  0.5,  0.5,	 1,  0,  0,		1, 0,
 			};
 
 			GLushort indices[] = {
@@ -162,7 +162,7 @@ namespace LearnOpenGL
 		{
 			graphics.clearScreen(0.12f, 0, 0.06f, true);
 
-			drawFont();
+			//drawFont();
 			drawScene();
 			drawInfo();
 		}
@@ -226,7 +226,7 @@ namespace LearnOpenGL
 			stream << "x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
 			stream << "yaw: " << o.y << u8"° pitch: " << o.x << u8"° roll: " << o.z << u8"°";
 
-			graphics.text(0, 0) << stream;
+			graphics.text(0, 0) << stream << "shfjgftsghjT#$^&*Y(&Ry456768743hgfjETTRUIJCNDFSG";
 		}
 	};
 }
