@@ -9,6 +9,7 @@ namespace Framework
 	public:
 		Texture2D() {}
 		Texture2D(const string& filename);
+		~Texture2D();
 		void create(const string& filename);
 
 		void use(int unit = 0) const;

@@ -10,6 +10,14 @@ namespace Framework
 		create(filename);
 	}
 
+	Texture2D::~Texture2D()
+	{
+		if (sdlCheckValue(SDL_WasInit(SDL_INIT_VIDEO))) {
+			console(id);
+			glCheck(glDeleteTextures(1, &id));
+		}
+	}
+	
 	void Texture2D::create(const string& filename)
 	{
 		if (id) {

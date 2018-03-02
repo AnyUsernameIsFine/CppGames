@@ -9,6 +9,7 @@ namespace Framework
 	public:
 		IndexBufferObject() {}
 		IndexBufferObject(int numberOfIndices, const GLushort* indices = nullptr);
+		~IndexBufferObject();
 		void create(int numberOfIndices, const GLushort* indices = nullptr);
 	};
 }

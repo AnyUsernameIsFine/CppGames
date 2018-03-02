@@ -2,6 +2,8 @@
 
 #include "System\Globals.hpp"
 
+#include <SDL.h>
+
 namespace Framework
 {
 	class OpenGLObject abstract

@@ -6,6 +6,17 @@
 
 namespace Framework
 {
+	Shader::~Shader()
+	{
+		if (sdlCheckValue(SDL_WasInit(SDL_INIT_VIDEO))) {
+			glCheck(glDeleteProgram(id));
+		};
+
+		//if (sdlCheckValue(SDL_GL_GetCurrentContext())) {
+		//	glCheck(glDeleteProgram(id));
+		//}
+	}
+
 	void Shader::createFromFiles(const string& vertexShaderFilename, const string& fragmentShaderFilename)
 	{
 		if (id) {
@@ -46,6 +57,7 @@ namespace Framework
 			error("Program info log:\n" + string(infoLog));
 			delete[] infoLog;
 		}
+
 		glCheck(glDetachShader(id, vertexShaderId));
 		glCheck(glDetachShader(id, fragmentShaderId));
 

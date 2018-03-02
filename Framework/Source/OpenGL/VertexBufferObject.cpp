@@ -7,6 +7,13 @@ namespace Framework
 		create(attributes, numberOfVertices, vertices);
 	}
 
+	VertexBufferObject::~VertexBufferObject()
+	{
+		if (sdlCheckValue(SDL_WasInit(SDL_INIT_VIDEO))) {
+			glCheck(glDeleteProgram(id));
+		}
+	}
+
 	void VertexBufferObject::create(const vector<int>& attributes, int numberOfVertices, const void* vertices)
 	{
 		if (id) {

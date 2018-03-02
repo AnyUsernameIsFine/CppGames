@@ -9,6 +9,7 @@ namespace Framework
 	class Shader : OpenGLObject
 	{
 	public:
+		~Shader();
 		void createFromFiles(const string& vertexShaderFilename, const string& fragmentShaderFilename);
 		void createFromSource(const string& vertexShaderSource, const string& fragmentShaderSource);
 

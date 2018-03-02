@@ -9,6 +9,7 @@ namespace Framework
 	public:
 		VertexBufferObject() {}
 		VertexBufferObject(const vector<int>& attributes, int numberOfVertices, const void* vertices = nullptr);
+		~VertexBufferObject();
 		void create(const vector<int>& attributes, int numberOfVertices, const void* vertices = nullptr);
 	};
 }
