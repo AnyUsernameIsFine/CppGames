@@ -22,8 +22,8 @@ namespace LearnOpenGL
 		VertexArray fontVertexArray;
 		VertexArray cubeVertexArray;
 		VertexArray lightVertexArray;
-		std::vector<Transform> cubes;
-		Transform light;
+		std::vector<GameObject> cubes;
+		GameObject light;
 
 		Game()
 		{
@@ -43,17 +43,18 @@ namespace LearnOpenGL
 			graphics.text.loadFont("Resources/consola.ttf", "Font");
 			graphics.text.setFont("Font", 20);
 
-			camera.transform.moveZ(10);
+			camera.transform().moveZ(10);
 
 			for (int i = 0; i < 10; i++) {
-				Transform cube(Vector3::fromVec3(glm::sphericalRand(3.0f)));
-				cube.scale(2, 1, 0.5f);
-				cube.rotate(i * 20.0f, { -1.0f, 0.3f, 0.5f });
+				GameObject cube;
+				cube.transform().setPosition(Vector3::fromVec3(glm::sphericalRand(3.0f)));
+				cube.transform().scale(2, 1, 0.5f);
+				cube.transform().rotate(i * 20.0f, { -1.0f, 0.3f, 0.5f });
 
 				cubes.emplace_back(cube);
 			}
 
-			light.scale(0.2f);
+			light.transform().scale(0.2f);
 
 			float fontVertices[] = {
 				-1, -1,		0, 1,
@@ -127,26 +128,26 @@ namespace LearnOpenGL
 			}
 
 			float cameraSpeed = 5 * deltaSeconds;
-			camera.transform.move(
+			camera.transform().move(
 				cameraSpeed * (input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)),
 				cameraSpeed * (input.isKeyDown(SDLK_r) - input.isKeyDown(SDLK_f)),
 				cameraSpeed * (input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w))
 			);
 
 			float rollSensitivity = 90 * deltaSeconds;
-			camera.transform.roll(rollSensitivity * (input.isKeyDown(SDLK_e) - input.isKeyDown(SDLK_q)));
+			camera.transform().roll(rollSensitivity * (input.isKeyDown(SDLK_e) - input.isKeyDown(SDLK_q)));
 
 			float sensitivity = 0.05f;
-			camera.transform.yaw(sensitivity * input.getMouseDeltaX());
-			camera.transform.pitch(sensitivity * input.getMouseDeltaY());
+			camera.transform().yaw(sensitivity * input.getMouseDeltaX());
+			camera.transform().pitch(sensitivity * input.getMouseDeltaY());
 
 			camera.setFieldOfView(camera.getFieldOfView() - input.getMouseWheel() * 10);
 
 			for (auto& cube : cubes) {
-				cube.rotate(deltaSeconds * 50.0f, { 1.0f, 0.3f, 0.5f });
+				cube.transform().rotate(deltaSeconds * 50.0f, { 1.0f, 0.3f, 0.5f });
 			}
 
-			light.setPosition(0, 0, 0);
+			light.transform().setPosition(0, 0, 0);
 		}
 
 		void draw()
@@ -179,19 +180,19 @@ namespace LearnOpenGL
 			cubeShader.setUniform("mix", (sin(getGameTimeInSeconds()) + 1) * 0.5f);
 			cubeShader.setUniform("lightColor", glm::vec3(1, 1, 1));
 
-			glm::vec3 p = light.getPosition().toVec3();
+			glm::vec3 p = light.transform().getPosition().toVec3();
 			cubeShader.setUniform("lightPosition", glm::vec3(view * glm::vec4(p.x, p.y, p.z, 1)));
 
 			texture1.use(0);
 			texture2.use(1);
 
 			for (auto& cube : cubes) {
-				glm::mat4 model = cube.getModelMatrix();
+				glm::mat4 model = cube.transform().getModelMatrix();
 				cubeShader.setUniform("model", model);
 				cubeVertexArray.draw(GL_TRIANGLES);
 			}
 
-			glm::mat4 model = light.getModelMatrix();
+			glm::mat4 model = light.transform().getModelMatrix();
 
 			lightShader.use();
 			lightShader.setUniform("model", model);
@@ -203,8 +204,8 @@ namespace LearnOpenGL
 
 		void drawInfo()
 		{
-			Vector3 position = camera.transform.getPosition();
-			glm::ivec3 o = camera.transform.getEulerAngles();
+			Vector3 position = camera.transform().getPosition();
+			glm::ivec3 o = camera.transform().getEulerAngles();
 
 			StringStream stream;
 			stream << (int)round(graphics.getFps()) << "fps" << std::endl;

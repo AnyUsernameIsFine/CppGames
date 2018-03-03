@@ -6,7 +6,7 @@ namespace Framework
 {
 	VertexArray::~VertexArray()
 	{
-		if (SDL_GL_GetCurrentContext()) {
+		if (hasContext()) {
 			int numberOfReferences;
 
 			numberOfReferences = --vertexBuffers[vertexBufferId].numberOfReferences;

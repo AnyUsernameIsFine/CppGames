@@ -1,15 +1,13 @@
 #pragma once
 
-#include "Transform.h"
+#include "GameObject.h"
 
 namespace Framework
 {
 	template<typename T>
-	class CameraType
+	class CameraType : public GameObjectType<T>
 	{
 	public:
-		TransformType<T> transform;
-
 		void usePerspective(bool use = true);
 		void setFieldOfView(float degrees);
 		void setAspectRatio(float ratio);
@@ -88,13 +86,13 @@ namespace Framework
 	template<typename T>
 	glm::mat4 CameraType<T>::getRotationMatrix() const
 	{
-		return glm::mat4_cast(transform.getOrientation());
+		return glm::mat4_cast(this->myTransform.getOrientation());
 	}
 
 	template<typename T>
 	glm::mat4 CameraType<T>::getViewMatrix() const
 	{
-		return glm::translate(getRotationMatrix(), -transform.getPosition().toVec3());
+		return glm::translate(getRotationMatrix(), -this->myTransform.getPosition().toVec3());
 	}
 
 	template<typename T>

@@ -62,7 +62,11 @@ namespace Framework
 		glm::vec3 modelMatrixPosition;
 		glm::vec3 modelMatrixPositionRotated;
 
+		TransformType<T>& operator=(const TransformType<T>& t) = delete;
 		const glm::mat4& myGetModelMatrix(const glm::vec3& position);
+
+		template<typename T>
+		friend class GameObjectType;
 	};
 
 	typedef TransformType<float> Transform;

@@ -26,7 +26,7 @@ namespace SpaceSimulator
 
 	void Camera::setPosition(const Vector3& position)
 	{
-		transform.setPosition(position);
+		myTransform.setPosition(position);
 		createHierarchy();
 	}
 
@@ -92,13 +92,13 @@ namespace SpaceSimulator
 			// if there are any children in this coordinate system,
 			// we need to move slower when close to one
 			if (!coordinateSystem->getChildren().empty()) {
-				Vector3 p = transform.getPosition();
+				Vector3 p = myTransform.getPosition();
 
 				// determine the distance to the edge of the closest child coordinate system
 				CoordinateSystem* childCs = nullptr;
 				float smallestDistance = std::numeric_limits<float>::max();
 				for (auto& child : coordinateSystem->getChildren()) {
-					float distance = p.distance(child->transform.getPosition()) - child->getRadius();
+					float distance = p.distance(child->transform().getPosition()) - child->getRadius();
 					if (distance < smallestDistance) {
 						childCs = child.get();
 						smallestDistance = distance;
@@ -128,7 +128,7 @@ namespace SpaceSimulator
 				velocity = (velocity + glm::normalize(velocity) * speed) * 0.5f;
 			}
 
-			transform.move(velocity * deltaSeconds);
+			myTransform.move(velocity * deltaSeconds);
 
 			velocity *= powf(0.5f, deltaSeconds * 10);
 
@@ -194,19 +194,19 @@ namespace SpaceSimulator
 	{
 		CoordinateSystem* cs = coordinateSystem;
 		CoordinateSystem* parentCs = cs->getParent();
-		Vector3 p = transform.getPosition();
+		Vector3 p = myTransform.getPosition();
 
 		// go to parent
 		if (parentCs && p.length() > cs->getRadius() * (parentCs->getScale() / cs->getScale()) * 0.99f) {
-			glm::quat q = cs->transform.getOrientation();
+			glm::quat q = cs->transform().getOrientation();
 
 			p *= q;
 			p *= cs->getScale() / parentCs->getScale();
-			p += cs->transform.getPosition();
-			transform.setPosition(p);
+			p += cs->transform().getPosition();
+			myTransform.setPosition(p);
 
-			glm::quat o = transform.getOrientation() * q;
-			transform.setOrientation(transform.getOrientation() * q);
+			glm::quat o = myTransform.getOrientation() * q;
+			myTransform.setOrientation(myTransform.getOrientation() * q);
 
 			velocity *= cs->getScale() / parentCs->getScale();
 			maxVelocity *= cs->getScale() / parentCs->getScale();
@@ -221,7 +221,7 @@ namespace SpaceSimulator
 			CoordinateSystem* childCs = nullptr;
 
 			for (auto& child : cs->getChildren()) {
-				Vector3 position = p - child->transform.getPosition();
+				Vector3 position = p - child->transform().getPosition();
 				float r = child->getRadius() * 0.98f;
 				if (position.lengthSquared() < r * r) {
 					childCs = child.get();
@@ -229,14 +229,14 @@ namespace SpaceSimulator
 			}
 
 			if (childCs) {
-				glm::quat q = glm::conjugate(childCs->transform.getOrientation());
+				glm::quat q = glm::conjugate(childCs->transform().getOrientation());
 
-				p -= childCs->transform.getPosition();
+				p -= childCs->transform().getPosition();
 				p *= q;
 				p *= cs->getScale() / childCs->getScale();
-				transform.setPosition(p);
+				myTransform.setPosition(p);
 
-				transform.setOrientation(transform.getOrientation() * q);
+				myTransform.setOrientation(myTransform.getOrientation() * q);
 
 				velocity *= cs->getScale() / childCs->getScale();
 				maxVelocity *= cs->getScale() / childCs->getScale();
@@ -260,7 +260,7 @@ namespace SpaceSimulator
 		CameraHierarchyLevel ch = {
 		coordinateSystem,
 		glm::mat4(1),
-		transform.getPosition()
+		myTransform.getPosition()
 		};
 
 		hierarchy = { ch };
@@ -268,12 +268,12 @@ namespace SpaceSimulator
 		CoordinateSystem* parentCs = coordinateSystem->getParent();
 
 		while (parentCs) {
-			glm::quat q = ch.coordinateSystem->transform.getOrientation();
+			glm::quat q = ch.coordinateSystem->transform().getOrientation();
 			ch.rotation *= glm::mat4_cast(q);
 
 			ch.position *= q;
 			ch.position *= ch.coordinateSystem->getScale() / parentCs->getScale();
-			ch.position += ch.coordinateSystem->transform.getPosition();
+			ch.position += ch.coordinateSystem->transform().getPosition();
 
 			ch.coordinateSystem = parentCs;
 

@@ -69,10 +69,10 @@ namespace SpaceSimulator
 			auto moon = std::make_shared<Moon>(this, moonRadius);
 
 			glm::vec2 v = glm::diskRand(0.8f * radius * parent->getScale() / getScale());
-			moon->transform.setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });
+			moon->transform().setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });
 
 			r = Random::randFloat();
-			moon->transform.rotate(45 * r * r, glm::sphericalRand(1.0f));
+			moon->transform().rotate(45 * r * r, glm::sphericalRand(1.0f));
 
 			children.push_back(moon);
 		}

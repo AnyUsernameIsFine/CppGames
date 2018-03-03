@@ -9,7 +9,7 @@ namespace Framework
 {
 	Texture2D::~Texture2D()
 	{
-		if (SDL_GL_GetCurrentContext()) {
+		if (hasContext()) {
 			glCheck(glDeleteTextures(1, &id));
 		}
 	}

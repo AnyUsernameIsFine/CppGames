@@ -15,12 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\simpleColor.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\simpleColor.frag">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Resources\coordinateSystem.vert">
       <Filter>Resource Files</Filter>
     </None>
@@ -58,7 +52,7 @@
     <ClInclude Include="Source\Star.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Transform.h">
+    <ClInclude Include="Source\Globals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

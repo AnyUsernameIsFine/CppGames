@@ -7,6 +7,11 @@ namespace Framework
 		return id;
 	}
 
+	bool OpenGLObject::hasContext() const
+	{
+		return sdlCheckValue(SDL_GL_GetCurrentContext());
+	}
+
 	bool OpenGLObject::hasContext(const string& message) const
 	{
 		if (sdlCheckValue(!SDL_GL_GetCurrentContext())) {

@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-#include <Framework.h>
-
+#include "Globals.h"
 #include "Universe.h"
 
 namespace SpaceSimulator
@@ -56,12 +55,12 @@ namespace SpaceSimulator
 			auto children = cs->getChildren();
 			if (!children.empty()) {
 				CoordinateSystem* toPutCameraNextTo = children[children.size() / 2].get();
-				Vector3 p = toPutCameraNextTo->transform.getPosition() +
+				Vector3 p = toPutCameraNextTo->transform().getPosition() +
 					Vector3(0, 0, (Coordinate)(5 * toPutCameraNextTo->getRadius()));
 				camera.setPosition(p);
 			}
 
-			camera.transform.setEulerAngles(0, 0, 0);
+			camera.transform().setEulerAngles(0, 0, 0);
 
 			universe.update(camera);
 		}
@@ -83,11 +82,11 @@ namespace SpaceSimulator
 			);
 
 			float rollSensitivity = 90 * deltaSeconds;
-			camera.transform.roll(rollSensitivity * (input.isKeyDown(SDLK_e) - input.isKeyDown(SDLK_q)));
+			camera.transform().roll(rollSensitivity * (input.isKeyDown(SDLK_e) - input.isKeyDown(SDLK_q)));
 
 			float sensitivity = 0.05f;
-			camera.transform.yaw(sensitivity * input.getMouseDeltaX());
-			camera.transform.pitch(sensitivity * input.getMouseDeltaY());
+			camera.transform().yaw(sensitivity * input.getMouseDeltaX());
+			camera.transform().pitch(sensitivity * input.getMouseDeltaY());
 
 			camera.update(deltaSeconds);
 

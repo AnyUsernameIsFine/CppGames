@@ -14,6 +14,7 @@ namespace Framework
 	protected:
 		GLuint id = 0;
 
+		bool hasContext() const;
 		bool hasContext(const string& message) const;
 	};
 }

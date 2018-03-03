@@ -121,8 +121,6 @@
   <ItemGroup>
     <None Include="Resources\coordinateSystem.frag" />
     <None Include="Resources\coordinateSystem.vert" />
-    <None Include="Resources\simpleColor.frag" />
-    <None Include="Resources\simpleColor.vert" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\consola.ttf" />
@@ -133,6 +131,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Globals.h" />
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\CoordinateSystem.h" />
     <ClInclude Include="Source\Galaxy.h" />
@@ -140,7 +139,6 @@
     <ClInclude Include="Source\Moon.h" />
     <ClInclude Include="Source\Planet.h" />
     <ClInclude Include="Source\Star.h" />
-    <ClInclude Include="Source\Transform.h" />
     <ClInclude Include="Source\Universe.h" />
   </ItemGroup>
   <ItemGroup>

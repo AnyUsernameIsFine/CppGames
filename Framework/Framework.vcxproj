@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\3D\GameObject.h" />
     <ClInclude Include="Source\Graphics\FontPacker.h" />
     <ClInclude Include="Source\3D\Camera.h" />
     <ClInclude Include="Source\3D\Mesh.h" />

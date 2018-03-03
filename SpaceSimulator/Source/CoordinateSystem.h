@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Framework.h>
-
 #define UNIVERSE_SCALE 0
 
 #include "Camera.h"
@@ -12,10 +10,9 @@ namespace SpaceSimulator
 {
 	using namespace Framework;
 
-	class CoordinateSystem abstract
+	class CoordinateSystem abstract : public GameObject
 	{
 	public:
-		Transform transform;
 		Mesh* mesh = nullptr;
 
 		static const int MAX_IN_DRAW_LIST = 8192;

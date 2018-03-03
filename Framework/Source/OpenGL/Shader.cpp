@@ -8,7 +8,8 @@ namespace Framework
 {
 	Shader::~Shader()
 	{
-		if (SDL_GL_GetCurrentContext()) {
+		if (hasContext()) {
+			console("shader " << id << " deleted");
 			glCheck(glDeleteShader(id));
 		};
 	}

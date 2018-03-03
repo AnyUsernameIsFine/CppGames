@@ -70,10 +70,10 @@ namespace SpaceSimulator
 			auto star = std::make_shared<Star>(this, starRadius);
 
 			glm::vec3 v = glm::ballRand(0.8f * radius * parent->getScale() / getScale());
-			star->transform.setPosition({ (Coordinate)v.x, (Coordinate)(v.y * roundness), (Coordinate)v.z });
+			star->transform().setPosition({ (Coordinate)v.x, (Coordinate)(v.y * roundness), (Coordinate)v.z });
 
 			r = Random::randFloat();
-			star->transform.rotate(360 * r, glm::sphericalRand(1.0f));
+			star->transform().rotate(360 * r, glm::sphericalRand(1.0f));
 
 			star->create();
 

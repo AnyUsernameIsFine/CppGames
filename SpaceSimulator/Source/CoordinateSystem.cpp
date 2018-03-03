@@ -99,17 +99,17 @@ namespace SpaceSimulator
 			if (useHighRes) {
 				useHighRes = false;
 				Vector3 highResCamPos = hierarchy[hierarchyIndex].position;
-				modelMatrix = transform.getModelMatrix(highResCamPos);
+				modelMatrix = myTransform.getModelMatrix(highResCamPos);
 
 				if (drawDescendants) {
-					camPos = (highResCamPos - transform.getPosition()).toVec3();
+					camPos = (highResCamPos - myTransform.getPosition()).toVec3();
 				}
 			}
 			else {
-				modelMatrix = transform.getModelMatrix(camPos);
+				modelMatrix = myTransform.getModelMatrix(camPos);
 
 				if (drawDescendants) {
-					camPos -= transform.getPosition().toVec3();
+					camPos -= myTransform.getPosition().toVec3();
 				}
 			}
 
@@ -118,7 +118,7 @@ namespace SpaceSimulator
 				rotations = glm::mat3(anotherMatrix * modelMatrix); // use the rotation part of the matrix used for drawing
 
 				// calculate the camera position relative to this coordinate system
-				camPos = camPos * glm::conjugate(transform.getOrientation()) * parent->getScale() / getScale();
+				camPos = camPos * glm::conjugate(myTransform.getOrientation()) * parent->getScale() / getScale();
 			}
 
 			drawConfiguration = { anotherMatrix, modelMatrix, getColor(), radius, this };

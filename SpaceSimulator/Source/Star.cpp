@@ -70,10 +70,10 @@ namespace SpaceSimulator
 			auto planet = std::make_shared<Planet>(this, planetRadius);
 
 			glm::vec2 v = glm::diskRand(0.8f * radius * parent->getScale() / getScale());
-			planet->transform.setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });
+			planet->transform().setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });
 
 			r = Random::randFloat();
-			planet->transform.rotate(45.0f * r * r, glm::sphericalRand(1.0f));
+			planet->transform().rotate(45.0f * r * r, glm::sphericalRand(1.0f));
 
 			planet->create();
 
