@@ -1,5 +1,7 @@
 #include "OpenGLObject.h"
 
+#include <SDL_video.h>
+
 namespace Framework
 {
 	GLuint OpenGLObject::getId() const
@@ -9,12 +11,12 @@ namespace Framework
 
 	bool OpenGLObject::hasContext() const
 	{
-		return sdlCheckValue(SDL_GL_GetCurrentContext());
+		return SDL_GL_GetCurrentContext();
 	}
 
 	bool OpenGLObject::hasContext(const string& message) const
 	{
-		if (sdlCheckValue(!SDL_GL_GetCurrentContext())) {
+		if (!hasContext()) {
 			error(message + ": No active OpenGL context");
 			return false;
 		}

@@ -1,8 +1,6 @@
 #include "Star.h"
 #include "Galaxy.h"
 
-#include <Framework.h>
-
 namespace SpaceSimulator
 {
 #ifdef UNIVERSE_SCALE

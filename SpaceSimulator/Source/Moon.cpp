@@ -1,7 +1,5 @@
 #include "Moon.h"
 
-#include <Framework.h>
-
 namespace SpaceSimulator
 {
 #ifdef UNIVERSE_SCALE

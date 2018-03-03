@@ -46,6 +46,7 @@
     <ClInclude Include="Source\System\TimePoint.h" />
     <ClInclude Include="Source\System\StringStream.h" />
     <ClInclude Include="Source\OpenGL\VertexArray.h" />
+    <ClInclude Include="Source\System\Utility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Graphics\FontPacker.cpp" />

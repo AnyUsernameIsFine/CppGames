@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include <Framework.h>
+#include "Globals.h"
 
 #include <glm\gtc\random.hpp>
 
@@ -8,8 +8,6 @@
 
 namespace LearnOpenGL
 {
-	using namespace Framework;
-
 	class Game : public Framework::Game
 	{
 	public:

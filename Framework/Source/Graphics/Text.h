@@ -34,7 +34,7 @@ namespace Framework
 			float x, y;
 		};
 
-		static const int MAX_STRING_LENGTH = 1024;
+		static const int MAX_STRING_LENGTH = 1 << 10;
 
 		int windowWidth;
 		int windowHeight;

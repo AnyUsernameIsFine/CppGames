@@ -1,7 +1,6 @@
 #include "Camera.h"
 #include "Universe.h"
 
-#define GLM_FORCE_INLINE
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm\gtx\norm.hpp>
 
@@ -60,7 +59,7 @@ namespace SpaceSimulator
 		move({ 0, 0, distance });
 	}
 
-	const std::vector<Camera::CameraHierarchyLevel>& Camera::getHierarchy() const
+	const vector<Camera::CameraHierarchyLevel>& Camera::getHierarchy() const
 	{
 		return hierarchy;
 	}
@@ -140,11 +139,11 @@ namespace SpaceSimulator
 		}
 	}
 
-	std::string Camera::getSpeedString() const
+	string Camera::getSpeedString() const
 	{
 		double perHour = getSpeed() / 3600;
 
-		std::string units;
+		string units;
 
 		if (perHour > 9460730472580800 * 1e9) {
 			perHour /= 9460730472580800 * 1e9;

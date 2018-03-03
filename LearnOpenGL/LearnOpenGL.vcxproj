@@ -140,6 +140,7 @@
     <Image Include="Resources\journey.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Globals.h" />
     <ClInclude Include="Source\Main.h" />
   </ItemGroup>
   <ItemGroup>

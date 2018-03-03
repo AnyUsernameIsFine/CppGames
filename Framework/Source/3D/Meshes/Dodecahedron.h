@@ -7,7 +7,6 @@ namespace Framework
 	class DodecahedronMesh : public PlatonicSolidMesh
 	{
 	public:
-		DodecahedronMesh();
 		const vector<Vertex>& getVertices() const;
 		const vector<GLushort>& getIndices() const;
 

@@ -14,12 +14,12 @@ namespace SpaceSimulator
 		return parent;
 	}
 
-	const std::vector<std::shared_ptr<CoordinateSystem>>& CoordinateSystem::getChildren() const
+	const vector<std::shared_ptr<CoordinateSystem>>& CoordinateSystem::getChildren() const
 	{
 		return children;
 	}
 
-	const std::string& CoordinateSystem::getName() const
+	const string& CoordinateSystem::getName() const
 	{
 		return name;
 	}
@@ -30,9 +30,9 @@ namespace SpaceSimulator
 	}
 
 	void CoordinateSystem::drawWithChildren(
-		std::vector<std::vector<std::vector<DrawConfiguration>>>& toDrawList,
+		vector<vector<vector<DrawConfiguration>>>& toDrawList,
 		// list of the camera's positions and rotations relative to all its coordinate system's ancestors from outside in
-		const std::vector<Camera::CameraHierarchyLevel>& hierarchy,
+		const vector<Camera::CameraHierarchyLevel>& hierarchy,
 		// which level of the camera hierarchy should we use for inverse rotations
 		int hierarchyIndex,
 		// matrix of the combined rotations of all this coordinate system's ancestors
@@ -165,7 +165,7 @@ namespace SpaceSimulator
 		shader.createFromFiles("Resources/coordinateSystem.vert", "Resources/coordinateSystem.frag");
 	}
 
-	void CoordinateSystem::myDraw(const std::vector<std::vector<std::vector<DrawConfiguration>>>& toDrawList, const Camera& camera)
+	void CoordinateSystem::myDraw(const vector<vector<vector<DrawConfiguration>>>& toDrawList, const Camera& camera)
 	{
 		auto hierarchy = camera.getHierarchy();
 

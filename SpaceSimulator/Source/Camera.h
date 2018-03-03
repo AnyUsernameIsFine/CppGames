@@ -6,7 +6,7 @@ namespace SpaceSimulator
 {
 	class CoordinateSystem;
 
-	class Camera : public Framework::CameraType<Coordinate>
+	class Camera : public CameraType<Coordinate>
 	{
 	public:
 		struct CameraHierarchyLevel
@@ -26,16 +26,16 @@ namespace SpaceSimulator
 		void moveY(float distance);
 		void moveZ(float distance);
 		void update(float deltaSeconds);
-		const std::vector<CameraHierarchyLevel>& getHierarchy() const;
+		const vector<CameraHierarchyLevel>& getHierarchy() const;
 		float getSpeed() const;
-		std::string getSpeedString() const;
+		string getSpeedString() const;
 
 	private:
 		CoordinateSystem* coordinateSystem;
 		glm::vec3 velocity;
 		glm::vec3 maxVelocity;
 		glm::vec3 acceleration;
-		std::vector<CameraHierarchyLevel> hierarchy;
+		vector<CameraHierarchyLevel> hierarchy;
 
 		void setCorrectCoordinateSystem();
 		void createHierarchy();

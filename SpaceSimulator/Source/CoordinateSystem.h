@@ -8,21 +8,19 @@
 
 namespace SpaceSimulator
 {
-	using namespace Framework;
-
 	class CoordinateSystem abstract : public GameObject
 	{
 	public:
 		Mesh* mesh = nullptr;
 
-		static const int MAX_IN_DRAW_LIST = 8192;
+		static const int MAX_IN_DRAW_LIST = 1 << 13;
 
 		static void initialize();
 
 		~CoordinateSystem();
 		CoordinateSystem* getParent() const;
-		const std::vector<std::shared_ptr<CoordinateSystem>>& getChildren() const;
-		const std::string& getName() const;
+		const vector<std::shared_ptr<CoordinateSystem>>& getChildren() const;
+		const string& getName() const;
 		float getRadius() const;
 		virtual float getScale() const = 0;
 		virtual const glm::vec4& getColor() const = 0;
@@ -39,13 +37,13 @@ namespace SpaceSimulator
 		};
 
 		CoordinateSystem* parent;
-		std::vector<std::shared_ptr<CoordinateSystem>> children;
-		std::string name;
+		vector<std::shared_ptr<CoordinateSystem>> children;
+		string name;
 		float radius;
 
 		void drawWithChildren(
-			std::vector<std::vector<std::vector<DrawConfiguration>>>& toDrawList,
-			const std::vector<Camera::CameraHierarchyLevel>& cameraHierarchy,
+			vector<vector<vector<DrawConfiguration>>>& toDrawList,
+			const vector<Camera::CameraHierarchyLevel>& cameraHierarchy,
 			int hierarchyIndex = -1,
 			glm::mat4 rotations = glm::mat4(1),
 			glm::mat4 anotherMatrix = glm::mat4(1),
@@ -57,6 +55,6 @@ namespace SpaceSimulator
 		static VertexArray vertexArray;
 		static Shader shader;
 
-		static void myDraw(const std::vector<std::vector<std::vector<DrawConfiguration>>>& drawConfigurations, const Camera& camera);
+		static void myDraw(const vector<vector<vector<DrawConfiguration>>>& drawConfigurations, const Camera& camera);
 	};
 }

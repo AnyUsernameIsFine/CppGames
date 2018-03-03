@@ -7,7 +7,6 @@ namespace Framework
 	class OctahedronMesh : public PlatonicSolidMesh
 	{
 	public:
-		OctahedronMesh();
 		const vector<Vertex>& getVertices() const;
 		const vector<GLushort>& getIndices() const;
 

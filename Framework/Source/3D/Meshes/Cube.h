@@ -7,7 +7,6 @@ namespace Framework
 	class CubeMesh : public PlatonicSolidMesh
 	{
 	public:
-		CubeMesh();
 		const vector<Vertex>& getVertices() const;
 		const vector<GLushort>& getIndices() const;
 

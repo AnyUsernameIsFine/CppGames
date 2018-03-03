@@ -2,10 +2,14 @@
 
 #include <Framework.h>
 
+#define GLM_FORCE_INLINE
+
 namespace SpaceSimulator
 {
+	using namespace Framework;
+
 	typedef int64 Coordinate;
-	typedef Framework::Vector3Type<Coordinate> Vector3;
-	typedef Framework::TransformType<Coordinate> Transform;
-	typedef Framework::GameObjectType<Coordinate> GameObject;
+	typedef Vector3Type<Coordinate> Vector3;
+	typedef TransformType<Coordinate> Transform;
+	typedef GameObjectType<Coordinate> GameObject;
 }

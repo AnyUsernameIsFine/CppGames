@@ -1,7 +1,5 @@
 #include "Universe.h"
 
-#include <Framework.h>
-
 namespace SpaceSimulator
 {
 #ifdef UNIVERSE_SCALE
@@ -26,7 +24,7 @@ namespace SpaceSimulator
 		radius = 1;
 		name = "Universe";
 
-		children = std::vector<std::shared_ptr<CoordinateSystem>>
+		children = vector<std::shared_ptr<CoordinateSystem>>
 			(GALAXIES_PER_SIDE * GALAXIES_PER_SIDE * GALAXIES_PER_SIDE);
 	}
 
@@ -79,7 +77,7 @@ namespace SpaceSimulator
 	{
 		auto hierarchy = camera.getHierarchy();
 
-		std::vector<std::vector<std::vector<DrawConfiguration>>> toDrawList(hierarchy.size(), std::vector<std::vector<DrawConfiguration>>(3));
+		vector<vector<vector<DrawConfiguration>>> toDrawList(hierarchy.size(), vector<vector<DrawConfiguration>>(3));
 
 		drawWithChildren(toDrawList, hierarchy);
 

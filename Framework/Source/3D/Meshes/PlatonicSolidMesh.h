@@ -1,6 +1,7 @@
 #pragma once
 
 #include "3D/Mesh.h"
+#include "System\Utility.h"
 
 namespace Framework
 {

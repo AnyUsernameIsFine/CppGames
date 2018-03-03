@@ -5,8 +5,6 @@
 
 namespace SpaceSimulator
 {
-	using namespace Framework;
-
 	class Game : public Framework::Game
 	{
 	public:

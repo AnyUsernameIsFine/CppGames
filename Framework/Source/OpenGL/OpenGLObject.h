@@ -2,8 +2,6 @@
 
 #include "System\Globals.h"
 
-#include <SDL_video.h>
-
 namespace Framework
 {
 	class OpenGLObject abstract

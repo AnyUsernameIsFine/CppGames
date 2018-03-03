@@ -7,7 +7,6 @@ namespace Framework
 	class IcosahedronMesh : public PlatonicSolidMesh
 	{
 	public:
-		IcosahedronMesh();
 		const vector<Vertex>& getVertices() const;
 		const vector<GLushort>& getIndices() const;
 
