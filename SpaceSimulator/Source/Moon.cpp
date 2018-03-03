@@ -21,7 +21,7 @@ namespace SpaceSimulator
 		this->parent = parent;
 		this->radius = radius;
 		name = "Moon #" + std::to_string((uInt)Random::randInt());
-		mesh = new IcosahedronMesh();
+		setMesh<IcosahedronMesh>();
 	}
 
 	float Moon::getScale() const

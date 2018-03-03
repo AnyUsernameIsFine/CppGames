@@ -2,13 +2,6 @@
 
 namespace SpaceSimulator
 {
-	CoordinateSystem::~CoordinateSystem()
-	{
-		if (mesh) {
-			delete mesh;
-		}
-	}
-
 	CoordinateSystem* CoordinateSystem::getParent() const
 	{
 		return parent;
@@ -158,9 +151,8 @@ namespace SpaceSimulator
 
 	void CoordinateSystem::initialize()
 	{
-		vertexArray.setVertexBuffer({ 3, 3 }, 60);
-		// TODO: for some unknown reason, there needs to be room for one extra index
-		vertexArray.setIndexBuffer(1 + 12 * 3 * 3);
+		vertexArray.setVertexBuffer({ 3, 3, 2 }, 60);
+		vertexArray.setIndexBuffer(108 + 1); // why one more???
 		vertexArray.setInstanceBuffer({ 16, 16, 4, 1, 1 }, MAX_IN_DRAW_LIST);
 		shader.createFromFiles("Resources/coordinateSystem.vert", "Resources/coordinateSystem.frag");
 	}
@@ -188,18 +180,14 @@ namespace SpaceSimulator
 			shader.setUniform("projection", glm::perspective(fov, ratio, near, far));
 
 			for (auto& list : toDrawList[i]) {
-				if (!(list.empty())) {
-					Mesh* mesh = list[0].cs->mesh;
+				if (!list.empty() && list[0].cs->hasMesh()) {
+					auto vertices = list[0].cs->mesh().getVertices();
+					auto indices = list[0].cs->mesh().getIndices();
 
-					if (mesh && !mesh->getVertices().empty()) {
-						auto vertices = mesh->getVertices();
-						auto indices = mesh->getIndices();
-
-						vertexArray.updateVertexBuffer(vertices.size(), &vertices[0]);
-						vertexArray.updateIndexBuffer(indices.size(), indices.empty() ? nullptr : &indices[0]);
-						vertexArray.updateInstanceBuffer(list.size(), &list[0]);
-						vertexArray.draw(GL_TRIANGLES);
-					}
+					vertexArray.updateVertexBuffer(vertices.size(), vertices.data());
+					vertexArray.updateIndexBuffer(indices.size(), indices.data());
+					vertexArray.updateInstanceBuffer(list.size(), list.data());
+					vertexArray.draw(GL_TRIANGLES);
 				}
 			}
 		}

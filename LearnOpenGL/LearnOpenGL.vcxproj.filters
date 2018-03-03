@@ -21,16 +21,16 @@
     <None Include="Resources\light.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\cube.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\cube.vert">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Resources\font.frag">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Resources\font.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\shape.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\shape.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

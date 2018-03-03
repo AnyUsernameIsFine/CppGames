@@ -13,14 +13,14 @@ namespace LearnOpenGL
 	public:
 		Camera camera;
 		Shader fontShader;
-		Shader cubeShader;
+		Shader shapeShader;
 		Shader lightShader;
 		Texture2D texture1;
 		Texture2D texture2;
 		VertexArray fontVertexArray;
-		VertexArray cubeVertexArray;
+		VertexArray shapeVertexArray;
 		VertexArray lightVertexArray;
-		std::vector<GameObject> cubes;
+		std::vector<GameObject> shapes;
 		GameObject light;
 
 		Game()
@@ -41,18 +41,20 @@ namespace LearnOpenGL
 			graphics.text.loadFont("Resources/consola.ttf", "Font");
 			graphics.text.setFont("Font", 20);
 
-			camera.transform().moveZ(10);
+			camera.transform().moveZ(20);
 
 			for (int i = 0; i < 10; i++) {
-				GameObject cube;
-				cube.transform().setPosition(Vector3::fromVec3(glm::sphericalRand(3.0f)));
-				cube.transform().scale(2, 1, 0.5f);
-				cube.transform().rotate(i * 20.0f, { -1.0f, 0.3f, 0.5f });
+				GameObject shape;
+				shape.setMesh<CubeMesh>();
+				shape.transform().setPosition(Vector3::fromVec3(glm::sphericalRand(6.0f)));
+				shape.transform().scale(2, 1, 0.5f);
+				shape.transform().rotate(i * 20.0f, { -1.0f, 0.3f, 0.5f });
 
-				cubes.emplace_back(cube);
+				shapes.emplace_back(shape);
 			}
 
-			light.transform().scale(0.2f);
+			light.setMesh<TetrahedronMesh>();
+			light.transform().scale(0.25f);
 
 			float fontVertices[] = {
 				-1, -1,		0, 1,
@@ -66,55 +68,19 @@ namespace LearnOpenGL
 			fontShader.setUniform("fontTexture", 0);
 			fontVertexArray.setVertexBuffer({ 2, 2 }, 4, fontVertices);
 
-			float cubeVertices[] = {
-				-0.5, -0.5, -0.5,	 0,  0, -1,		0, 1,
-				-0.5, -0.5, -0.5,	 0, -1,  0,		0, 1,
-				-0.5, -0.5, -0.5,	-1,  0,  0,		0, 1,
-				 0.5, -0.5, -0.5,	 0,  0, -1,		1, 1,
-				 0.5, -0.5, -0.5,	 0, -1,  0,		1, 1,
-				 0.5, -0.5, -0.5,	 1,  0,  0,		1, 1,
-				-0.5,  0.5, -0.5,	 0,  0, -1,		0, 0,
-				-0.5,  0.5, -0.5,	 0,  1,  0,		0, 0,
-				-0.5,  0.5, -0.5,	-1,  0,  0,		0, 0,
-				 0.5,  0.5, -0.5,	 0,  0, -1,		1, 0,
-				 0.5,  0.5, -0.5,	 0,  1,  0,		1, 0,
-				 0.5,  0.5, -0.5,	 1,  0,  0,		1, 0,
-				-0.5, -0.5,  0.5,	 0,  0,  1,		0, 1,
-				-0.5, -0.5,  0.5,	 0, -1,  0,		0, 1,
-				-0.5, -0.5,  0.5,	-1,  0,  0,		0, 1,
-				 0.5, -0.5,  0.5,	 0,  0,  1,		1, 1,
-				 0.5, -0.5,  0.5,	 0, -1,  0,		1, 1,
-				 0.5, -0.5,  0.5,	 1,  0,  0,		1, 1,
-				-0.5,  0.5,  0.5,	 0,  0,  1,		0, 0,
-				-0.5,  0.5,  0.5,	 0,  1,  0,		0, 0,
-				-0.5,  0.5,  0.5,	-1,  0,  0,		0, 0,
-				 0.5,  0.5,  0.5,	 0,  0,  1,		1, 0,
-				 0.5,  0.5,  0.5,	 0,  1,  0,		1, 0,
-				 0.5,  0.5,  0.5,	 1,  0,  0,		1, 0,
-			};
-
-			GLushort indices[] = {
-				 0,  6,  3,  3,  6,  9,
-				 1,  4, 13, 13,  4, 16,
-				 2, 14,  8,  8, 14, 20,
-				 5, 11, 17, 17, 11, 23,
-				 7, 19, 10, 10, 19, 22,
-				12, 15, 18, 18, 15, 21,
-			};
-
 			texture1.createFromFile("Resources/journey.jpg");
 			texture2.createFromFile("Resources/flow.jpg");
 
-			cubeShader.createFromFiles("Resources/cube.vert", "Resources/cube.frag");
-			cubeShader.use();
-			cubeShader.setUniform("texture1", 0);
-			cubeShader.setUniform("texture2", 1);
-			cubeVertexArray.setVertexBuffer({ 3, 3, 2 }, 24, cubeVertices);
-			cubeVertexArray.setIndexBuffer(36, indices);
+			shapeShader.createFromFiles("Resources/shape.vert", "Resources/shape.frag");
+			shapeShader.use();
+			shapeShader.setUniform("texture1", 0);
+			shapeShader.setUniform("texture2", 1);
+			shapeVertexArray.setVertexBuffer({ 3, 3, 2 }, 60);
+			shapeVertexArray.setIndexBuffer(108 + 1); // why one more???
 
 			lightShader.createFromFiles("Resources/light.vert", "Resources/light.frag");
-			lightVertexArray.setExistingVertexBuffer(cubeVertexArray.getVertexBufferId());
-			lightVertexArray.setExistingIndexBuffer(cubeVertexArray.getIndexBufferId());
+			lightVertexArray.setVertexBuffer({ 3, 3, 2 }, light.mesh().getVertices().size(), light.mesh().getVertices().data());
+			lightVertexArray.setIndexBuffer(light.mesh().getIndices().size(), light.mesh().getIndices().data());
 		}
 
 		void update(float deltaSeconds)
@@ -125,7 +91,7 @@ namespace LearnOpenGL
 				camera.usePerspective(!camera.usesPerspective());
 			}
 
-			float cameraSpeed = 5 * deltaSeconds;
+			float cameraSpeed = 10 * deltaSeconds;
 			camera.transform().move(
 				cameraSpeed * (input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)),
 				cameraSpeed * (input.isKeyDown(SDLK_r) - input.isKeyDown(SDLK_f)),
@@ -141,8 +107,8 @@ namespace LearnOpenGL
 
 			camera.setFieldOfView(camera.getFieldOfView() - input.getMouseWheel() * 10);
 
-			for (auto& cube : cubes) {
-				cube.transform().rotate(deltaSeconds * 50.0f, { 1.0f, 0.3f, 0.5f });
+			for (auto& shape : shapes) {
+				shape.transform().rotate(deltaSeconds * 50.0f, { 1.0f, 0.3f, 0.5f });
 			}
 
 			light.transform().setPosition(0, 0, 0);
@@ -172,22 +138,26 @@ namespace LearnOpenGL
 			glm::mat4 view = camera.getViewMatrix();
 			glm::mat4 projection = camera.getProjectionMatrix();
 
-			cubeShader.use();
-			cubeShader.setUniform("view", view);
-			cubeShader.setUniform("projection", projection);
-			cubeShader.setUniform("mix", (sin(getGameTimeInSeconds()) + 1) * 0.5f);
-			cubeShader.setUniform("lightColor", glm::vec3(1, 1, 1));
+			shapeShader.use();
+			shapeShader.setUniform("view", view);
+			shapeShader.setUniform("projection", projection);
+			shapeShader.setUniform("mix", (sin(getGameTimeInSeconds()) + 1) * 0.5f);
+			shapeShader.setUniform("lightColor", glm::vec3(1, 1, 1));
 
 			glm::vec3 p = light.transform().getPosition().toVec3();
-			cubeShader.setUniform("lightPosition", glm::vec3(view * glm::vec4(p.x, p.y, p.z, 1)));
+			shapeShader.setUniform("lightPosition", glm::vec3(view * glm::vec4(p.x, p.y, p.z, 1)));
 
 			texture1.use(0);
 			texture2.use(1);
 
-			for (auto& cube : cubes) {
-				glm::mat4 model = cube.transform().getModelMatrix();
-				cubeShader.setUniform("model", model);
-				cubeVertexArray.draw(GL_TRIANGLES);
+			for (auto& shape : shapes) {
+				glm::mat4 model = shape.transform().getModelMatrix();
+				shapeShader.setUniform("model", model);
+				auto vertices = shape.mesh().getVertices();
+				auto indices = shape.mesh().getIndices();
+				shapeVertexArray.updateVertexBuffer(vertices.size(), vertices.data());
+				shapeVertexArray.updateIndexBuffer(indices.size(), indices.data());
+				shapeVertexArray.draw(GL_TRIANGLES);
 			}
 
 			glm::mat4 model = light.transform().getModelMatrix();

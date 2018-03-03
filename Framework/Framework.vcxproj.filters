@@ -71,6 +71,9 @@
     <ClCompile Include="Source\OpenGL\VertexArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\3D\Meshes\Tetrahedron.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Graphics\Text.h">
@@ -155,6 +158,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\System\Utility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\3D\Meshes\Tetrahedron.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

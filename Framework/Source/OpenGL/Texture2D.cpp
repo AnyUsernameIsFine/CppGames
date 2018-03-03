@@ -24,7 +24,7 @@ namespace Framework
 	void Texture2D::createFromFile(const string& filename)
 	{
 		int width, height;
-		//stbi_set_flip_vertically_on_load(true);
+		stbi_set_flip_vertically_on_load(true);
 		byte* data = stbi_load(filename.c_str(), &width, &height, nullptr, 3);
 
 		create(width, height, GL_RGB, GL_RGB, data);

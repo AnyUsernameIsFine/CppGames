@@ -231,7 +231,7 @@ namespace Framework
 
 		shader.use();
 		useFontTexture();
-		vertexArray.updateVertexBuffer(numberOfGlyphs * sizeof(GlyphQuad) / sizeof(GLfloat), &vertices[0]);
+		vertexArray.updateVertexBuffer(numberOfGlyphs * 6, vertices.data());
 		vertexArray.draw(GL_TRIANGLES);
 
 		// enable depth testing if it was enabled

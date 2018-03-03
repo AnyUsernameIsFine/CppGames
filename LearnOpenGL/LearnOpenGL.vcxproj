@@ -124,8 +124,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\cube.frag" />
-    <None Include="Resources\cube.vert" />
+    <None Include="Resources\shape.frag" />
+    <None Include="Resources\shape.vert" />
     <None Include="Resources\font.frag" />
     <None Include="Resources\light.frag" />
     <None Include="Resources\light.vert" />

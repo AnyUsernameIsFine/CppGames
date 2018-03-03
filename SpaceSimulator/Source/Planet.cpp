@@ -31,7 +31,7 @@ namespace SpaceSimulator
 		this->parent = parent;
 		this->radius = radius;
 		name = "Planet #" + std::to_string((uInt)Random::randInt());
-		mesh = new DodecahedronMesh();
+		setMesh<DodecahedronMesh>();
 	}
 
 	float Planet::getScale() const

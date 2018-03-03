@@ -28,7 +28,7 @@ namespace SpaceSimulator
 		this->parent = parent;
 		this->radius = radius;
 		name = "Galaxy #" + std::to_string((uInt)Random::randInt());
-		mesh = new CubeMesh();
+		setMesh<CubeMesh>();
 	}
 
 	float Galaxy::getScale() const

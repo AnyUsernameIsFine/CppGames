@@ -22,11 +22,11 @@ namespace Framework
 
 		float a = phi / 3;
 		float b = (1 + 2 * phi) / 3;
-		float s = 1 / sqrtf(a * a + b * b);
+		float scale = 1 / sqrtf(a * a + b * b);
 
 		for (int i = -1; i <= +1; i += 2) {
 			for (int j = -1; j <= +1; j += 2) {
-				auto permutations = getEvenPermutationsOfVertex(glm::vec3(i, j * phi, 0) * s);
+				auto permutations = getEvenPermutationsOfVertex(glm::vec3(i, j * phi, 0) * scale);
 				positions.insert(positions.end(), permutations.begin(), permutations.end());
 			}
 		}

@@ -18,10 +18,10 @@ namespace Framework
 
 		vector<glm::vec3> positions;
 
-		float s = sqrtf(3);
+		float scale = sqrtf(3);
 
 		for (int i = -1; i <= +1; i += 2) {
-			auto permutations = getEvenPermutationsOfVertex(glm::vec3(i, 0, 0) * s);
+			auto permutations = getEvenPermutationsOfVertex(glm::vec3(i, 0, 0) * scale);
 			positions.insert(positions.end(), permutations.begin(), permutations.end());
 		}
 

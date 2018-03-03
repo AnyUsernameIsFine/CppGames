@@ -2,6 +2,7 @@
 
 #include "System\Globals.h"
 
+#include <glm\vec2.hpp>
 #include <glm\vec3.hpp>
 
 namespace Framework
@@ -11,11 +12,12 @@ namespace Framework
 	public:
 		union Vertex
 		{
-			GLfloat data[6];
+			GLfloat data[8];
 			struct
 			{
 				glm::vec3 position;
 				glm::vec3 normal;
+				glm::vec2 texCoords;
 			};
 		};
 

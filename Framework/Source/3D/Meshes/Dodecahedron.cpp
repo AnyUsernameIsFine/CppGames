@@ -24,14 +24,14 @@ namespace Framework
 
 		float a = (2 + onePlusH) / 5;
 		float b = (2 + 2 * onePlusH + oneMinusH2) / 5;
-		float s = 1 / sqrtf(a * a + b * b);
+		float scale = 1 / sqrtf(a * a + b * b);
 
 		for (int i = -1; i <= +1; i += 2) {
 			for (int j = -1; j <= +1; j += 2) {
 				for (int k = -1; k <= +1; k += 2) {
-					positions.emplace_back(glm::vec3(i, j, k) * s);
+					positions.emplace_back(glm::vec3(i, j, k) * scale);
 				}
-				auto permutations = getEvenPermutationsOfVertex(glm::vec3(i * onePlusH, j * oneMinusH2, 0) * s);
+				auto permutations = getEvenPermutationsOfVertex(glm::vec3(i * onePlusH, j * oneMinusH2, 0) * scale);
 				positions.insert(positions.end(), permutations.begin(), permutations.end());
 			}
 		}

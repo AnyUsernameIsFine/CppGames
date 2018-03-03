@@ -11,13 +11,10 @@ namespace SpaceSimulator
 	class CoordinateSystem abstract : public GameObject
 	{
 	public:
-		Mesh* mesh = nullptr;
-
 		static const int MAX_IN_DRAW_LIST = 1 << 13;
 
 		static void initialize();
 
-		~CoordinateSystem();
 		CoordinateSystem* getParent() const;
 		const vector<std::shared_ptr<CoordinateSystem>>& getChildren() const;
 		const string& getName() const;

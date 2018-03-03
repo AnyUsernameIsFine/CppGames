@@ -58,6 +58,7 @@ namespace Framework
 				Vertex vertex;
 				vertex.position = positions[face[j]];
 				vertex.normal = normal;
+				vertex.texCoords = { (vertex.position.x + 1) / 2, (vertex.position.y + 1) / 2 };
 				mesh.vertices.emplace_back(vertex);
 			}
 

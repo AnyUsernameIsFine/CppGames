@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\3D\GameObject.h" />
+    <ClInclude Include="Source\3D\Meshes\Tetrahedron.h" />
     <ClInclude Include="Source\Graphics\FontPacker.h" />
     <ClInclude Include="Source\3D\Camera.h" />
     <ClInclude Include="Source\3D\Mesh.h" />
@@ -49,6 +50,7 @@
     <ClInclude Include="Source\System\Utility.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\3D\Meshes\Tetrahedron.cpp" />
     <ClCompile Include="Source\Graphics\FontPacker.cpp" />
     <ClCompile Include="Source\3D\Meshes\Cube.cpp" />
     <ClCompile Include="Source\3D\Meshes\Dodecahedron.cpp" />
