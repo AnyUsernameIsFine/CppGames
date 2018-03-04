@@ -4,8 +4,8 @@ namespace Framework
 {
 	void Graphics::clearScreen(float r, float g, float b, bool depth) const
 	{
-		glCheck(glClearColor(r, g, b, 1));
-		glCheck(glClear(GL_COLOR_BUFFER_BIT | (depth ? GL_DEPTH_BUFFER_BIT : 0)));
+		checkGL(glClearColor(r, g, b, 1));
+		checkGL(glClear(GL_COLOR_BUFFER_BIT | (depth ? GL_DEPTH_BUFFER_BIT : 0)));
 	}
 
 	float Graphics::getFps() const

@@ -19,7 +19,7 @@ namespace Framework
 		while (isRunning) {
 			SDL_Event event;
 
-			while (sdlCheckValue(SDL_PollEvent(&event)) != 0) {
+			while (checkSDLValue(SDL_PollEvent(&event)) != 0) {
 				input.processEvent(event);
 
 				switch (event.type) {

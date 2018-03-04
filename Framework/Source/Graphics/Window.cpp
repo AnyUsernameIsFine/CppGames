@@ -4,18 +4,18 @@ namespace Framework
 {
 	Window::Window()
 	{
-		sdlCheck(SDL_Init(SDL_INIT_VIDEO));
+		checkSDL(SDL_Init(SDL_INIT_VIDEO));
 
-		sdlCheck(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3));
-		sdlCheck(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3));
+		checkSDL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3));
+		checkSDL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3));
 
-		sdlCheck(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
+		checkSDL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
 	}
 
 	Window::~Window()
 	{
-		sdlCheck(SDL_DestroyWindow(window));
-		sdlCheck(SDL_Quit());
+		checkSDL(SDL_DestroyWindow(window));
+		checkSDL(SDL_Quit());
 	}
 
 	void Window::setTitle(const string& title)
@@ -24,7 +24,7 @@ namespace Framework
 			this->title = title;
 
 			if (window) {
-				sdlCheck(SDL_SetWindowTitle(window, title.c_str()));
+				checkSDL(SDL_SetWindowTitle(window, title.c_str()));
 			}
 		}
 	}
@@ -35,10 +35,10 @@ namespace Framework
 			this->width = width;
 			this->height = height;
 
-			sdlCheck(SDL_GetDesktopDisplayMode(0, &closestDisplayMode));
+			checkSDL(SDL_GetDesktopDisplayMode(0, &closestDisplayMode));
 			closestDisplayMode.w = width;
 			closestDisplayMode.h = height;
-			sdlCheck(SDL_GetClosestDisplayMode(0, &closestDisplayMode, &closestDisplayMode));
+			checkSDL(SDL_GetClosestDisplayMode(0, &closestDisplayMode, &closestDisplayMode));
 
 			if (window) {
 				applySize();
@@ -52,7 +52,7 @@ namespace Framework
 			fullscreen = enable;
 
 			if (window) {
-				sdlCheck(SDL_SetWindowFullscreen(window, enable ? SDL_WINDOW_FULLSCREEN : 0));
+				checkSDL(SDL_SetWindowFullscreen(window, enable ? SDL_WINDOW_FULLSCREEN : 0));
 				applySize();
 			}
 		}
@@ -64,7 +64,7 @@ namespace Framework
 			resizing = enable;
 
 			if (window) {
-				sdlCheck(SDL_SetWindowResizable(window, enable ? SDL_TRUE : SDL_FALSE));
+				checkSDL(SDL_SetWindowResizable(window, enable ? SDL_TRUE : SDL_FALSE));
 			}
 		}
 	}
@@ -75,7 +75,7 @@ namespace Framework
 			cursor = enable;
 
 			if (window) {
-				sdlCheck(SDL_SetRelativeMouseMode(enable ? SDL_FALSE : SDL_TRUE));
+				checkSDL(SDL_SetRelativeMouseMode(enable ? SDL_FALSE : SDL_TRUE));
 			}
 		}
 	}
@@ -86,7 +86,7 @@ namespace Framework
 			vSync = enable;
 
 			if (window) {
-				sdlCheck(SDL_GL_SetSwapInterval(enable ? 1 : 0));
+				checkSDL(SDL_GL_SetSwapInterval(enable ? 1 : 0));
 			}
 		}
 	}
@@ -116,11 +116,11 @@ namespace Framework
 	bool Window::create()
 	{
 		if (antiAliasing) {
-			sdlCheck(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1));
-			sdlCheck(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4));
+			checkSDL(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1));
+			checkSDL(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4));
 		}
 
-		window = sdlCheckValue(SDL_CreateWindow(
+		window = checkSDLValue(SDL_CreateWindow(
 			title.c_str(),
 			SDL_WINDOWPOS_UNDEFINED,
 			SDL_WINDOWPOS_UNDEFINED,
@@ -134,12 +134,12 @@ namespace Framework
 			return false;
 		}
 
-		if (fullscreen && sdlCheckValue(SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN)) < 0) {
+		if (fullscreen && checkSDLValue(SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN)) < 0) {
 			error("Could not enable fullscreen mode");
 			return false;
 		}
 
-		if (!cursor && sdlCheckValue(SDL_SetRelativeMouseMode(SDL_TRUE)) < 0) {
+		if (!cursor && checkSDLValue(SDL_SetRelativeMouseMode(SDL_TRUE)) < 0) {
 			error("Could not set relative mouse mode");
 			return false;
 		}
@@ -149,12 +149,12 @@ namespace Framework
 
 	bool Window::activateOpenGL()
 	{
-		if (sdlCheckValue(SDL_GL_CreateContext(window)) == nullptr) {
+		if (checkSDLValue(SDL_GL_CreateContext(window)) == nullptr) {
 			error("Could not create OpenGL context");
 			return false;
 		}
 
-		if (sdlCheckValue(SDL_GL_SetSwapInterval(vSync ? 1 : 0)) < 0) {
+		if (checkSDLValue(SDL_GL_SetSwapInterval(vSync ? 1 : 0)) < 0) {
 			error("Could not set swap interval");
 			return false;
 		}
@@ -173,11 +173,11 @@ namespace Framework
 		if (isHidden) {
 			isHidden = false;
 
-			sdlCheck(SDL_ShowWindow(window));
-			sdlCheck(SDL_RaiseWindow(window));
+			checkSDL(SDL_ShowWindow(window));
+			checkSDL(SDL_RaiseWindow(window));
 
 			if (antiAliasing) {
-				glCheck(glEnable(GL_MULTISAMPLE));
+				checkGL(glEnable(GL_MULTISAMPLE));
 			}
 		}
 
@@ -189,10 +189,10 @@ namespace Framework
 				height = resizedHeight;
 			}
 
-			glCheck(glViewport(0, 0, resizedWidth, resizedHeight));
+			checkGL(glViewport(0, 0, resizedWidth, resizedHeight));
 		}
 
-		sdlCheck(SDL_GL_SwapWindow(window));
+		checkSDL(SDL_GL_SwapWindow(window));
 	}
 
 	void Window::resizedEventHandler(int width, int height)
@@ -205,12 +205,12 @@ namespace Framework
 	void Window::applySize()
 	{
 		if (fullscreen) {
-			sdlCheck(SDL_SetWindowDisplayMode(window, &closestDisplayMode));
-			glCheck(glViewport(0, 0, closestDisplayMode.w, closestDisplayMode.h));
+			checkSDL(SDL_SetWindowDisplayMode(window, &closestDisplayMode));
+			checkGL(glViewport(0, 0, closestDisplayMode.w, closestDisplayMode.h));
 		}
 		else {
-			sdlCheck(SDL_SetWindowSize(window, width, height));
-			glCheck(glViewport(0, 0, width, height));
+			checkSDL(SDL_SetWindowSize(window, width, height));
+			checkGL(glViewport(0, 0, width, height));
 		}
 	}
 }
