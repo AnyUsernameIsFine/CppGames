@@ -10,5 +10,5 @@ void main()
 {
 	vec4 a = texture(fontTexture, fragTexCoords);
 
-    finalColor = vec4(a.r, a.r, a.r, 1);
+	finalColor = vec4(a.r, a.r, a.r, 1);
 }

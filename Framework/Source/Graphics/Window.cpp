@@ -4,7 +4,7 @@ namespace Framework
 {
 	Window::Window()
 	{
-		checkSDL(SDL_Init(SDL_INIT_VIDEO));
+		checkSDL(SDL_InitSubSystem(SDL_INIT_VIDEO));
 
 		checkSDL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3));
 		checkSDL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3));
@@ -15,7 +15,7 @@ namespace Framework
 	Window::~Window()
 	{
 		checkSDL(SDL_DestroyWindow(window));
-		checkSDL(SDL_Quit());
+		checkSDL(SDL_QuitSubSystem(SDL_INIT_VIDEO));
 	}
 
 	void Window::setTitle(const string& title)

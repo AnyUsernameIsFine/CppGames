@@ -44,7 +44,7 @@ namespace Framework
 		bool windowHasResized = false;
 		std::unordered_map<string, std::shared_ptr<Font>> fonts;
 		std::shared_ptr<Font> font = nullptr;
-		int size = 30;
+		int size = 0;
 
 		Text() {}
 		std::shared_ptr<Font> findFont(const string& family) const;

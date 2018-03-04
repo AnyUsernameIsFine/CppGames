@@ -51,6 +51,17 @@ namespace Framework
 		return TimePoint().differenceInSeconds(startTime);
 	}
 
+	Game::SDL::SDL()
+	{
+		checkSDLValue(SDL_Init(0));
+	}
+
+	Game::SDL::~SDL()
+	{
+		console("quit");
+		SDL_Quit();
+	}
+
 	void Game::gameLoop()
 	{
 		if (!graphics.initialize()) {

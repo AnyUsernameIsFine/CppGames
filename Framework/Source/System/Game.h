@@ -13,6 +13,13 @@ namespace Framework
 	/// </summary>
 	class Game abstract
 	{
+	private:
+		struct SDL
+		{
+			SDL();
+			~SDL();
+		} sdl;
+
 	public:
 		/// <summary>
 		/// Runs the game.

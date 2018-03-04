@@ -9,7 +9,6 @@ namespace Framework
 	Shader::~Shader()
 	{
 		if (hasContext()) {
-			console("shader " << id << " deleted");
 			checkGL(glDeleteShader(id));
 		};
 	}

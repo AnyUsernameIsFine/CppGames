@@ -43,21 +43,20 @@ namespace Framework
 		}
 
 		if (font != this->font) {
+			if (size) {
+				font->setSize(size);
+			}
 			this->font = font;
-			this->font->setSize(size);
 		}
 	}
 
 	void Text::setFontSize(int size)
 	{
-		if (!font) {
-			error("No font set");
-			return;
-		}
-
 		if (size != this->size) {
+			if (font) {
+				font->setSize(size);
+			}
 			this->size = size;
-			font->setSize(size);
 		}
 	}
 
@@ -82,6 +81,11 @@ namespace Framework
 	{
 		if (!font) {
 			error("No font set");
+			return;
+		}
+
+		if (!size) {
+			error("No font size set");
 			return;
 		}
 
@@ -161,12 +165,17 @@ namespace Framework
 			return;
 		}
 
+		if (!size) {
+			error("No font size set");
+			return;
+		}
+
 		if (windowHasResized) {
 			windowHasResized = false;
 			applyWindowSize();
 		}
 
-		FT_Pos lineHeight = font->getHeight();
+		int lineHeight = font->getHeight();
 
 		float lineX = x;
 		float lineY = y + lineHeight;
