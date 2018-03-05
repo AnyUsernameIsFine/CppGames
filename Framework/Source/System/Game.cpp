@@ -1,5 +1,7 @@
 #include "Game.h"
 
+#include <SDL.h>
+
 #include <thread>
 
 namespace Framework
@@ -58,7 +60,6 @@ namespace Framework
 
 	Game::SDL::~SDL()
 	{
-		console("quit");
 		SDL_Quit();
 	}
 
@@ -73,8 +74,8 @@ namespace Framework
 
 			while (isRunning) {
 				float gameSeconds = getGameTimeInSeconds();
+				input.update();
 				update(gameSeconds - updateTimeInSeconds);
-				input.clear();
 				updateTimeInSeconds = gameSeconds;
 
 				if (isWindowActive) {

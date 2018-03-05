@@ -2,51 +2,31 @@
 
 namespace Framework
 {
-	bool Input::isKeyDown(SDL_Keycode key) const
-	{
-		return keyboardState[SDL_GetScancodeFromKey(key)];
-	}
-
-	bool Input::isKeyUp(SDL_Keycode key) const
-	{
-		return !keyboardState[SDL_GetScancodeFromKey(key)];
-	}
-
-	int Input::getMouseDeltaX() const
-	{
-		return mouseDeltaX;
-	}
-
-	int Input::getMouseDeltaY() const
-	{
-		return mouseDeltaY;
-	}
-
-	int Input::getMouseWheel() const
-	{
-		return mouseWheel;
-	}
-
-	void Input::processEvent(SDL_Event event)
+	void Input::processEvent(const SDL_Event& event)
 	{
 		switch (event.type) {
 		case SDL_MOUSEMOTION:
-			int x, y;
-			SDL_GetRelativeMouseState(&x, &y);
-			mouseDeltaX += x;
-			mouseDeltaY += y;
+			mouse.movedEventHandler(event.motion);
 			break;
 
 		case SDL_MOUSEWHEEL:
-			mouseWheel += event.wheel.y;
+			mouse.wheelEventHandler(event.wheel);
+			break;
+
+		case SDL_CONTROLLERDEVICEADDED:
+			controller.addedEventHandler(event.cdevice);
+			break;
+
+		case SDL_CONTROLLERDEVICEREMOVED:
+			controller.removedEventHandler(event.cdevice);
 			break;
 		}
 	}
 
-	void Input::clear()
+	void Input::update()
 	{
-		mouseDeltaX = 0;
-		mouseDeltaY = 0;
-		mouseWheel = 0;
+		keyboard.update();
+		mouse.update();
+		controller.update();
 	}
 }

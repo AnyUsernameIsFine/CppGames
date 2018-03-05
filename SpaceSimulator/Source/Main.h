@@ -14,7 +14,7 @@ namespace SpaceSimulator
 
 		Game()
 		{
-			graphics.window.setTitle("SpaceSimulator");
+			graphics.window.setTitle("Space Simulator");
 			graphics.window.setSize(960, 540);
 			//graphics.window.enableFullscreen();
 			//graphics.window.enableResizing();
@@ -25,8 +25,8 @@ namespace SpaceSimulator
 
 		void initialize()
 		{
-			graphics.text.loadFont("Resources/consola.ttf", "Consolas");
-			graphics.text.setFont("Consolas", graphics.window.getHeight() / 32);
+			graphics.text.loadFont("Resources/consola.ttf", "Font");
+			graphics.text.setFont("Font", graphics.window.getHeight() / 32);
 			graphics.text.setColor(0.39f, 0.58f, 0.93f);
 
 			CoordinateSystem::initialize();
@@ -65,7 +65,7 @@ namespace SpaceSimulator
 
 		void update(float deltaSeconds)
 		{
-			if (input.isKeyDown(SDLK_g)) {
+			if (input.keyboard.key(SDLK_g)) {
 				Random::setRandSeed((uInt)(getGameTimeInSeconds() * 1000));
 				seed = Random::randInt();
 				Random::setHashSeed(seed);
@@ -74,17 +74,18 @@ namespace SpaceSimulator
 			}
 
 			camera.move(
-				(float)(input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)),
-				(float)(input.isKeyDown(SDLK_r) - input.isKeyDown(SDLK_f)),
-				(float)(input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w))
+				(float)(input.keyboard.key(SDLK_d) - input.keyboard.key(SDLK_a) + input.controller.leftXAxis()),
+				(float)(input.keyboard.key(SDLK_r) - input.keyboard.key(SDLK_f) + input.controller.rightShoulder() - input.controller.leftShoulder()),
+				(float)(input.keyboard.key(SDLK_s) - input.keyboard.key(SDLK_w) + input.controller.leftYAxis())
 			);
 
-			float rollSensitivity = 90 * deltaSeconds;
-			camera.transform().roll(rollSensitivity * (input.isKeyDown(SDLK_e) - input.isKeyDown(SDLK_q)));
+			float rollSpeed = 90 * deltaSeconds;
+			camera.transform().roll(rollSpeed * (input.keyboard.key(SDLK_e) - input.keyboard.key(SDLK_q) + input.controller.rightTrigger() - input.controller.leftTrigger()));
 
-			float sensitivity = 0.05f;
-			camera.transform().yaw(sensitivity * input.getMouseDeltaX());
-			camera.transform().pitch(sensitivity * input.getMouseDeltaY());
+			float mouseSensitivity = 0.05f;
+			float controllerSensitivity = 90 * deltaSeconds;
+			camera.transform().yaw(mouseSensitivity * input.mouse.deltaX() + controllerSensitivity * +input.controller.rightXAxis());
+			camera.transform().pitch(mouseSensitivity * input.mouse.deltaY() + controllerSensitivity * +input.controller.rightYAxis());
 
 			camera.update(deltaSeconds);
 
@@ -102,8 +103,8 @@ namespace SpaceSimulator
 			stream << "speed   " << camera.getSpeedString() << std::endl;
 			stream << "system  " << camera.getCoordinateSystem()->getName();
 
-			graphics.text(2, -5) << (int)round(graphics.getFps()) << " fps";
-			graphics.text(2, -5 + graphics.window.getHeight() - 3.0f * graphics.text.getFontHeight()) << stream;
+			graphics.text(0, 0) << (int)round(graphics.getFps()) << " fps";
+			graphics.text(0, graphics.window.getHeight() - 3 * graphics.text.getFontHeight()) << stream;
 		}
 	};
 }

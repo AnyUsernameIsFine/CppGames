@@ -53,7 +53,7 @@ namespace Framework
 		}
 	}
 
-	void Graphics::windowEventHandler(SDL_WindowEvent event)
+	void Graphics::windowEventHandler(const SDL_WindowEvent& event)
 	{
 		int width = event.data1;
 		int height = event.data2;

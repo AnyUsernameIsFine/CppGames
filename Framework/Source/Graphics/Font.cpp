@@ -47,6 +47,12 @@ namespace Framework
 				fontSizes.push_back(fontSize);
 				this->fontSize = fontSize;
 			}
+
+			if (FT_Load_Char(face, 'x', FT_LOAD_RENDER) != 0) {
+				error("Could not determine vertical center offset");
+			}
+
+			verticalCenterOffset = (face->size->metrics.height >> 7) - (face->glyph->bitmap_top >> 1);
 		}
 	}
 
@@ -58,6 +64,11 @@ namespace Framework
 	int Font::getHeight() const
 	{
 		return face->size->metrics.height >> 6;
+	}
+
+	int Font::getVerticalCenterOffset() const
+	{
+		return verticalCenterOffset;
 	}
 
 	const Glyph* Font::getGlyph(uInt32 character) const

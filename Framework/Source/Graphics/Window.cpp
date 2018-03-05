@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include <SDL.h>
+
 namespace Framework
 {
 	Window::Window()

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Input\Input.h"
+#include "System\Globals.h"
 
-#include <SDL.h>
+#include <SDL_video.h>
 
 namespace Framework
 {

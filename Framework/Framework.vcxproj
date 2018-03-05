@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Input\Controller.h" />
+    <ClInclude Include="Source\Input\Mouse.h" />
+    <ClInclude Include="Source\Input\Keyboard.h" />
     <ClInclude Include="Source\3D\GameObject.h" />
     <ClInclude Include="Source\3D\Meshes\Tetrahedron.h" />
     <ClInclude Include="Source\Graphics\FontPacker.h" />
@@ -50,6 +53,9 @@
     <ClInclude Include="Source\System\Utility.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Input\Controller.cpp" />
+    <ClCompile Include="Source\Input\Mouse.cpp" />
+    <ClCompile Include="Source\Input\Keyboard.cpp" />
     <ClCompile Include="Source\3D\Meshes\Tetrahedron.cpp" />
     <ClCompile Include="Source\Graphics\FontPacker.cpp" />
     <ClCompile Include="Source\3D\Meshes\Cube.cpp" />

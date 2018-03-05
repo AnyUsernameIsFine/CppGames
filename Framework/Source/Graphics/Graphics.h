@@ -30,7 +30,7 @@ namespace Framework
 		bool createWindow();
 		bool initialize();
 		void update();
-		void windowEventHandler(SDL_WindowEvent event);
+		void windowEventHandler(const SDL_WindowEvent& event);
 
 		friend class Game;
 	};

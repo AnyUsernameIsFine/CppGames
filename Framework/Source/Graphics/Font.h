@@ -14,6 +14,7 @@ namespace Framework
 		void setSize(int size);
 		string getFamilyName() const;
 		int getHeight() const;
+		int getVerticalCenterOffset() const;
 		const Glyph* getGlyph(uInt32 character) const;
 		void useTexture() const;
 		int getTextureSize() const;
@@ -23,6 +24,7 @@ namespace Framework
 		FT_Face face = nullptr;
 		vector<std::shared_ptr<FontSize>> fontSizes;
 		std::shared_ptr<FontSize> fontSize = nullptr;
+		int verticalCenterOffset = 0;
 
 		std::shared_ptr<FontSize> findFontSize(int size) const;
 	};

@@ -11,7 +11,7 @@ namespace Framework
 		~FontPacker();
 		int getCapacity() const;
 		void useTexture() const;
-		bool addBitmap(uInt width, uInt height, const byte bitmap[], int& left, int& top);
+		bool addBitmap(uInt width, uInt height, const byte bitmap[], int& x, int& y);
 
 	private:
 		class Node

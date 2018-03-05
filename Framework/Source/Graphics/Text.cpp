@@ -74,6 +74,11 @@ namespace Framework
 
 	int Text::getFontHeight() const
 	{
+		if (!font) {
+			error("No font set");
+			return 0;
+		}
+
 		return font->getHeight();
 	}
 
@@ -92,7 +97,7 @@ namespace Framework
 		font->useTexture();
 	}
 
-	StringStream Text::operator()(float x, float y)
+	StringStream Text::operator()(int x, int y)
 	{
 		DrawConfiguration drawConfiguration = { this, x, y };
 
@@ -158,7 +163,7 @@ namespace Framework
 		windowHeight = height;
 	}
 
-	void Text::draw(float x, float y, const std::u32string& text)
+	void Text::draw(int x, int y, const std::u32string& text)
 	{
 		if (!font) {
 			error("No font set");
@@ -176,9 +181,10 @@ namespace Framework
 		}
 
 		int lineHeight = font->getHeight();
+		int verticalCenterOffset = font->getVerticalCenterOffset();
 
-		float lineX = x;
-		float lineY = y + lineHeight;
+		float lineX = (float)x;
+		float lineY = (float)(y + lineHeight - verticalCenterOffset);
 
 		int numberOfGlyphs = 0;
 
@@ -186,7 +192,7 @@ namespace Framework
 
 		for (auto c : text) {
 			if (c == '\n') {
-				lineX = x;
+				lineX = (float)x;
 				lineY += lineHeight;
 			}
 			else {

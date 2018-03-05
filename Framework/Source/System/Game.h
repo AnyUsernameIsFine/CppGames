@@ -18,7 +18,9 @@ namespace Framework
 		{
 			SDL();
 			~SDL();
-		} sdl;
+		};
+		
+		SDL sdl;
 
 	public:
 		/// <summary>

@@ -27,20 +27,20 @@ namespace Framework
 		texture.use();
 	}
 
-	bool FontPacker::addBitmap(uInt width, uInt height, const byte bitmap[], int& left, int& top)
+	bool FontPacker::addBitmap(uInt width, uInt height, const byte bitmap[], int& x, int& y)
 	{
 		const Node* node = root->findEmptyNode(width, height);
 
 		if (node) {
-			left = node->getLeft();
-			top = node->getTop();
+			x = node->getLeft();
+			y = node->getTop();
 
-			texture.update(left, top, width, height, bitmap);
+			texture.update(x, y, width, height, bitmap);
 
 			return true;
 		}
 		else if (increaseCapacity()) {
-			return addBitmap(width, height, bitmap, left, top);
+			return addBitmap(width, height, bitmap, x, y);
 		}
 		else {
 			return false;

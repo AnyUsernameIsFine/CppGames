@@ -28,8 +28,8 @@ namespace LearnOpenGL
 			graphics.window.setTitle("Learn OpenGL");
 			graphics.window.setSize(800, 600);
 			//graphics.window.enableFullscreen();
-			//graphics.window.enableResizing();
-			graphics.window.enableCursor(false);
+			graphics.window.enableResizing();
+			//graphics.window.enableCursor(false);
 			//graphics.window.enableVSync(false);
 			graphics.window.enableAntiAliasing();
 		}
@@ -87,25 +87,26 @@ namespace LearnOpenGL
 		{
 			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
 
-			if (input.isKeyDown(SDLK_p)) {
+			if (input.keyboard.key(SDLK_p)) {
 				camera.usePerspective(!camera.usesPerspective());
 			}
 
 			float cameraSpeed = 10 * deltaSeconds;
 			camera.transform().move(
-				cameraSpeed * (input.isKeyDown(SDLK_d) - input.isKeyDown(SDLK_a)),
-				cameraSpeed * (input.isKeyDown(SDLK_r) - input.isKeyDown(SDLK_f)),
-				cameraSpeed * (input.isKeyDown(SDLK_s) - input.isKeyDown(SDLK_w))
+				cameraSpeed * (input.keyboard.key(SDLK_d) - input.keyboard.key(SDLK_a) + input.controller.leftXAxis()),
+				cameraSpeed * (input.keyboard.key(SDLK_r) - input.keyboard.key(SDLK_f) + input.controller.rightShoulder() - input.controller.leftShoulder()),
+				cameraSpeed * (input.keyboard.key(SDLK_s) - input.keyboard.key(SDLK_w) + input.controller.leftYAxis())
 			);
 
-			float rollSensitivity = 90 * deltaSeconds;
-			camera.transform().roll(rollSensitivity * (input.isKeyDown(SDLK_e) - input.isKeyDown(SDLK_q)));
+			float rollSpeed = 90 * deltaSeconds;
+			camera.transform().roll(rollSpeed * (input.keyboard.key(SDLK_e) - input.keyboard.key(SDLK_q) + input.controller.rightTrigger() - input.controller.leftTrigger()));
 
-			float sensitivity = 0.05f;
-			camera.transform().yaw(sensitivity * input.getMouseDeltaX());
-			camera.transform().pitch(sensitivity * input.getMouseDeltaY());
+			float mouseSensitivity = 0.05f;
+			float controllerSensitivity = 90 * deltaSeconds;
+			camera.transform().yaw(mouseSensitivity * input.mouse.deltaX() + controllerSensitivity * + input.controller.rightXAxis());
+			camera.transform().pitch(mouseSensitivity * input.mouse.deltaY() + controllerSensitivity * + input.controller.rightYAxis());
 
-			camera.setFieldOfView(camera.getFieldOfView() - input.getMouseWheel() * 10);
+			camera.setFieldOfView(camera.getFieldOfView() - input.mouse.wheel() * 10);
 
 			for (auto& shape : shapes) {
 				shape.transform().rotate(deltaSeconds * 50.0f, { 1.0f, 0.3f, 0.5f });

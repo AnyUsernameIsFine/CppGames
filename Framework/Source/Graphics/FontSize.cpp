@@ -36,12 +36,12 @@ namespace Framework
 
 	const Glyph* FontSize::addGlyph(uInt32 character, FT_GlyphSlot glyph)
 	{
-		int left, top;
+		int x, y;
 
-		if (fontPacker.addBitmap(glyph->bitmap.width, glyph->bitmap.rows, glyph->bitmap.buffer, left, top)) {
+		if (fontPacker.addBitmap(glyph->bitmap.width, glyph->bitmap.rows, glyph->bitmap.buffer, x, y)) {
 			glyphs[character] = {
-				left,
-				top,
+				x,
+				y,
 				glyph->bitmap.width,
 				glyph->bitmap.rows,
 				glyph->bitmap_left,
