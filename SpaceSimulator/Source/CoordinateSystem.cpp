@@ -7,12 +7,12 @@ namespace SpaceSimulator
 		return parent;
 	}
 
-	const vector<std::shared_ptr<CoordinateSystem>>& CoordinateSystem::getChildren() const
+	const std::vector<std::shared_ptr<CoordinateSystem>>& CoordinateSystem::getChildren() const
 	{
 		return children;
 	}
 
-	const string& CoordinateSystem::getName() const
+	const std::string& CoordinateSystem::getName() const
 	{
 		return name;
 	}
@@ -22,16 +22,24 @@ namespace SpaceSimulator
 		return radius;
 	}
 
+	void CoordinateSystem::initialize()
+	{
+		vertexArray.setVertexBuffer({ 3, 3, 2 }, 60);
+		vertexArray.setIndexBuffer(108 + 1); // why one more???
+		vertexArray.setInstanceBuffer({ 16, 16, 4, 1, 1 }, MAX_IN_DRAW_LIST);
+		shader.createFromFiles("Resources/coordinateSystem.vert", "Resources/coordinateSystem.frag");
+	}
+
 	void CoordinateSystem::drawWithChildren(
-		vector<vector<vector<DrawConfiguration>>>& toDrawList,
+		std::vector<std::vector<std::vector<DrawConfiguration>>>& toDrawList,
 		// list of the camera's positions and rotations relative to all its coordinate system's ancestors from outside in
-		const vector<Camera::CameraHierarchyLevel>& hierarchy,
+		const std::vector<Camera::CameraHierarchyLevel>& hierarchy,
 		// which level of the camera hierarchy should we use for inverse rotations
 		int hierarchyIndex,
 		// matrix of the combined rotations of all this coordinate system's ancestors
 		glm::mat4 rotations,
 		glm::mat4 anotherMatrix,
-		// camera position relative to this coordinate system's parent (we have to use floating point precision because this will be used for coordinate systems the camera is outside of)
+		// camera position relative to this coordinate system's parent (we have to use float{ing point precision because this will be used for coordinate systems the camera is outside of)
 		glm::vec3 camPos,
 		bool useHighRes,
 		int descendantGenerationsToDraw
@@ -47,7 +55,7 @@ namespace SpaceSimulator
 		int toDrawListIndex;
 
 		// if this coordinate system is in the hierarchy of the camera's coordinate systems
-		if (hierarchyIndex < (int)hierarchy.size() - 1 && hierarchy[hierarchyIndex + 1].coordinateSystem == this) {
+		if (hierarchyIndex < static_cast<int>(hierarchy.size()) - 1 && hierarchy[hierarchyIndex + 1].coordinateSystem == this) {
 			hierarchyIndex++;
 			//toDrawListIndex = 0;
 			toDrawListIndex = 2;
@@ -55,7 +63,7 @@ namespace SpaceSimulator
 			// if this coordinate system is an ancestor of the camera's coordinate system,
 			// use the camera's rotation relative to this coordinate system's ancestors
 			// and draw only one descendant generation
-			if (hierarchyIndex < (int)hierarchy.size() - 1) {
+			if (hierarchyIndex < static_cast<int>(hierarchy.size()) - 1) {
 				modelMatrix = hierarchy[hierarchyIndex].rotation;
 				descendantGenerationsToDraw = 1;
 			}
@@ -134,7 +142,7 @@ namespace SpaceSimulator
 			}
 
 			// draw the coordinate system's descendants
-			for (auto& child : children) {
+			for (const auto& child : children) {
 				child->drawWithChildren(
 					toDrawList,
 					hierarchy,
@@ -149,15 +157,7 @@ namespace SpaceSimulator
 		}
 	}
 
-	void CoordinateSystem::initialize()
-	{
-		vertexArray.setVertexBuffer({ 3, 3, 2 }, 60);
-		vertexArray.setIndexBuffer(108 + 1); // why one more???
-		vertexArray.setInstanceBuffer({ 16, 16, 4, 1, 1 }, MAX_IN_DRAW_LIST);
-		shader.createFromFiles("Resources/coordinateSystem.vert", "Resources/coordinateSystem.frag");
-	}
-
-	void CoordinateSystem::myDraw(const vector<vector<vector<DrawConfiguration>>>& toDrawList, const Camera& camera)
+	void CoordinateSystem::myDraw(const std::vector<std::vector<std::vector<DrawConfiguration>>>& toDrawList, const Camera& camera)
 	{
 		auto hierarchy = camera.getHierarchy();
 
@@ -172,14 +172,14 @@ namespace SpaceSimulator
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		for (int i = 0; i < (int)toDrawList.size(); i++) {
+		for (int i = 0; i < static_cast<int>(toDrawList.size()); i++) {
 			glClear(GL_DEPTH_BUFFER_BIT);
 
 			float near = 0.1f * hierarchy[i].coordinateSystem->getCameraNearPlane();
 			float far = near * 100000.0f;
 			shader.setUniform("projection", glm::perspective(fov, ratio, near, far));
 
-			for (auto& list : toDrawList[i]) {
+			for (const auto& list : toDrawList[i]) {
 				if (!list.empty() && list[0].cs->hasMesh()) {
 					auto vertices = list[0].cs->mesh().getVertices();
 					auto indices = list[0].cs->mesh().getIndices();

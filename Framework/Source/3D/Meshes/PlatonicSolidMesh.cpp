@@ -4,7 +4,7 @@
 
 namespace Framework
 {
-	vector<glm::vec3> PlatonicSolidMesh::getEvenPermutationsOfVertex(const glm::vec3& v)
+	std::vector<glm::vec3> PlatonicSolidMesh::getEvenPermutationsOfVertex(const glm::vec3& v)
 	{
 		return {
 			{ v.x, v.y, v.z },
@@ -13,7 +13,7 @@ namespace Framework
 		};
 	}
 
-	vector<glm::vec3> PlatonicSolidMesh::getOddPermutationsOfVertex(const glm::vec3& v)
+	std::vector<glm::vec3> PlatonicSolidMesh::getOddPermutationsOfVertex(const glm::vec3& v)
 	{
 		return {
 			{ v.x, v.z, v.y },
@@ -22,7 +22,7 @@ namespace Framework
 		};
 	}
 
-	vector<glm::vec3> PlatonicSolidMesh::getEvenAndOddPermutationsOfVertex(const glm::vec3& v)
+	std::vector<glm::vec3> PlatonicSolidMesh::getEvenAndOddPermutationsOfVertex(const glm::vec3& v)
 	{
 		return {
 			{ v.x, v.y, v.z },
@@ -34,18 +34,18 @@ namespace Framework
 		};
 	}
 
-	PlatonicSolidMesh::CreatedMesh PlatonicSolidMesh::createMesh(const vector<glm::vec3>& positions, const vector<vector<int>>& faces)
+	PlatonicSolidMesh::CreatedMesh PlatonicSolidMesh::createMesh(const std::vector<glm::vec3>& positions, const std::vector<std::vector<int>>& faces)
 	{
 		CreatedMesh mesh;
 
 		bool useIndices = false;
-		for (int i = 0; !useIndices && i < (int)faces.size(); i++) {
+		for (int i = 0; !useIndices && i < static_cast<int>(faces.size()); i++) {
 			useIndices = faces[i].size() > 3;
 		}
 
 		int indexOffset = 0;
 
-		for (int i = 0; i < (int)faces.size(); i++) {
+		for (int i = 0; i < static_cast<int>(faces.size()); i++) {
 			auto face = faces[i];
 
 			glm::vec3 p0 = positions[face[0]];
@@ -54,7 +54,7 @@ namespace Framework
 
 			glm::vec3 normal = glm::cross(p1 - p0, p2 - p0);
 
-			for (int j = 0; j < (int)face.size(); j++) {
+			for (int j = 0; j < static_cast<int>(face.size()); j++) {
 				Vertex vertex;
 				vertex.position = positions[face[j]];
 				vertex.normal = normal;
@@ -63,7 +63,7 @@ namespace Framework
 			}
 
 			if (useIndices) {
-				for (int j = 0; j < (int)face.size() - 2; j++) {
+				for (int j = 0; j < static_cast<int>(face.size()) - 2; j++) {
 					mesh.indices.emplace_back(indexOffset);
 					mesh.indices.emplace_back(indexOffset + j + 1);
 					mesh.indices.emplace_back(indexOffset + j + 2);

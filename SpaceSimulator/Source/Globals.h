@@ -1,15 +1,15 @@
 #pragma once
 
-#include <Framework.h>
-
 #define GLM_FORCE_INLINE
+
+#include <Framework.h>
 
 namespace SpaceSimulator
 {
 	using namespace Framework;
 
-	typedef int64 Coordinate;
-	typedef Vector3Type<Coordinate> Vector3;
-	typedef TransformType<Coordinate> Transform;
-	typedef GameObjectType<Coordinate> GameObject;
+	using Coordinate = Int64;
+	using Vector3 = Vector3Type<Coordinate>;
+	using Transform = TransformType<Coordinate>;
+	using GameObject = GameObjectType<Coordinate>;
 }

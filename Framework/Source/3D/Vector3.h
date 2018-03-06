@@ -1,17 +1,20 @@
 #pragma once
 
-#include "System\Globals.h"
-
 #include <glm\vec3.hpp>
+
+#include "System\Globals.h"
 
 namespace Framework
 {
 	template<typename T>
+	class Vector3Type;
+
+	using Vector3 = Vector3Type<float>;
+
+	template<typename T>
 	class Vector3Type
 	{
 	public:
-		T x, y, z;
-
 		Vector3Type<T>(T t = 0);
 		Vector3Type<T>(T x, T y, T z);
 		Vector3Type<T> operator+() const;
@@ -41,13 +44,10 @@ namespace Framework
 		glm::vec3 toVec3() const;
 
 		static Vector3Type<T> fromVec3(const glm::vec3& v);
+
+		T x, y, z;
 	};
 
-	typedef Vector3Type<float> Vector3;
-}
-
-namespace Framework
-{
 	template<typename T>
 	Vector3Type<T>::Vector3Type(T t)
 	{
@@ -248,7 +248,10 @@ namespace Framework
 	template<typename T>
 	float Vector3Type<T>::lengthSquared() const
 	{
-		return (float)x * (float)x + (float)y * (float)y + (float)z * (float)z;
+		float x = static_cast<float>(this->x);
+		float y = static_cast<float>(this->y);
+		float z = static_cast<float>(this->z);
+		return x * x + y * y + z * z;
 	}
 
 	template<typename T>

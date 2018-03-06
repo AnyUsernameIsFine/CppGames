@@ -10,7 +10,7 @@ namespace Framework
 
 	float Graphics::getFps() const
 	{
-		return std::fmaxf(0, numberOfFrameLengths / frameLengthsTotal);
+		return std::fmaxf(0, numFrameLengths / frameLengthsTotal);
 	}
 
 	bool Graphics::createWindow()
@@ -27,7 +27,7 @@ namespace Framework
 		text.initialize(window.getWidth(), window.getHeight());
 
 		for (int i = 0; i < FPS_BUFFER_SIZE; i++) {
-			frameLengths[i] = 0;
+			frameLengths[i] = 0.0f;
 		}
 
 		frameTimePoint.setToNow();
@@ -48,8 +48,8 @@ namespace Framework
 		frameLengths[frameLengthsIndex] = frameLength;
 		frameLengthsTotal += frameLength;
 
-		if (numberOfFrameLengths < FPS_BUFFER_SIZE) {
-			numberOfFrameLengths++;
+		if (numFrameLengths < FPS_BUFFER_SIZE) {
+			numFrameLengths++;
 		}
 	}
 
@@ -59,13 +59,13 @@ namespace Framework
 		int height = event.data2;
 
 		switch (event.event) {
-		case SDL_WINDOWEVENT_RESIZED:
-			window.resizedEventHandler(width, height);
-			break;
+			case SDL_WINDOWEVENT_RESIZED:
+				window.resizedEventHandler(width, height);
+				break;
 
-		case SDL_WINDOWEVENT_SIZE_CHANGED:
-			text.windowResizedEventHandler(width, height);
-			break;
+			case SDL_WINDOWEVENT_SIZE_CHANGED:
+				text.windowResizedEventHandler(width, height);
+				break;
 		}
 	}
 }

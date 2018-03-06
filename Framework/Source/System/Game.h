@@ -13,16 +13,9 @@ namespace Framework
 	/// </summary>
 	class Game abstract
 	{
-	private:
-		struct SDL
-		{
-			SDL();
-			~SDL();
-		};
-		
-		SDL sdl;
-
 	public:
+		Game();
+
 		/// <summary>
 		/// Runs the game.
 		/// </summary>
@@ -39,10 +32,18 @@ namespace Framework
 		/// </returns>
 		float getGameTimeInSeconds() const;
 
-	protected:
-		Graphics graphics;
-		Input input;
+	private:
+		struct SDL
+		{
+			SDL();
+			~SDL();
+		};
 
+		// should be the first data member because it relies on the 
+		// constructor and destructor being called first and last respectively
+		SDL sdl;
+
+	protected:
 		/// <summary>
 		/// Is run once just before the game's window is opened.
 		/// </summary>
@@ -66,17 +67,20 @@ namespace Framework
 		/// </summary>
 		virtual void finalize() {}
 
-	private:
-		static const int MILLISECONDS_YIELD = 10;
+		Graphics graphics;
+		Input input;
 
-		bool isRunning = false;
-		bool isWindowActive = true;
-		TimePoint startTime;
-		float updateTimeInSeconds;
+	private:
+		static constexpr int MILLISECONDS_YIELD = 10;
 
 		void gameLoop();
 		void sleep(int milliseconds) const;
 
 		static int sdlEventHandler(void* data, SDL_Event* event);
+
+		bool isRunning = false;
+		bool isWindowActive = true;
+		TimePoint startTime;
+		float updateTimeInSeconds;
 	};
 }

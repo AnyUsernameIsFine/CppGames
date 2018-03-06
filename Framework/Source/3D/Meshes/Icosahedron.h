@@ -7,13 +7,13 @@ namespace Framework
 	class IcosahedronMesh : public PlatonicSolidMesh
 	{
 	public:
-		const vector<Vertex>& getVertices() const;
-		const vector<GLushort>& getIndices() const;
+		const std::vector<Vertex>& getVertices() const;
+		const std::vector<GLushort>& getIndices() const;
 
 	private:
-		static vector<Vertex> vertices;
-		static vector<GLushort> indices;
-
 		static void initialize();
+
+		static std::vector<Vertex> vertices;
+		static std::vector<GLushort> indices;
 	};
 }

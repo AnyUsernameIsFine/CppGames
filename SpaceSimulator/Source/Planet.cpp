@@ -1,15 +1,16 @@
 #include "Planet.h"
+
 #include "Star.h"
 
 namespace SpaceSimulator
 {
 #ifdef UNIVERSE_SCALE
 #	if UNIVERSE_SCALE == 0
-	const float Planet::SCALE = (int64)1 << 4;
+	const float Planet::SCALE = 1 << 4;
 #	elif UNIVERSE_SCALE == 1
-	const float Planet::SCALE = (int64)1 << 7;
+	const float Planet::SCALE = 1 << 7;
 #	endif
-	const float Planet::MAX_RADIUS = (int64)1 << 62;
+	const float Planet::MAX_RADIUS = Int64{ 1 } << 62;
 #else
 	// A little over 0.06 millimeters per unit.
 	// Allows for planets (and the orbits of their moons) with a radius of over 1800 times
@@ -30,7 +31,7 @@ namespace SpaceSimulator
 	{
 		this->parent = parent;
 		this->radius = radius;
-		name = "Planet #" + std::to_string((uInt)Random::randInt());
+		name = "Planet #" + std::to_string(static_cast<UInt>(Random::randInt()));
 		setMesh<DodecahedronMesh>();
 	}
 
@@ -58,16 +59,16 @@ namespace SpaceSimulator
 	{
 		float maxRadius = Moon::MAX_RADIUS * (Moon::SCALE / SCALE);
 
-		int numberOfMoons = Random::randInt(1, 4);
+		int numMoons = Random::randInt(1, 4);
 
-		for (int i = 0; i < numberOfMoons; i++) {
+		for (int i = 0; i < numMoons; i++) {
 			float r = Random::randFloat();
 			float moonRadius = maxRadius * (0.5f + 0.5f * r * r);
 
 			auto moon = std::make_shared<Moon>(this, moonRadius);
 
 			glm::vec2 v = glm::diskRand(0.8f * radius * parent->getScale() / getScale());
-			moon->transform().setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });
+			moon->transform().setPosition(Vector3::fromVec3({ v.x, v.y, 0 }));
 
 			r = Random::randFloat();
 			moon->transform().rotate(45 * r * r, glm::sphericalRand(1.0f));

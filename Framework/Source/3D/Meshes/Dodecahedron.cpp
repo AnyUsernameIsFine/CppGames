@@ -2,12 +2,12 @@
 
 namespace Framework
 {
-	const vector<Mesh::Vertex>& DodecahedronMesh::getVertices() const
+	const std::vector<Mesh::Vertex>& DodecahedronMesh::getVertices() const
 	{
 		return vertices;
 	}
 
-	const vector<GLushort>& DodecahedronMesh::getIndices() const
+	const std::vector<GLushort>& DodecahedronMesh::getIndices() const
 	{
 		return indices;
 	}
@@ -16,7 +16,7 @@ namespace Framework
 	{
 		Utility::StaticConstructor<&DodecahedronMesh::initialize>::c;
 
-		vector<glm::vec3> positions;
+		std::vector<glm::vec3> positions;
 
 		float h = (sqrtf(5) - 1) / 2;
 		float onePlusH = 1 + h;
@@ -36,7 +36,7 @@ namespace Framework
 			}
 		}
 
-		vector<vector<int>> faces = {
+		std::vector<std::vector<int>> faces = {
 			{ 0, 2, 7, 5, 4 },
 			{ 0, 3, 8, 1, 2 },
 			{ 0, 4, 9, 10, 3 },
@@ -57,6 +57,6 @@ namespace Framework
 		indices = mesh.indices;
 	}
 
-	vector<Mesh::Vertex> DodecahedronMesh::vertices;
-	vector<GLushort> DodecahedronMesh::indices;
+	std::vector<Mesh::Vertex> DodecahedronMesh::vertices;
+	std::vector<GLushort> DodecahedronMesh::indices;
 }

@@ -4,23 +4,13 @@
 
 namespace Framework
 {
-	Window::Window()
-	{
-		checkSDL(SDL_InitSubSystem(SDL_INIT_VIDEO));
-
-		checkSDL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3));
-		checkSDL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3));
-
-		checkSDL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
-	}
-
 	Window::~Window()
 	{
 		checkSDL(SDL_DestroyWindow(window));
 		checkSDL(SDL_QuitSubSystem(SDL_INIT_VIDEO));
 	}
 
-	void Window::setTitle(const string& title)
+	void Window::setTitle(const std::string& title)
 	{
 		if (title != this->title) {
 			this->title = title;
@@ -97,7 +87,7 @@ namespace Framework
 	{
 		if (enable != antiAliasing) {
 			if (window) {
-				error("Can't change anti-aliasing setting after window has been created");
+				error("Could not change anti-aliasing setting: window has already been created");
 			}
 			else {
 				antiAliasing = enable;
@@ -113,6 +103,16 @@ namespace Framework
 	int Window::getHeight() const
 	{
 		return fullscreen ? closestDisplayMode.h : height;
+	}
+
+	Window::Window()
+	{
+		checkSDL(SDL_InitSubSystem(SDL_INIT_VIDEO));
+
+		checkSDL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3));
+		checkSDL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3));
+
+		checkSDL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
 	}
 
 	bool Window::create()
@@ -163,7 +163,7 @@ namespace Framework
 
 		GLenum e;
 		if ((e = glewInit()) != GLEW_OK) {
-			error("Could not initialize GLEW: " + string((const char*)glewGetErrorString(e)));
+			error("Could not initialize GLEW: " + std::string(reinterpret_cast<const char*>(glewGetErrorString(e))));
 			return false;
 		}
 

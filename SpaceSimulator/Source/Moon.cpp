@@ -4,7 +4,7 @@ namespace SpaceSimulator
 {
 #ifdef UNIVERSE_SCALE
 	const float Moon::SCALE = 1;
-	const float Moon::MAX_RADIUS = (int64)1 << 62;
+	const float Moon::MAX_RADIUS = Int64{ 1 } << 62;
 #else
 	// A little over 0.06 millimeters per unit.
 	const float Moon::SCALE = 1.0f / (1 << 14);
@@ -20,7 +20,7 @@ namespace SpaceSimulator
 	{
 		this->parent = parent;
 		this->radius = radius;
-		name = "Moon #" + std::to_string((uInt)Random::randInt());
+		name = "Moon #" + std::to_string(static_cast<UInt>(Random::randInt()));
 		setMesh<IcosahedronMesh>();
 	}
 

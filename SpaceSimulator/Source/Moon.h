@@ -1,8 +1,7 @@
 #pragma once
 
-#include "CoordinateSystem.h"
-
 #include <glm\gtc\random.hpp>
+#include "CoordinateSystem.h"
 
 namespace SpaceSimulator
 {

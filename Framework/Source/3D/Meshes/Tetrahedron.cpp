@@ -2,12 +2,12 @@
 
 namespace Framework
 {
-	const vector<Mesh::Vertex>& TetrahedronMesh::getVertices() const
+	const std::vector<Mesh::Vertex>& TetrahedronMesh::getVertices() const
 	{
 		return vertices;
 	}
 
-	const vector<GLushort>& TetrahedronMesh::getIndices() const
+	const std::vector<GLushort>& TetrahedronMesh::getIndices() const
 	{
 		return indices;
 	}
@@ -16,7 +16,7 @@ namespace Framework
 	{
 		Utility::StaticConstructor<&TetrahedronMesh::initialize>::c;
 
-		vector<glm::vec3> positions;
+		std::vector<glm::vec3> positions;
 
 		float sqrt2 = sqrtf(2);
 
@@ -27,7 +27,7 @@ namespace Framework
 			positions.emplace_back(glm::vec3(0, i * sqrt2, 1) * scale);
 		}
 
-		vector<vector<int>> faces = {
+		std::vector<std::vector<int>> faces = {
 			{ 0, 1, 3 },
 			{ 0, 2, 1 },
 			{ 0, 3, 2 },
@@ -40,6 +40,6 @@ namespace Framework
 		indices = mesh.indices;
 	}
 
-	vector<Mesh::Vertex> TetrahedronMesh::vertices;
-	vector<GLushort> TetrahedronMesh::indices;
+	std::vector<Mesh::Vertex> TetrahedronMesh::vertices;
+	std::vector<GLushort> TetrahedronMesh::indices;
 }

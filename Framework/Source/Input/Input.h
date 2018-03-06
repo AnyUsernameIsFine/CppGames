@@ -1,17 +1,17 @@
 #pragma once
 
+#include "Controller.h"
 #include "Keyboard.h"
 #include "Mouse.h"
-#include "Controller.h"
 
 namespace Framework
 {
 	class Input
 	{
 	public:
+		Controller controller;
 		Keyboard keyboard;
 		Mouse mouse;
-		Controller controller;
 
 	private:
 		void processEvent(const SDL_Event& event);

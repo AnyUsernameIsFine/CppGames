@@ -5,6 +5,11 @@
 namespace Framework
 {
 	template<typename T>
+	class CameraType;
+
+	using Camera = CameraType<float>;
+
+	template<typename T>
 	class CameraType : public GameObjectType<T>
 	{
 	public:
@@ -29,11 +34,6 @@ namespace Framework
 		float size = 10.0f;
 	};
 
-	typedef CameraType<float> Camera;
-}
-
-namespace Framework
-{
 	template<typename T>
 	void CameraType<T>::usePerspective(bool use)
 	{

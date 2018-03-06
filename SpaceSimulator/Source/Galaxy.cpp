@@ -1,15 +1,16 @@
 #include "Galaxy.h"
+
 #include "Universe.h"
 
 namespace SpaceSimulator
 {
 #ifdef UNIVERSE_SCALE
 #	if UNIVERSE_SCALE == 0
-	const float Galaxy::SCALE = (int64)1 << 12;
+	const float Galaxy::SCALE = 1 << 12;
 #	elif UNIVERSE_SCALE == 1
-	const float Galaxy::SCALE = (int64)1 << 21;
+	const float Galaxy::SCALE = 1 << 21;
 #	endif
-	const float Galaxy::MAX_RADIUS = (int64)1 << 62;
+	const float Galaxy::MAX_RADIUS = Int64{ 1 } << 62;
 #else
 	// 32,768 meters per unit.
 	// Allows for galaxies with a radius of up to nearly 16 million light-years
@@ -27,7 +28,7 @@ namespace SpaceSimulator
 	{
 		this->parent = parent;
 		this->radius = radius;
-		name = "Galaxy #" + std::to_string((uInt)Random::randInt());
+		name = "Galaxy #" + std::to_string(static_cast<UInt>(Random::randInt()));
 		setMesh<CubeMesh>();
 	}
 
@@ -57,18 +58,18 @@ namespace SpaceSimulator
 	{
 		float maxRadius = Star::MAX_RADIUS * (Star::SCALE / SCALE);
 
-		int numberOfStars = Random::randInt(10, 15);
+		int numStars = Random::randInt(10, 15);
 		float r = Random::randFloat();
 		float roundness = r * r * r;
 
-		for (int i = 0; i < numberOfStars; i++) {
+		for (int i = 0; i < numStars; i++) {
 			float r = Random::randFloat();
 			float starRadius = maxRadius * (0.5f + 0.5f * r * r);
 
 			auto star = std::make_shared<Star>(this, starRadius);
 
 			glm::vec3 v = glm::ballRand(0.8f * radius * parent->getScale() / getScale());
-			star->transform().setPosition({ (Coordinate)v.x, (Coordinate)(v.y * roundness), (Coordinate)v.z });
+			star->transform().setPosition({ static_cast<Coordinate>(v.x), static_cast<Coordinate>(v.y * roundness), static_cast<Coordinate>(v.z) });
 
 			r = Random::randFloat();
 			star->transform().rotate(360 * r, glm::sphericalRand(1.0f));

@@ -1,10 +1,9 @@
 ﻿#pragma once
 
-#include "Globals.h"
+#include <ctime>
 
 #include <glm\gtc\random.hpp>
-
-#include <ctime>
+#include "Globals.h"
 
 namespace LearnOpenGL
 {
@@ -28,15 +27,15 @@ namespace LearnOpenGL
 			graphics.window.setTitle("Learn OpenGL");
 			graphics.window.setSize(800, 600);
 			//graphics.window.enableFullscreen();
-			graphics.window.enableResizing();
-			//graphics.window.enableCursor(false);
+			//graphics.window.enableResizing();
+			graphics.window.enableCursor(false);
 			//graphics.window.enableVSync(false);
 			graphics.window.enableAntiAliasing();
 		}
 
 		void initialize()
 		{
-			Random::setRandSeed((uInt)getGameTimeInSeconds());
+			Random::setRandSeed(static_cast<UInt>(getGameTimeInSeconds()));
 
 			graphics.text.loadFont("Resources/consola.ttf", "Font");
 			graphics.text.setFont("Font", 20);
@@ -56,11 +55,12 @@ namespace LearnOpenGL
 			light.setMesh<TetrahedronMesh>();
 			light.transform().scale(0.25f);
 
-			float fontVertices[] = {
-				-1, -1,		0, 1,
-				 1, -1,		1, 1,
-				-1,  1,		0, 0,
-				 1,  1,		1, 0,
+			struct Vertex { float x, y, u, v; };
+			Vertex fontVertices[] = {
+				{ -1, -1,	0, 1 },
+				{  1, -1,	1, 1 },
+				{ -1,  1,	0, 0 },
+				{  1,  1,	1, 0 },
 			};
 
 			fontShader.createFromFiles("Resources/font.vert", "Resources/font.frag");
@@ -85,7 +85,7 @@ namespace LearnOpenGL
 
 		void update(float deltaSeconds)
 		{
-			camera.setAspectRatio((float)graphics.window.getWidth() / graphics.window.getHeight());
+			camera.setAspectRatio(static_cast<float>(graphics.window.getWidth()) / graphics.window.getHeight());
 
 			if (input.keyboard.key(SDLK_p)) {
 				camera.usePerspective(!camera.usesPerspective());
@@ -99,12 +99,16 @@ namespace LearnOpenGL
 			);
 
 			float rollSpeed = 90 * deltaSeconds;
-			camera.transform().roll(rollSpeed * (input.keyboard.key(SDLK_e) - input.keyboard.key(SDLK_q) + input.controller.rightTrigger() - input.controller.leftTrigger()));
+			camera.transform().roll(rollSpeed *	(
+				input.keyboard.key(SDLK_e) - input.keyboard.key(SDLK_q) +
+				input.controller.rightTrigger() - input.controller.leftTrigger() +
+				input.mouse.right() - input.mouse.left())
+			);
 
 			float mouseSensitivity = 0.05f;
 			float controllerSensitivity = 90 * deltaSeconds;
-			camera.transform().yaw(mouseSensitivity * input.mouse.deltaX() + controllerSensitivity * + input.controller.rightXAxis());
-			camera.transform().pitch(mouseSensitivity * input.mouse.deltaY() + controllerSensitivity * + input.controller.rightYAxis());
+			camera.transform().yaw(mouseSensitivity * input.mouse.deltaX() + controllerSensitivity * input.controller.rightXAxis());
+			camera.transform().pitch(mouseSensitivity * input.mouse.deltaY() + controllerSensitivity * input.controller.rightYAxis());
 
 			camera.setFieldOfView(camera.getFieldOfView() - input.mouse.wheel() * 10);
 
@@ -177,11 +181,11 @@ namespace LearnOpenGL
 			glm::ivec3 o = camera.transform().getEulerAngles();
 
 			StringStream stream;
-			stream << (int)round(graphics.getFps()) << "fps" << std::endl;
+			stream << static_cast<int>(round(graphics.getFps())) << "fps" << std::endl;
 			stream << "x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
 			stream << "yaw: " << o.y << u8"° pitch: " << o.x << u8"° roll: " << o.z << u8"°";
 
-			graphics.text(0, 0) << stream;
+			graphics.text.draw(0, 0) << stream;
 		}
 	};
 }

@@ -2,12 +2,12 @@
 
 namespace Framework
 {
-	const vector<Mesh::Vertex>& OctahedronMesh::getVertices() const
+	const std::vector<Mesh::Vertex>& OctahedronMesh::getVertices() const
 	{
 		return vertices;
 	}
 
-	const vector<GLushort>& OctahedronMesh::getIndices() const
+	const std::vector<GLushort>& OctahedronMesh::getIndices() const
 	{
 		return indices;
 	}
@@ -16,7 +16,7 @@ namespace Framework
 	{
 		Utility::StaticConstructor<&OctahedronMesh::initialize>::c;
 
-		vector<glm::vec3> positions;
+		std::vector<glm::vec3> positions;
 
 		float scale = sqrtf(3);
 
@@ -25,7 +25,7 @@ namespace Framework
 			positions.insert(positions.end(), permutations.begin(), permutations.end());
 		}
 
-		vector<vector<int>> faces = {
+		std::vector<std::vector<int>> faces = {
 			{ 0, 2, 1 },
 			{ 0, 4, 2 },
 			{ 1, 2, 3 },
@@ -42,6 +42,6 @@ namespace Framework
 		indices = mesh.indices;
 	}
 
-	vector<Mesh::Vertex> OctahedronMesh::vertices;
-	vector<GLushort> OctahedronMesh::indices;
+	std::vector<Mesh::Vertex> OctahedronMesh::vertices;
+	std::vector<GLushort> OctahedronMesh::indices;
 }

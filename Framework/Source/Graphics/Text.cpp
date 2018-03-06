@@ -1,13 +1,13 @@
 #include "Text.h"
 
-#include <glm\glm.hpp>
 #include <glm\gtc\matrix_transform.hpp>
+#include <glm\glm.hpp>
 
 namespace Framework
 {
-	void Text::loadFont(const string& filename)
+	void Text::loadFont(const std::string& filename)
 	{
-		auto font = std::make_shared<Font>();
+		auto font = Font::create();
 
 		if (font->loadFromFile(filename)) {
 			if (findFont(font->getFamilyName())) {
@@ -19,21 +19,21 @@ namespace Framework
 		}
 	}
 
-	void Text::loadFont(const string& filename, const string& family)
+	void Text::loadFont(const std::string& filename, const std::string& family)
 	{
 		if (findFont(family)) {
 			error("Font has already been loaded");
 			return;
 		}
 
-		auto font = std::make_shared<Font>();
+		auto font = Font::create();
 
 		if (font->loadFromFile(filename)) {
 			fonts[family] = font;
 		}
 	}
 
-	void Text::setFontFamily(const string& family)
+	void Text::setFontFamily(const std::string& family)
 	{
 		auto font = findFont(family);
 
@@ -60,7 +60,7 @@ namespace Framework
 		}
 	}
 
-	void Text::setFont(const string& family, int size)
+	void Text::setFont(const std::string& family, int size)
 	{
 		setFontFamily(family);
 		setFontSize(size);
@@ -97,18 +97,18 @@ namespace Framework
 		font->useTexture();
 	}
 
-	StringStream Text::operator()(int x, int y)
+	StringStream Text::draw(int x, int y)
 	{
 		DrawConfiguration drawConfiguration = { this, x, y };
 
 		return {
 			drawFromStreamCallback,
 			&drawConfiguration,
-			sizeof(DrawConfiguration)
+			sizeof(drawConfiguration)
 		};
 	}
 
-	std::shared_ptr<Font> Text::findFont(const string& family) const
+	std::shared_ptr<Font> Text::findFont(const std::string& family) const
 	{
 		auto font = fonts.find(family);
 
@@ -124,7 +124,7 @@ namespace Framework
 		this->windowWidth = windowWidth;
 		this->windowHeight = windowHeight;
 
-		string vertexShaderSource =
+		std::string vertexShaderSource =
 			"#version 330 core\n"
 			"layout(location = 0) in vec4 attributes;"
 			"out vec2 vertTexCoords;"
@@ -135,7 +135,7 @@ namespace Framework
 			"	vertTexCoords = attributes.zw;"
 			"}";
 
-		string fragmentShaderSource =
+		std::string fragmentShaderSource =
 			"#version 330 core\n"
 			"in vec2 vertTexCoords;"
 			"out vec4 fragColor;"
@@ -152,7 +152,7 @@ namespace Framework
 
 		setColor(0.5f, 0.5f, 0.5f);
 
-		vertexArray.setVertexBuffer({ 4 }, MAX_STRING_LENGTH * sizeof(GlyphQuad) / sizeof(GLfloat));
+		vertexArray.setVertexBuffer({ 4 }, MAX_STRING_LENGTH * sizeof(Font::GlyphQuad) / sizeof(GLfloat));
 	}
 
 	void Text::windowResizedEventHandler(int width, int height)
@@ -180,49 +180,6 @@ namespace Framework
 			applyWindowSize();
 		}
 
-		int lineHeight = font->getHeight();
-		int verticalCenterOffset = font->getVerticalCenterOffset();
-
-		float lineX = (float)x;
-		float lineY = (float)(y + lineHeight - verticalCenterOffset);
-
-		int numberOfGlyphs = 0;
-
-		float scale = 1.0f / font->getTextureSize();
-
-		for (auto c : text) {
-			if (c == '\n') {
-				lineX = (float)x;
-				lineY += lineHeight;
-			}
-			else {
-				const Glyph* glyph = font->getGlyph(c);
-
-				if (glyph) {
-					float xpos = lineX + glyph->left;
-					float ypos = glyph->top - lineY - glyph->height;
-
-					float left = glyph->x * scale;
-					float top = glyph->y * scale;
-					float right = left + glyph->width * scale;
-					float bottom = top + glyph->height * scale;
-
-					vertices[numberOfGlyphs] = {
-						xpos, ypos,									left, bottom,
-						xpos + glyph->width, ypos,					right, bottom,
-						xpos, ypos + glyph->height,					left, top,
-						xpos + glyph->width, ypos + glyph->height,	right, top,
-						xpos, ypos + glyph->height,					left, top,
-						xpos + glyph->width, ypos,					right, bottom,
-					};
-
-					numberOfGlyphs++;
-
-					lineX += glyph->advanceX;
-				}
-			}
-		}
-
 		// disable depth testing
 		GLboolean depthTest;
 		glGetBooleanv(GL_DEPTH_TEST, &depthTest);
@@ -246,7 +203,8 @@ namespace Framework
 
 		shader.use();
 		useFontTexture();
-		vertexArray.updateVertexBuffer(numberOfGlyphs * 6, vertices.data());
+		int numVertices = font->getGlyphQuads(x, y, text, &glyphQuads);
+		vertexArray.updateVertexBuffer(numVertices, glyphQuads.data());
 		vertexArray.draw(GL_TRIANGLES);
 
 		// enable depth testing if it was enabled
@@ -268,7 +226,7 @@ namespace Framework
 
 	void Text::applyWindowSize()
 	{
-		glm::mat4 projection = glm::ortho(0.0f, (float)windowWidth, -(float)windowHeight, 0.0f);
+		glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(windowWidth), -static_cast<float>(windowHeight), 0.0f);
 
 		shader.use();
 		shader.setUniform("projection", projection);
@@ -276,7 +234,7 @@ namespace Framework
 
 	void Text::drawFromStreamCallback(const StringStream& stream, void* data)
 	{
-		DrawConfiguration* config = (DrawConfiguration*)data;
-		((Text*)config->text)->draw(config->x, config->y, stream.getUtf8String());
+		DrawConfiguration* config = static_cast<DrawConfiguration*>(data);
+		static_cast<Text*>(config->text)->draw(config->x, config->y, stream.getUtf8String());
 	}
 }

@@ -1,35 +1,41 @@
 #pragma once
 
-#include "Graphics\FontPacker.h"
+#include <memory>
+#include <unordered_map>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
-
-#include <unordered_map>
+#include "Graphics\FontPacker.h"
 
 namespace Framework
 {
-	struct Glyph
-	{
-		int x, y;
-		uInt width, height;
-		int left, top;
-		int advanceX;
-	};
-
 	class FontSize
 	{
-	public:
+	private:
+		static constexpr int FONT_PACKER_START_CAPACITY = 1 << 6;
+		static constexpr int FONT_PACKER_MAX_CAPACITY = 1 << 10;
+
+		struct Glyph
+		{
+			int x, y;
+			int width, height;
+			int left, top;
+			int advanceX;
+		};
+
 		FontSize(int size);
 		int getSize() const;
-		void useTexture() const;
 		int getTextureSize() const;
-		const Glyph* getGlyph(uInt32 character) const;
-		const Glyph* addGlyph(uInt32 character, FT_GlyphSlot glyph);
+		const Glyph* getGlyph(UInt32 character) const;
+		const Glyph* addGlyph(UInt32 character, FT_GlyphSlot glyph);
+		void useTexture() const;
 
-	private:
+		static std::shared_ptr<FontSize> create(int size);
+
 		int size;
 		std::unordered_map<FT_ULong, Glyph> glyphs;
 		FontPacker fontPacker;
+
+		friend class Font;
 	};
 }

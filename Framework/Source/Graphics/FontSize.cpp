@@ -2,7 +2,7 @@
 
 namespace Framework
 {
-	FontSize::FontSize(int size) : fontPacker(64, 1024)
+	FontSize::FontSize(int size) : fontPacker(FONT_PACKER_START_CAPACITY, FONT_PACKER_MAX_CAPACITY)
 	{
 		this->size = size;
 	}
@@ -12,17 +12,12 @@ namespace Framework
 		return size;
 	}
 
-	void FontSize::useTexture() const
-	{
-		fontPacker.useTexture();
-	}
-
 	int FontSize::getTextureSize() const
 	{
 		return fontPacker.getCapacity();
 	}
 
-	const Glyph* FontSize::getGlyph(uInt32 character) const
+	const FontSize::Glyph* FontSize::getGlyph(UInt32 character) const
 	{
 		auto glyph = glyphs.find(character);
 
@@ -34,16 +29,16 @@ namespace Framework
 		}
 	}
 
-	const Glyph* FontSize::addGlyph(uInt32 character, FT_GlyphSlot glyph)
+	const FontSize::Glyph* FontSize::addGlyph(UInt32 character, FT_GlyphSlot glyph)
 	{
 		int x, y;
 
-		if (fontPacker.addBitmap(glyph->bitmap.width, glyph->bitmap.rows, glyph->bitmap.buffer, x, y)) {
+		if (fontPacker.addBitmap(glyph->bitmap.width, glyph->bitmap.rows, glyph->bitmap.buffer, &x, &y)) {
 			glyphs[character] = {
 				x,
 				y,
-				glyph->bitmap.width,
-				glyph->bitmap.rows,
+				static_cast<int>(glyph->bitmap.width),
+				static_cast<int>(glyph->bitmap.rows),
 				glyph->bitmap_left,
 				glyph->bitmap_top,
 				glyph->advance.x >> 6,
@@ -56,5 +51,20 @@ namespace Framework
 
 			return nullptr;
 		}
+	}
+
+	void FontSize::useTexture() const
+	{
+		fontPacker.useTexture();
+	}
+
+	std::shared_ptr<FontSize> FontSize::create(int size)
+	{
+		struct MakeSharedEnabler : public FontSize
+		{
+			MakeSharedEnabler(int size) : FontSize(size) {}
+		};
+
+		return std::make_shared<MakeSharedEnabler>(size);
 	}
 }

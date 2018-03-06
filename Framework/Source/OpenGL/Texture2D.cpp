@@ -1,9 +1,9 @@
 #include "Texture2D.h"
 
+#include <algorithm>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
-
-#include <algorithm>
 
 namespace Framework
 {
@@ -21,11 +21,11 @@ namespace Framework
 		checkGL(glBindTexture(GL_TEXTURE_2D, 0));
 	}
 
-	void Texture2D::createFromFile(const string& filename)
+	void Texture2D::createFromFile(const std::string& filename)
 	{
 		int width, height;
 		stbi_set_flip_vertically_on_load(true);
-		byte* data = stbi_load(filename.c_str(), &width, &height, nullptr, 3);
+		Byte* data = stbi_load(filename.c_str(), &width, &height, nullptr, 3);
 
 		create(width, height, GL_RGB, GL_RGB, data);
 
@@ -51,17 +51,17 @@ namespace Framework
 		checkGL(glBindTexture(GL_TEXTURE_2D, id));
 	}
 
-	void Texture2D::update(int x, int y, int width, int height, const byte pixels[])
+	void Texture2D::update(int x, int y, int width, int height, const Byte pixels[])
 	{
 		GLint unpackAlignment;
 		switch (format) {
-		case GL_RED:
-			unpackAlignment = 1;
-			break;
+			case GL_RED:
+				unpackAlignment = 1;
+				break;
 
-		case GL_RGB:
-			unpackAlignment = 3;
-			break;
+			case GL_RGB:
+				unpackAlignment = 3;
+				break;
 		}
 
 		checkGL(glPixelStorei(GL_UNPACK_ALIGNMENT, unpackAlignment));
@@ -73,13 +73,13 @@ namespace Framework
 		int pixelSize;
 
 		switch (format) {
-		case GL_RED:
-			pixelSize = 1;
-			break;
+			case GL_RED:
+				pixelSize = 1;
+				break;
 
-		case GL_RGB:
-			pixelSize = 3;
-			break;
+			case GL_RGB:
+				pixelSize = 3;
+				break;
 		}
 
 		GLubyte* data = new GLubyte[this->width * this->height * pixelSize];
@@ -104,7 +104,7 @@ namespace Framework
 		this->height = height;
 	}
 
-	void Texture2D::create(int width, int height, GLint internalFormat, GLenum format, const byte pixels[])
+	void Texture2D::create(int width, int height, GLint internalFormat, GLenum format, const Byte pixels[])
 	{
 		if (id) {
 			error("2D texture has already been created");

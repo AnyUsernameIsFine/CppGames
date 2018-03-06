@@ -22,20 +22,15 @@ namespace Framework
 		return capacity;
 	}
 
-	void FontPacker::useTexture() const
-	{
-		texture.use();
-	}
-
-	bool FontPacker::addBitmap(uInt width, uInt height, const byte bitmap[], int& x, int& y)
+	bool FontPacker::addBitmap(int width, int height, const Byte bitmap[], int* x, int* y)
 	{
 		const Node* node = root->findEmptyNode(width, height);
 
 		if (node) {
-			x = node->getLeft();
-			y = node->getTop();
+			*x = node->getLeft();
+			*y = node->getTop();
 
-			texture.update(x, y, width, height, bitmap);
+			texture.update(*x, *y, width, height, bitmap);
 
 			return true;
 		}
@@ -47,13 +42,19 @@ namespace Framework
 		}
 	}
 
+	void FontPacker::useTexture() const
+	{
+		texture.use();
+	}
+
 	bool FontPacker::increaseCapacity()
 	{
 		if (capacity >= maxCapacity) {
 			return false;
 		}
 
-		root->increaseCapacity(capacity << 1); // uses this font packer's capacity internally
+		// uses this font packer's capacity internally
+		root->increaseCapacity(capacity << 1);
 
 		capacity <<= 1;
 
@@ -97,7 +98,7 @@ namespace Framework
 			int dw = right - left - width;
 			int dh = bottom - top - height;
 
-			if (filled || dw < (int)(right == fontPacker->capacity) || dh < (int)(bottom == fontPacker->capacity)) {
+			if (filled || dw < int{ right == fontPacker->capacity } || dh < int{ bottom == fontPacker->capacity }) {
 				return nullptr;
 			}
 

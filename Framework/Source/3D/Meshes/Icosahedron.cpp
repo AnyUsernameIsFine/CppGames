@@ -2,12 +2,12 @@
 
 namespace Framework
 {
-	const vector<Mesh::Vertex>& IcosahedronMesh::getVertices() const
+	const std::vector<Mesh::Vertex>& IcosahedronMesh::getVertices() const
 	{
 		return vertices;
 	}
 
-	const vector<GLushort>& IcosahedronMesh::getIndices() const
+	const std::vector<GLushort>& IcosahedronMesh::getIndices() const
 	{
 		return indices;
 	}
@@ -16,7 +16,7 @@ namespace Framework
 	{
 		Utility::StaticConstructor<&IcosahedronMesh::initialize>::c;
 
-		vector<glm::vec3> positions;
+		std::vector<glm::vec3> positions;
 
 		float phi = (1 + sqrtf(5)) / 2;
 
@@ -31,7 +31,7 @@ namespace Framework
 			}
 		}
 
-		vector<vector<int>> faces = {
+		std::vector<std::vector<int>> faces = {
 			{ 0, 1, 6 },
 			{ 0, 2, 1 },
 			{ 0, 4, 8 },
@@ -60,6 +60,6 @@ namespace Framework
 		indices = mesh.indices;
 	}
 
-	vector<Mesh::Vertex> IcosahedronMesh::vertices;
-	vector<GLushort> IcosahedronMesh::indices;
+	std::vector<Mesh::Vertex> IcosahedronMesh::vertices;
+	std::vector<GLushort> IcosahedronMesh::indices;
 }

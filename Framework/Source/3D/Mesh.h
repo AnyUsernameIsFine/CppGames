@@ -1,9 +1,9 @@
 #pragma once
 
-#include "System\Globals.h"
-
 #include <glm\vec2.hpp>
 #include <glm\vec3.hpp>
+
+#include "System\Globals.h"
 
 namespace Framework
 {
@@ -21,7 +21,7 @@ namespace Framework
 			};
 		};
 
-		virtual const vector<Vertex>& getVertices() const = 0;
-		virtual const vector<GLushort>& getIndices() const = 0;
+		virtual const std::vector<Vertex>& getVertices() const = 0;
+		virtual const std::vector<GLushort>& getIndices() const = 0;
 	};
 }

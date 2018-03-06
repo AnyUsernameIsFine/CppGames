@@ -1,33 +1,38 @@
 #pragma once
 
-#include "Transform.h"
-#include "Mesh.h"
-
 #include <memory>
+
+#include "Mesh.h"
+#include "Transform.h"
 
 namespace Framework
 {
 	template<typename T>
+	class GameObjectType;
+
+	using GameObject = GameObjectType<float>;
+
+	template<typename T>
 	class GameObjectType
 	{
 	public:
+		template<typename U> void setMesh();
 		TransformType<T>& transform();
 		const Mesh& mesh() const;
 		bool hasMesh() const;
-
-		template<typename U>
-		void setMesh();
 
 	protected:
 		TransformType<T> myTransform;
 		std::shared_ptr<Mesh> myMesh = nullptr;
 	};
 
-	typedef GameObjectType<float> GameObject;
-}
+	template<typename T>
+	template<typename U>
+	void GameObjectType<T>::setMesh()
+	{
+		myMesh = std::make_shared<U>();
+	}
 
-namespace Framework
-{
 	template<typename T>
 	TransformType<T>& GameObjectType<T>::transform()
 	{
@@ -44,12 +49,5 @@ namespace Framework
 	bool GameObjectType<T>::hasMesh() const
 	{
 		return myMesh != nullptr;
-	}
-
-	template<typename T>
-	template<typename U>
-	void GameObjectType<T>::setMesh()
-	{
-		myMesh = std::make_shared<U>();
 	}
 }

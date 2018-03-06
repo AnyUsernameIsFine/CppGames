@@ -1,8 +1,7 @@
 #pragma once
 
-#include "System\Globals.h"
-
 #include <SDL_keyboard.h>
+#include "System\Globals.h"
 
 namespace Framework
 {
@@ -13,9 +12,9 @@ namespace Framework
 		bool key(SDL_Keycode key) const;
 
 	private:
-		const Uint8* keyboardState;
-		int numberOfKeys;
-		Uint8* fixedKeyboardState;
+		const UInt8* keyboardState;
+		int numKeys;
+		UInt8* fixedKeyboardState;
 
 		Keyboard();
 		void update();

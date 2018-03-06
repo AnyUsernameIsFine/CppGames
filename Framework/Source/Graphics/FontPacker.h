@@ -10,8 +10,8 @@ namespace Framework
 		FontPacker(int capacity, int maxCapacity);
 		~FontPacker();
 		int getCapacity() const;
+		bool addBitmap(int width, int height, const Byte bitmap[], int* x, int* y);
 		void useTexture() const;
-		bool addBitmap(uInt width, uInt height, const byte bitmap[], int& x, int& y);
 
 	private:
 		class Node
@@ -32,11 +32,11 @@ namespace Framework
 			Node* childB = nullptr;
 		};
 
+		bool increaseCapacity();
+
 		int capacity;
 		int maxCapacity;
-		Node* root = nullptr;
+		Node* root;
 		Texture2D texture;
-
-		bool increaseCapacity();
 	};
 }

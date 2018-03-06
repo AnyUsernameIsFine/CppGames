@@ -7,20 +7,20 @@ namespace Framework
 	VertexArray::~VertexArray()
 	{
 		if (hasContext()) {
-			int numberOfReferences;
+			int numReferences;
 
-			numberOfReferences = --vertexBuffers[vertexBufferId].numberOfReferences;
-			if (!numberOfReferences) {
+			numReferences = --vertexBuffers[vertexBufferId].numReferences;
+			if (!numReferences) {
 				checkGL(glDeleteBuffers(1, &vertexBufferId));
 			}
 
-			numberOfReferences = --indexBuffers[indexBufferId].numberOfReferences;
-			if (!numberOfReferences) {
+			numReferences = --indexBuffers[indexBufferId].numReferences;
+			if (!numReferences) {
 				checkGL(glDeleteBuffers(1, &indexBufferId));
 			}
 
-			numberOfReferences = --instanceBuffers[instanceBufferId].numberOfReferences;
-			if (!numberOfReferences) {
+			numReferences = --instanceBuffers[instanceBufferId].numReferences;
+			if (!numReferences) {
 				checkGL(glDeleteBuffers(1, &instanceBufferId));
 			}
 
@@ -28,7 +28,7 @@ namespace Framework
 		}
 	}
 
-	void VertexArray::setVertexBuffer(const vector<int>& attributes, int numberOfVertices, const void* vertices)
+	void VertexArray::setVertexBuffer(const std::vector<int>& attributes, int numVertices, const void* vertices)
 	{
 		if (vertexBufferId) {
 			error("Vertex buffer object has already been set");
@@ -37,21 +37,18 @@ namespace Framework
 
 		create();
 
-		GLsizei attributesSize = 0;
-		for (auto& attribute : attributes) {
-			attributesSize += attribute * sizeof(GLfloat);
-		}
+		int attributesSize = getAttributesSize(attributes);
 
 		checkGL(glBindVertexArray(id));
 		checkGL(glGenBuffers(1, &vertexBufferId));
 		checkGL(glBindBuffer(GL_ARRAY_BUFFER, vertexBufferId));
-		checkGL(glBufferData(GL_ARRAY_BUFFER, numberOfVertices * attributesSize, vertices, vertices ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW));
-		vertexBuffers[vertexBufferId] = { numberOfVertices, attributes, attributesSize };
+		checkGL(glBufferData(GL_ARRAY_BUFFER, numVertices * attributesSize, vertices, vertices ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW));
+		vertexBuffers[vertexBufferId] = { numVertices, attributes, attributesSize };
 		enableVertexAttributes();
 		checkGL(glBindVertexArray(0));
 	}
 
-	void VertexArray::setIndexBuffer(int numberOfIndices, const GLushort indices[])
+	void VertexArray::setIndexBuffer(int numIndices, const GLushort indices[])
 	{
 		if (indexBufferId) {
 			error("Index buffer object has already been set");
@@ -63,12 +60,12 @@ namespace Framework
 		checkGL(glBindVertexArray(id));
 		checkGL(glGenBuffers(1, &indexBufferId));
 		checkGL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId));
-		checkGL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, numberOfIndices * sizeof(GLushort), indices, indices ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW));
-		indexBuffers[indexBufferId] = { numberOfIndices };
+		checkGL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(GLushort), indices, indices ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW));
+		indexBuffers[indexBufferId] = { numIndices };
 		checkGL(glBindVertexArray(0));
 	}
 
-	void VertexArray::setInstanceBuffer(const vector<int>& attributes, int numberOfInstances, const void* instances)
+	void VertexArray::setInstanceBuffer(const std::vector<int>& attributes, int numInstances, const void* instances)
 	{
 		if (instanceBufferId) {
 			error("Instance buffer object has already been set");
@@ -77,16 +74,13 @@ namespace Framework
 
 		create();
 
-		GLsizei attributesSize = 0;
-		for (auto& attribute : attributes) {
-			attributesSize += attribute * sizeof(GLfloat);
-		}
+		int attributesSize = getAttributesSize(attributes);
 
 		checkGL(glBindVertexArray(id));
 		checkGL(glGenBuffers(1, &instanceBufferId));
 		checkGL(glBindBuffer(GL_ARRAY_BUFFER, instanceBufferId));
-		checkGL(glBufferData(GL_ARRAY_BUFFER, numberOfInstances * attributesSize, instances, instances ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW));
-		instanceBuffers[instanceBufferId] = { numberOfInstances, attributes, attributesSize };
+		checkGL(glBufferData(GL_ARRAY_BUFFER, numInstances * attributesSize, instances, instances ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW));
+		instanceBuffers[instanceBufferId] = { numInstances, attributes, attributesSize };
 		enableInstanceAttributes();
 		checkGL(glBindVertexArray(0));
 	}
@@ -101,7 +95,7 @@ namespace Framework
 		create();
 
 		vertexBufferId = id;
-		vertexBuffers[id].numberOfReferences++;
+		vertexBuffers[id].numReferences++;
 
 		checkGL(glBindVertexArray(this->id));
 		checkGL(glBindBuffer(GL_ARRAY_BUFFER, id));
@@ -119,7 +113,7 @@ namespace Framework
 		create();
 
 		indexBufferId = id;
-		indexBuffers[id].numberOfReferences++;
+		indexBuffers[id].numReferences++;
 
 		checkGL(glBindVertexArray(this->id));
 		checkGL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBufferId));
@@ -136,7 +130,7 @@ namespace Framework
 		create();
 
 		instanceBufferId = id;
-		instanceBuffers[id].numberOfReferences++;
+		instanceBuffers[id].numReferences++;
 
 		checkGL(glBindVertexArray(this->id));
 		checkGL(glBindBuffer(GL_ARRAY_BUFFER, id));
@@ -144,37 +138,37 @@ namespace Framework
 		checkGL(glBindVertexArray(0));
 	}
 
-	void VertexArray::updateVertexBuffer(int numberOfVertices, const void* vertices) const
+	void VertexArray::updateVertexBuffer(int numVertices, const void* vertices) const
 	{
 		if (!vertexBufferId) {
 			error("Could not update non-existing vertex buffer object");
 			return;
 		}
 
-		vertexBuffers[vertexBufferId].numberOfVertices = numberOfVertices;
-		checkGL(glNamedBufferSubData(vertexBufferId, 0, numberOfVertices * vertexBuffers[vertexBufferId].attributesSize, vertices));
+		vertexBuffers[vertexBufferId].numVertices = numVertices;
+		checkGL(glNamedBufferSubData(vertexBufferId, 0, numVertices * vertexBuffers[vertexBufferId].attributesSize, vertices));
 	}
 
-	void VertexArray::updateIndexBuffer(int numberOfIndices, const GLushort indices[]) const
+	void VertexArray::updateIndexBuffer(int numIndices, const GLushort indices[]) const
 	{
 		if (!indexBufferId) {
 			error("Could not update non-existing index buffer object");
 			return;
 		}
 
-		indexBuffers[indexBufferId].numberOfIndices = numberOfIndices;
-		checkGL(glNamedBufferSubData(indexBufferId, 0, numberOfIndices * sizeof(GLushort), indices));
+		indexBuffers[indexBufferId].numIndices = numIndices;
+		checkGL(glNamedBufferSubData(indexBufferId, 0, numIndices * sizeof(GLushort), indices));
 	}
 
-	void VertexArray::updateInstanceBuffer(int numberOfInstances, const void* instances) const
+	void VertexArray::updateInstanceBuffer(int numInstances, const void* instances) const
 	{
 		if (!instanceBufferId) {
 			error("Could not update non-existing instance buffer object");
 			return;
 		}
 
-		instanceBuffers[instanceBufferId].numberOfInstances = numberOfInstances;
-		checkGL(glNamedBufferSubData(instanceBufferId, 0, numberOfInstances * instanceBuffers[instanceBufferId].attributesSize, instances));
+		instanceBuffers[instanceBufferId].numInstances = numInstances;
+		checkGL(glNamedBufferSubData(instanceBufferId, 0, numInstances * instanceBuffers[instanceBufferId].attributesSize, instances));
 	}
 
 	GLuint VertexArray::getVertexBufferId() const
@@ -196,22 +190,22 @@ namespace Framework
 	{
 		checkGL(glBindVertexArray(id));
 
-		if (instanceBufferId && instanceBuffers[instanceBufferId].numberOfInstances) {
-			if (indexBufferId && indexBuffers[indexBufferId].numberOfIndices) {
-				checkGL(glDrawElementsInstanced(mode, indexBuffers[indexBufferId].numberOfIndices, GL_UNSIGNED_SHORT, nullptr, instanceBuffers[instanceBufferId].numberOfInstances));
+		if (instanceBufferId && instanceBuffers[instanceBufferId].numInstances) {
+			if (indexBufferId && indexBuffers[indexBufferId].numIndices) {
+				checkGL(glDrawElementsInstanced(mode, indexBuffers[indexBufferId].numIndices, GL_UNSIGNED_SHORT, nullptr, instanceBuffers[instanceBufferId].numInstances));
 			}
-			else if (vertexBufferId && vertexBuffers[vertexBufferId].numberOfVertices) {
-				checkGL(glDrawArraysInstanced(mode, 0, vertexBuffers[vertexBufferId].numberOfVertices, instanceBuffers[instanceBufferId].numberOfInstances));
+			else if (vertexBufferId && vertexBuffers[vertexBufferId].numVertices) {
+				checkGL(glDrawArraysInstanced(mode, 0, vertexBuffers[vertexBufferId].numVertices, instanceBuffers[instanceBufferId].numInstances));
 			}
 			else {
 				error("Insufficient data to draw using vertex array object");
 			}
 		}
-		else if (indexBufferId && indexBuffers[indexBufferId].numberOfIndices) {
-			checkGL(glDrawElements(mode, indexBuffers[indexBufferId].numberOfIndices, GL_UNSIGNED_SHORT, nullptr));
+		else if (indexBufferId && indexBuffers[indexBufferId].numIndices) {
+			checkGL(glDrawElements(mode, indexBuffers[indexBufferId].numIndices, GL_UNSIGNED_SHORT, nullptr));
 		}
-		else if (vertexBufferId && vertexBuffers[vertexBufferId].numberOfVertices) {
-			checkGL(glDrawArrays(mode, 0, vertexBuffers[vertexBufferId].numberOfVertices));
+		else if (vertexBufferId && vertexBuffers[vertexBufferId].numVertices) {
+			checkGL(glDrawArrays(mode, 0, vertexBuffers[vertexBufferId].numVertices));
 		}
 		else {
 			error("Insufficient data to draw using vertex array object");
@@ -243,7 +237,7 @@ namespace Framework
 		enableAttributes(instanceBuffers[instanceBufferId].attributes, instanceBuffers[instanceBufferId].attributesSize, 1);
 	}
 
-	void VertexArray::enableAttributes(const vector<GLint>& attributes, GLsizei size, GLuint divisor)
+	void VertexArray::enableAttributes(const std::vector<GLint>& attributes, GLsizei size, GLuint divisor)
 	{
 		int offset = 0;
 
@@ -251,7 +245,7 @@ namespace Framework
 			for (int i = 0; i < attribute; i += 4) {
 				int attributeSize = std::min(attribute - i, 4);
 
-				checkGL(glVertexAttribPointer(attributeIndex, attributeSize, GL_FLOAT, GL_FALSE, size, (GLvoid*)offset));
+				checkGL(glVertexAttribPointer(attributeIndex, attributeSize, GL_FLOAT, GL_FALSE, size, reinterpret_cast<GLvoid*>(offset)));
 				checkGL(glVertexAttribDivisor(attributeIndex, divisor));
 				checkGL(glEnableVertexAttribArray(attributeIndex));
 
@@ -259,6 +253,16 @@ namespace Framework
 				attributeIndex++;
 			}
 		}
+	}
+
+	GLsizei VertexArray::getAttributesSize(const std::vector<GLint>& attributes)
+	{
+		GLsizei attributesSize = 0;
+		for (const auto& attribute : attributes) {
+			attributesSize += attribute * sizeof(GLfloat);
+		}
+
+		return attributesSize;
 	}
 
 	std::unordered_map<GLuint, VertexArray::VertexBuffer> VertexArray::vertexBuffers;

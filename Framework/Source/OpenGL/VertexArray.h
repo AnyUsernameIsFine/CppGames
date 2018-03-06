@@ -1,8 +1,8 @@
 #pragma once
 
-#include "OpenGLObject.h"
-
 #include <unordered_map>
+
+#include "OpenGLObject.h"
 
 namespace Framework
 {
@@ -10,15 +10,15 @@ namespace Framework
 	{
 	public:
 		~VertexArray();
-		void setVertexBuffer(const vector<int>& attributes, int numberOfVertices, const void* vertices = nullptr);
-		void setIndexBuffer(int numberOfIndices, const GLushort indices[] = nullptr);
-		void setInstanceBuffer(const vector<int>& attributes, int numberOfInstances, const void* instances = nullptr);
+		void setVertexBuffer(const std::vector<int>& attributes, int numVertices, const void* vertices = nullptr);
+		void setIndexBuffer(int numIndices, const GLushort indices[] = nullptr);
+		void setInstanceBuffer(const std::vector<int>& attributes, int numInstances, const void* instances = nullptr);
 		void setExistingVertexBuffer(GLuint id);
 		void setExistingIndexBuffer(GLuint id);
 		void setExistingInstanceBuffer(GLuint id);
-		void updateVertexBuffer(int numberOfVertices, const void* vertices) const;
-		void updateIndexBuffer(int numberOfIndices, const GLushort indices[]) const;
-		void updateInstanceBuffer(int numberOfInstances, const void* instances) const;
+		void updateVertexBuffer(int numVertices, const void* vertices) const;
+		void updateIndexBuffer(int numIndices, const GLushort indices[]) const;
+		void updateInstanceBuffer(int numInstances, const void* instances) const;
 		GLuint getVertexBufferId() const;
 		GLuint getIndexBufferId() const;
 		GLuint getInstanceBufferId() const;
@@ -27,35 +27,37 @@ namespace Framework
 	private:
 		struct VertexBuffer
 		{
-			GLsizei numberOfVertices;
-			vector<GLint> attributes;
+			GLsizei numVertices;
+			std::vector<GLint> attributes;
 			GLsizei attributesSize;
-			int numberOfReferences = 1;
+			int numReferences = 1;
 		};
 
 		struct IndexBuffer
 		{
-			GLsizei numberOfIndices;
-			int numberOfReferences = 1;
+			GLsizei numIndices;
+			int numReferences = 1;
 		};
 
 		struct InstanceBuffer
 		{
-			GLsizei numberOfInstances;
-			vector<GLint> attributes;
+			GLsizei numInstances;
+			std::vector<GLint> attributes;
 			GLsizei attributesSize;
-			int numberOfReferences = 1;
+			int numReferences = 1;
 		};
+
+		void create();
+		void enableVertexAttributes();
+		void enableInstanceAttributes();
+		void enableAttributes(const std::vector<GLint>& attributes, GLsizei size, GLuint divisor = 0);
+
+		static GLsizei getAttributesSize(const std::vector<GLint>& attributes);
 
 		GLuint vertexBufferId = 0;
 		GLuint indexBufferId = 0;
 		GLuint instanceBufferId = 0;
 		GLuint attributeIndex = 0;
-
-		void create();
-		void enableVertexAttributes();
-		void enableInstanceAttributes();
-		void enableAttributes(const vector<GLint>& attributes, GLsizei size, GLuint divisor = 0);
 
 		static std::unordered_map<GLuint, VertexBuffer> vertexBuffers;
 		static std::unordered_map<GLuint, IndexBuffer> indexBuffers;

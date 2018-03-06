@@ -1,8 +1,8 @@
 #pragma once
 
-#include "System\Globals.h"
-
 #include <chrono>
+
+#include "System\Globals.h"
 
 namespace Framework
 {
@@ -13,7 +13,7 @@ namespace Framework
 		void setToNow();
 
 	private:
-		typedef	std::chrono::high_resolution_clock Clock;
+		using Clock = std::chrono::high_resolution_clock;
 
 		std::chrono::time_point<Clock> timePoint = Clock::now();
 	};

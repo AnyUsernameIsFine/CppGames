@@ -1,12 +1,17 @@
 #pragma once
 
-#include "Vector3.h"
-
-#include <glm\gtc\quaternion.hpp>
 #include <glm\gtc\matrix_transform.hpp>
+#include <glm\gtc\quaternion.hpp>
+
+#include "Vector3.h"
 
 namespace Framework
 {
+	template<typename T>
+	class TransformType;
+
+	using Transform = TransformType<float>;
+
 	template<typename T>
 	class TransformType
 	{
@@ -50,6 +55,9 @@ namespace Framework
 		const glm::mat4& getModelMatrix(const glm::vec3& cameraPosition);
 
 	private:
+		TransformType<T>& operator=(const TransformType<T>& t) = delete;
+		const glm::mat4& myGetModelMatrix(const glm::vec3& position);
+
 		Vector3Type<T> position;
 		glm::quat orientation;
 		glm::vec3 myScale;
@@ -62,18 +70,10 @@ namespace Framework
 		glm::vec3 modelMatrixPosition;
 		glm::vec3 modelMatrixPositionRotated;
 
-		TransformType<T>& operator=(const TransformType<T>& t) = delete;
-		const glm::mat4& myGetModelMatrix(const glm::vec3& position);
-
 		template<typename T>
 		friend class GameObjectType;
 	};
 
-	typedef TransformType<float> Transform;
-}
-
-namespace Framework
-{
 	template<typename T>
 	TransformType<T>::TransformType(const Vector3Type<T>& position, const glm::vec3& eulerAngles, const glm::vec3& scale)
 	{

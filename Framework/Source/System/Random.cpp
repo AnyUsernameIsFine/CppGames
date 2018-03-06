@@ -2,13 +2,13 @@
 
 namespace Framework
 {
-	void Random::setRandSeed(uInt seed)
+	void Random::setRandSeed(UInt seed)
 	{
 		rng.seed(seed);
 		srand(seed);
 	}
 
-	void Random::setHashSeed(uInt32 seed)
+	void Random::setHashSeed(UInt32 seed)
 	{
 		hashSeed = seed;
 	}
@@ -30,18 +30,18 @@ namespace Framework
 		return distribution(rng);
 	}
 
-	uInt32 Random::uInt32FromByteArray(const void* byteArray, uInt length)
+	UInt32 Random::UInt32FromByteArray(const void* byteArray, int length)
 	{
-		const uInt8* p = (const uInt8*)byteArray;
-		const uInt8* bEnd = p + length;
-		uInt32 h32;
+		const UInt8* p = static_cast<const UInt8*>(byteArray);
+		const UInt8* bEnd = p + length;
+		UInt32 h32;
 
 		if (length >= 16) {
-			const uInt8* const limit = bEnd - 16;
-			uInt32 v1 = hashSeed + PRIME_1 + PRIME_2;
-			uInt32 v2 = hashSeed + PRIME_2;
-			uInt32 v3 = hashSeed + 0;
-			uInt32 v4 = hashSeed - PRIME_1;
+			const UInt8* const limit = bEnd - 16;
+			UInt32 v1 = hashSeed + PRIME_1 + PRIME_2;
+			UInt32 v2 = hashSeed + PRIME_2;
+			UInt32 v3 = hashSeed + 0;
+			UInt32 v4 = hashSeed - PRIME_1;
 
 			do {
 				v1 = XXH32_round(v1, XXH_readLE32(p));
@@ -60,7 +60,7 @@ namespace Framework
 			h32 = hashSeed + PRIME_5;
 		}
 
-		h32 += (uInt32)length;
+		h32 += static_cast<UInt32>(length);
 
 		while (p + 4 <= bEnd) {
 			h32 += XXH_readLE32(p) * PRIME_3;
@@ -83,23 +83,25 @@ namespace Framework
 		return h32;
 	}
 
-	Random::RNG Random::rng;
-	uInt32 Random::hashSeed;
-	const bool Random::LITTLE_ENDIAN = *(const char*)(&ONE);
-
-	uInt32 Random::XXH_readLE32(const void* ptr)
+	UInt32 Random::XXH_readLE32(const void* ptr)
 	{
-		uInt32 val;
+		static int ONE = 1;
+		static bool LITTLE_ENDIAN = *reinterpret_cast<const char*>(&ONE);
+
+		UInt32 val;
 		memcpy(&val, ptr, sizeof(val));
 
 		return LITTLE_ENDIAN ? val : _byteswap_ulong(val);
 	}
 
-	uInt32 Random::XXH32_round(uInt32 seed, uInt32 input)
+	UInt32 Random::XXH32_round(UInt32 seed, UInt32 input)
 	{
 		seed += input * PRIME_2;
 		seed = _rotl(seed, 13);
 		seed *= PRIME_1;
 		return seed;
 	}
+
+	Random::RNG Random::rng;
+	UInt32 Random::hashSeed;
 }

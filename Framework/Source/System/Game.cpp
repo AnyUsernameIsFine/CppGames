@@ -1,11 +1,43 @@
 #include "Game.h"
 
+#include <iostream>
+#include <sstream>
+#include <thread>
+#define NOMINMAX
+#include <windows.h>
+
 #include <SDL.h>
 
-#include <thread>
+namespace
+{
+	class StringBuffer : public std::stringbuf
+	{
+	public:
+		int sync()
+		{
+			fputs(str().c_str(), stdout);
+			str("");
+			return 0;
+		}
+	};
+
+	static StringBuffer buffer;
+
+	void enableUtf8InConsole()
+	{
+		SetConsoleOutputCP(CP_UTF8);
+		setvbuf(stdout, nullptr, _IONBF, 0);
+		std::cout.rdbuf(&buffer);
+	}
+}
 
 namespace Framework
 {
+	Game::Game()
+	{
+		enableUtf8InConsole();
+	}
+
 	int Game::run()
 	{
 		if (isRunning || !graphics.createWindow()) {
@@ -25,18 +57,18 @@ namespace Framework
 				input.processEvent(event);
 
 				switch (event.type) {
-				case SDL_WINDOWEVENT:
-					if (event.window.event == SDL_WINDOWEVENT_MINIMIZED) {
-						isWindowActive = false;
-					}
-					else if (event.window.event == SDL_WINDOWEVENT_RESTORED) {
-						isWindowActive = true;
-					}
-					break;
+					case SDL_WINDOWEVENT:
+						if (event.window.event == SDL_WINDOWEVENT_MINIMIZED) {
+							isWindowActive = false;
+						}
+						else if (event.window.event == SDL_WINDOWEVENT_RESTORED) {
+							isWindowActive = true;
+						}
+						break;
 
-				case SDL_QUIT:
-					isRunning = false;
-					break;
+					case SDL_QUIT:
+						isRunning = false;
+						break;
 				}
 			}
 
@@ -51,16 +83,6 @@ namespace Framework
 	float Game::getGameTimeInSeconds() const
 	{
 		return TimePoint().differenceInSeconds(startTime);
-	}
-
-	Game::SDL::SDL()
-	{
-		checkSDLValue(SDL_Init(0));
-	}
-
-	Game::SDL::~SDL()
-	{
-		SDL_Quit();
 	}
 
 	void Game::gameLoop()
@@ -99,9 +121,19 @@ namespace Framework
 	int Game::sdlEventHandler(void* game, SDL_Event* event)
 	{
 		if (event->type == SDL_WINDOWEVENT) {
-			((Game*)game)->graphics.windowEventHandler(event->window);
+			static_cast<Game*>(game)->graphics.windowEventHandler(event->window);
 		}
 
 		return 0;
+	}
+
+	Game::SDL::SDL()
+	{
+		checkSDLValue(SDL_Init(0));
+	}
+
+	Game::SDL::~SDL()
+	{
+		SDL_Quit();
 	}
 }

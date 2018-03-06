@@ -1,27 +1,26 @@
 #pragma once
 
-#define UNIVERSE_SCALE 0
-
-#include "Camera.h"
-
 #include <memory>
+
+#define UNIVERSE_SCALE 0
+#include "Camera.h"
 
 namespace SpaceSimulator
 {
 	class CoordinateSystem abstract : public GameObject
 	{
 	public:
-		static const int MAX_IN_DRAW_LIST = 1 << 13;
-
-		static void initialize();
+		static constexpr int MAX_IN_DRAW_LIST = 1 << 13;
 
 		CoordinateSystem* getParent() const;
-		const vector<std::shared_ptr<CoordinateSystem>>& getChildren() const;
-		const string& getName() const;
+		const std::vector<std::shared_ptr<CoordinateSystem>>& getChildren() const;
+		const std::string& getName() const;
 		float getRadius() const;
 		virtual float getScale() const = 0;
 		virtual const glm::vec4& getColor() const = 0;
 		virtual float getCameraNearPlane() const = 0;
+
+		static void initialize();
 
 	protected:
 		struct DrawConfiguration
@@ -33,14 +32,9 @@ namespace SpaceSimulator
 			CoordinateSystem* cs;
 		};
 
-		CoordinateSystem* parent;
-		vector<std::shared_ptr<CoordinateSystem>> children;
-		string name;
-		float radius;
-
 		void drawWithChildren(
-			vector<vector<vector<DrawConfiguration>>>& toDrawList,
-			const vector<Camera::CameraHierarchyLevel>& cameraHierarchy,
+			std::vector<std::vector<std::vector<DrawConfiguration>>>& toDrawList,
+			const std::vector<Camera::CameraHierarchyLevel>& cameraHierarchy,
 			int hierarchyIndex = -1,
 			glm::mat4 rotations = glm::mat4(1),
 			glm::mat4 anotherMatrix = glm::mat4(1),
@@ -49,9 +43,14 @@ namespace SpaceSimulator
 			int descendantGenerationsToDraw = 0
 		);
 
+		static void myDraw(const std::vector<std::vector<std::vector<DrawConfiguration>>>& drawConfigurations, const Camera& camera);
+
+		CoordinateSystem* parent;
+		std::vector<std::shared_ptr<CoordinateSystem>> children;
+		std::string name;
+		float radius;
+
 		static VertexArray vertexArray;
 		static Shader shader;
-
-		static void myDraw(const vector<vector<vector<DrawConfiguration>>>& drawConfigurations, const Camera& camera);
 	};
 }

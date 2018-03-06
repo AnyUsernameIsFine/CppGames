@@ -1,16 +1,11 @@
 #include "Controller.h"
 
-#include <SDL.h>
-
 #include <algorithm>
+
+#include <SDL.h>
 
 namespace Framework
 {
-	Controller::Controller()
-	{
-		checkSDL(SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER));
-	}
-
 	Controller::~Controller()
 	{
 		checkSDL(SDL_QuitSubSystem(SDL_INIT_GAMECONTROLLER));
@@ -121,6 +116,11 @@ namespace Framework
 		return buttonRight;
 	}
 
+	Controller::Controller()
+	{
+		checkSDL(SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER));
+	}
+
 	void Controller::addedEventHandler(const SDL_ControllerDeviceEvent& event)
 	{
 		if (!controller && checkSDLValue(SDL_IsGameController(event.which))) {
@@ -134,10 +134,6 @@ namespace Framework
 		if (event.which == checkSDLValue(SDL_JoystickInstanceID(joystick))) {
 			checkSDL(SDL_GameControllerClose(controller));
 			controller = nullptr;
-			axisLeftX = 0;
-			axisLeftY = 0;
-			axisRightX = 0;
-			axisRightY = 0;
 		}
 	}
 
@@ -152,8 +148,8 @@ namespace Framework
 		normalizedAxisLeftY = getNormalizedAxis(axisLeftY, axisLeftX);
 		normalizedAxisRightX = getNormalizedAxis(axisRightX, axisRightY);
 		normalizedAxisRightY = getNormalizedAxis(axisRightY, axisRightX);
-		axisTriggerLeft = (float)getAxis(SDL_CONTROLLER_AXIS_TRIGGERLEFT) / MAX_AXIS_VALUE;
-		axisTriggerLeft = (float)getAxis(SDL_CONTROLLER_AXIS_TRIGGERRIGHT) / MAX_AXIS_VALUE;
+		axisTriggerLeft = static_cast<float>(getAxis(SDL_CONTROLLER_AXIS_TRIGGERLEFT)) / MAX_AXIS_VALUE;
+		axisTriggerLeft = static_cast<float>(getAxis(SDL_CONTROLLER_AXIS_TRIGGERRIGHT)) / MAX_AXIS_VALUE;
 		buttonA = getButton(SDL_CONTROLLER_BUTTON_A);
 		buttonB = getButton(SDL_CONTROLLER_BUTTON_B);
 		buttonX = getButton(SDL_CONTROLLER_BUTTON_X);
@@ -171,13 +167,7 @@ namespace Framework
 		buttonRight = getButton(SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
 	}
 
-	float Controller::getNormalizedAxis(float axis, float otherAxis)
-	{
-		float distance = std::min((float)MAX_AXIS_VALUE, sqrtf(axis * axis + otherAxis * otherAxis));
-		return distance < DEAD_ZONE ? 0 : axis * (distance - DEAD_ZONE) / (MAX_AXIS_VALUE - DEAD_ZONE) / distance;
-	}
-
-	int16 Controller::getAxis(SDL_GameControllerAxis axis) const
+	Int16 Controller::getAxis(SDL_GameControllerAxis axis) const
 	{
 		return checkSDLValue(SDL_GameControllerGetAxis(controller, axis));
 	}
@@ -185,5 +175,11 @@ namespace Framework
 	bool Controller::getButton(SDL_GameControllerButton button) const
 	{
 		return checkSDLValue(SDL_GameControllerGetButton(controller, button));
+	}
+
+	float Controller::getNormalizedAxis(float axis, float otherAxis)
+	{
+		float distance = std::min(float{ MAX_AXIS_VALUE }, sqrtf(axis * axis + otherAxis * otherAxis));
+		return distance < DEAD_ZONE ? 0 : axis * (distance - DEAD_ZONE) / (MAX_AXIS_VALUE - DEAD_ZONE) / distance;
 	}
 }

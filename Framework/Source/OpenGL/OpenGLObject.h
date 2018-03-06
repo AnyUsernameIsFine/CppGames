@@ -10,9 +10,9 @@ namespace Framework
 		GLuint getId() const;
 
 	protected:
-		GLuint id = 0;
-
 		bool hasContext() const;
-		bool hasContext(const string& message) const;
+		bool hasContext(const std::string& message) const;
+
+		GLuint id = 0;
 	};
 }

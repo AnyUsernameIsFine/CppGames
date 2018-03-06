@@ -2,12 +2,12 @@
 
 namespace Framework
 {
-	const vector<Mesh::Vertex>& CubeMesh::getVertices() const
+	const std::vector<Mesh::Vertex>& CubeMesh::getVertices() const
 	{
 		return vertices;
 	}
 
-	const vector<GLushort>& CubeMesh::getIndices() const
+	const std::vector<GLushort>& CubeMesh::getIndices() const
 	{
 		return indices;
 	}
@@ -16,7 +16,7 @@ namespace Framework
 	{
 		Utility::StaticConstructor<&CubeMesh::initialize>::c;
 
-		vector<glm::vec3> positions;
+		std::vector<glm::vec3> positions;
 
 		for (int i = -1; i <= +1; i += 2) {
 			for (int j = -1; j <= +1; j += 2) {
@@ -26,7 +26,7 @@ namespace Framework
 			}
 		}
 
-		vector<vector<int>> faces = {
+		std::vector<std::vector<int>> faces = {
 			{ 0, 1, 3, 2 },
 			{ 0, 4, 5, 1 },
 			{ 0, 2, 6, 4 },
@@ -41,6 +41,6 @@ namespace Framework
 		indices = mesh.indices;
 	}
 
-	vector<Mesh::Vertex> CubeMesh::vertices;
-	vector<GLushort> CubeMesh::indices;
+	std::vector<Mesh::Vertex> CubeMesh::vertices;
+	std::vector<GLushort> CubeMesh::indices;
 }

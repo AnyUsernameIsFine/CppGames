@@ -1,12 +1,12 @@
 #include "Camera.h"
-#include "Universe.h"
+
+#include <iomanip>
+#include <limits>
+#include <sstream>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm\gtx\norm.hpp>
-
-#include <limits>
-#include <sstream>
-#include <iomanip>
+#include "Universe.h"
 
 namespace SpaceSimulator
 {
@@ -16,11 +16,6 @@ namespace SpaceSimulator
 			this->coordinateSystem = coordinateSystem;
 			createHierarchy();
 		}
-	}
-
-	CoordinateSystem* Camera::getCoordinateSystem() const
-	{
-		return coordinateSystem;
 	}
 
 	void Camera::setPosition(const Vector3& position)
@@ -34,32 +29,12 @@ namespace SpaceSimulator
 		setPosition({ x, y, z });
 	}
 
-	void Camera::move(const glm::vec3& vector)
+	CoordinateSystem* Camera::getCoordinateSystem() const
 	{
-		acceleration += vector;
+		return coordinateSystem;
 	}
 
-	void Camera::move(float x, float y, float z)
-	{
-		move({ x, y, z });
-	}
-
-	void Camera::moveX(float distance)
-	{
-		move({ distance, 0, 0 });
-	}
-
-	void Camera::moveY(float distance)
-	{
-		move({ 0, distance, 0 });
-	}
-
-	void Camera::moveZ(float distance)
-	{
-		move({ 0, 0, distance });
-	}
-
-	const vector<Camera::CameraHierarchyLevel>& Camera::getHierarchy() const
+	const std::vector<Camera::CameraHierarchyLevel>& Camera::getHierarchy() const
 	{
 		return hierarchy;
 	}
@@ -69,81 +44,11 @@ namespace SpaceSimulator
 		return glm::length(velocity) * coordinateSystem->getScale();
 	}
 
-	void Camera::update(float deltaSeconds)
-	{
-		if (glm::length2(velocity) > FLT_EPSILON || glm::length2(acceleration) > FLT_EPSILON) {
-			CoordinateSystem* parentCs = coordinateSystem->getParent();
-
-			// determine the maximum speed
-			float speed;
-
-			// if we are inside a descendant coordinate system of the universe,
-			// we move through it at max speed in four seconds (2 for its radius)
-			if (parentCs) {
-				speed = coordinateSystem->getRadius() * parentCs->getScale() / coordinateSystem->getScale() / 2;
-			}
-
-			// the maximum speed when moving through the universe
-			else {
-				speed = ((int64)1 << 7) * Galaxy::MAX_RADIUS * (Galaxy::SCALE / Universe::SCALE);
-			}
-
-			// if there are any children in this coordinate system,
-			// we need to move slower when close to one
-			if (!coordinateSystem->getChildren().empty()) {
-				Vector3 p = myTransform.getPosition();
-
-				// determine the distance to the edge of the closest child coordinate system
-				CoordinateSystem* childCs = nullptr;
-				float smallestDistance = std::numeric_limits<float>::max();
-				for (auto& child : coordinateSystem->getChildren()) {
-					float distance = p.distance(child->transform().getPosition()) - child->getRadius();
-					if (distance < smallestDistance) {
-						childCs = child.get();
-						smallestDistance = distance;
-					}
-				}
-
-				if (parentCs) {
-					smallestDistance *= 5.0f * coordinateSystem->getScale() / (parentCs->getScale() * coordinateSystem->getRadius());
-				}
-				else {
-					smallestDistance *= 0.02f / childCs->getRadius();
-				}
-
-				float lerp = (1 - cosf(fminf(fmaxf(0, smallestDistance), 1) * (float)M_PI)) / 2;
-
-				float minSpeed = childCs->getRadius() / 2;
-
-				speed = minSpeed * (1 - lerp) + speed * lerp;
-			}
-
-			if (glm::length2(acceleration) > FLT_EPSILON) {
-				velocity = (velocity + acceleration * speed) * 0.5f;
-				maxVelocity = velocity;
-				acceleration = glm::vec3(0);
-			}
-			else if (glm::length2(velocity) > speed * speed) {
-				velocity = (velocity + glm::normalize(velocity) * speed) * 0.5f;
-			}
-
-			myTransform.move(velocity * deltaSeconds);
-
-			velocity *= powf(0.5f, deltaSeconds * 10);
-
-			if (glm::length2(velocity) < glm::length2(maxVelocity) * 0.00001f) {
-				velocity = glm::vec3(0);
-			}
-
-			setCorrectCoordinateSystem();
-		}
-	}
-
-	string Camera::getSpeedString() const
+	std::string Camera::getSpeedString() const
 	{
 		double perHour = getSpeed() / 3600;
 
-		string units;
+		std::string units;
 
 		if (perHour > 9460730472580800 * 1e9) {
 			perHour /= 9460730472580800 * 1e9;
@@ -189,6 +94,101 @@ namespace SpaceSimulator
 		return out.str();
 	}
 
+	void Camera::move(const glm::vec3& vector)
+	{
+		acceleration += vector;
+	}
+
+	void Camera::move(float x, float y, float z)
+	{
+		move({ x, y, z });
+	}
+
+	void Camera::moveX(float distance)
+	{
+		move({ distance, 0, 0 });
+	}
+
+	void Camera::moveY(float distance)
+	{
+		move({ 0, distance, 0 });
+	}
+
+	void Camera::moveZ(float distance)
+	{
+		move({ 0, 0, distance });
+	}
+
+	void Camera::update(float deltaSeconds)
+	{
+		if (glm::length2(velocity) > FLT_EPSILON || glm::length2(acceleration) > FLT_EPSILON) {
+			CoordinateSystem* parentCs = coordinateSystem->getParent();
+
+			// determine the maximum speed
+			float speed;
+
+			// if we are inside a descendant coordinate system of the universe,
+			// we move through it at max speed in four seconds (2 for its radius)
+			if (parentCs) {
+				speed = coordinateSystem->getRadius() * parentCs->getScale() / coordinateSystem->getScale() / 2;
+			}
+
+			// the maximum speed when moving through the universe
+			else {
+				speed = (1 << 7) * Galaxy::MAX_RADIUS * (Galaxy::SCALE / Universe::SCALE);
+			}
+
+			// if there are any children in this coordinate system,
+			// we need to move slower when close to one
+			if (!coordinateSystem->getChildren().empty()) {
+				Vector3 p = myTransform.getPosition();
+
+				// determine the distance to the edge of the closest child coordinate system
+				CoordinateSystem* childCs = nullptr;
+				float smallestDistance = std::numeric_limits<float>::max();
+				for (const auto& child : coordinateSystem->getChildren()) {
+					float distance = p.distance(child->transform().getPosition()) - child->getRadius();
+					if (distance < smallestDistance) {
+						childCs = child.get();
+						smallestDistance = distance;
+					}
+				}
+
+				if (parentCs) {
+					smallestDistance *= 5.0f * coordinateSystem->getScale() / (parentCs->getScale() * coordinateSystem->getRadius());
+				}
+				else {
+					smallestDistance *= 0.02f / childCs->getRadius();
+				}
+
+				float lerp = (1 - cosf(fminf(fmaxf(0, smallestDistance), 1) * static_cast<float>(M_PI))) / 2;
+
+				float minSpeed = childCs->getRadius() / 2;
+
+				speed = minSpeed * (1 - lerp) + speed * lerp;
+			}
+
+			if (glm::length2(acceleration) > FLT_EPSILON) {
+				velocity = (velocity + acceleration * speed) * 0.5f;
+				maxVelocity = velocity;
+				acceleration = glm::vec3(0);
+			}
+			else if (glm::length2(velocity) > speed * speed) {
+				velocity = (velocity + glm::normalize(velocity) * speed) * 0.5f;
+			}
+
+			myTransform.move(velocity * deltaSeconds);
+
+			velocity *= powf(0.5f, deltaSeconds * 10);
+
+			if (glm::length2(velocity) < glm::length2(maxVelocity) * 0.00001f) {
+				velocity = glm::vec3(0);
+			}
+
+			setCorrectCoordinateSystem();
+		}
+	}
+
 	void Camera::setCorrectCoordinateSystem()
 	{
 		CoordinateSystem* cs = coordinateSystem;
@@ -219,7 +219,7 @@ namespace SpaceSimulator
 		else if (!cs->getChildren().empty()) {
 			CoordinateSystem* childCs = nullptr;
 
-			for (auto& child : cs->getChildren()) {
+			for (const auto& child : cs->getChildren()) {
 				Vector3 position = p - child->transform().getPosition();
 				float r = child->getRadius() * 0.98f;
 				if (position.lengthSquared() < r * r) {
@@ -257,9 +257,9 @@ namespace SpaceSimulator
 	void Camera::createHierarchy()
 	{
 		CameraHierarchyLevel ch = {
-		coordinateSystem,
-		glm::mat4(1),
-		myTransform.getPosition()
+			coordinateSystem,
+			glm::mat4(1),
+			myTransform.getPosition()
 		};
 
 		hierarchy = { ch };

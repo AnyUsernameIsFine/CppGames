@@ -1,15 +1,16 @@
 #include "Star.h"
+
 #include "Galaxy.h"
 
 namespace SpaceSimulator
 {
 #ifdef UNIVERSE_SCALE
 #	if UNIVERSE_SCALE == 0
-	const float Star::SCALE = (int64)1 << 8;
+	const float Star::SCALE = 1 << 8;
 #	elif UNIVERSE_SCALE == 1
-	const float Star::SCALE = (int64)1 << 14;
+	const float Star::SCALE = 1 << 14;
 #	endif
-	const float Star::MAX_RADIUS = (int64)1 << 62;
+	const float Star::MAX_RADIUS = Int64{ 1 } << 62;
 #else
 	// About 1.6 centimers per unit.
 	// Allows for stars (and their planetary systems) with a radius of over 480,000 AU
@@ -31,7 +32,7 @@ namespace SpaceSimulator
 	{
 		this->parent = parent;
 		this->radius = radius;
-		name = "Star #" + std::to_string((uInt)Random::randInt());
+		name = "Star #" + std::to_string(static_cast<UInt>(Random::randInt()));
 		setMesh<OctahedronMesh>();
 	}
 
@@ -59,16 +60,16 @@ namespace SpaceSimulator
 	{
 		float maxRadius = Planet::MAX_RADIUS * (Planet::SCALE / SCALE);
 
-		int numberOfPlanets = Random::randInt(1, 10);
+		int numPlanets = Random::randInt(1, 10);
 
-		for (int i = 0; i < numberOfPlanets; i++) {
+		for (int i = 0; i < numPlanets; i++) {
 			float r = Random::randFloat();
 			float planetRadius = maxRadius * (0.5f + 0.5f * r * r);
 
 			auto planet = std::make_shared<Planet>(this, planetRadius);
 
 			glm::vec2 v = glm::diskRand(0.8f * radius * parent->getScale() / getScale());
-			planet->transform().setPosition({ (Coordinate)v.x, 0, (Coordinate)v.y });
+			planet->transform().setPosition(Vector3::fromVec3({ v.x, v.y, 0 }));
 
 			r = Random::randFloat();
 			planet->transform().rotate(45.0f * r * r, glm::sphericalRand(1.0f));

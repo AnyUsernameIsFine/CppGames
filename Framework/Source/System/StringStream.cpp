@@ -2,10 +2,10 @@
 
 namespace Framework
 {
-	StringStream::StringStream(void callback(const StringStream&, void*), const void* data, uInt dataLength)
+	StringStream::StringStream(void callback(const StringStream&, void*), const void* data, int dataLength)
 	{
 		this->callback = callback;
-		this->callbackData = new byte[dataLength];
+		this->callbackData = new Byte[dataLength];
 		memcpy(this->callbackData, data, dataLength);
 	}
 
@@ -17,7 +17,19 @@ namespace Framework
 		}
 	}
 
-	string StringStream::getString() const
+	StringStream& StringStream::operator<<(const StringStream& stream)
+	{
+		oStringStream << stream.oStringStream.str();
+		return *this;
+	}
+
+	StringStream& StringStream::operator<<(std::ostream& function(std::ostream&))
+	{
+		function(oStringStream);
+		return *this;
+	}
+
+	std::string StringStream::getString() const
 	{
 		return oStringStream.str();
 	}
@@ -36,18 +48,6 @@ namespace Framework
 			error("String conversion failed");
 			return U"";
 		}
-	}
-
-	StringStream& StringStream::operator<<(const StringStream& stream)
-	{
-		oStringStream << stream.oStringStream.str();
-		return *this;
-	}
-
-	StringStream& StringStream::operator<<(std::ostream& function(std::ostream&))
-	{
-		function(oStringStream);
-		return *this;
 	}
 
 	StringStream::Utf8Converter StringStream::utf8Converter;

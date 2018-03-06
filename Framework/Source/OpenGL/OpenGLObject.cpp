@@ -14,7 +14,7 @@ namespace Framework
 		return SDL_GL_GetCurrentContext();
 	}
 
-	bool OpenGLObject::hasContext(const string& message) const
+	bool OpenGLObject::hasContext(const std::string& message) const
 	{
 		if (!hasContext()) {
 			error(message + ": No active OpenGL context");

@@ -1,8 +1,7 @@
 #pragma once
 
-#include "System\Globals.h"
-
 #include <SDL_video.h>
+#include "System\Globals.h"
 
 namespace Framework
 {
@@ -10,7 +9,7 @@ namespace Framework
 	{
 	public:
 		~Window();
-		void setTitle(const string& title);
+		void setTitle(const std::string& title);
 		void setSize(int width, int height);
 		void enableFullscreen(bool enable = true);
 		void enableResizing(bool enable = true);
@@ -21,9 +20,16 @@ namespace Framework
 		int getHeight() const;
 
 	private:
+		Window();
+		bool create();
+		bool activateOpenGL();
+		void update();
+		void resizedEventHandler(int width, int height);
+		void applySize();
+
 		SDL_Window* window;
 		SDL_DisplayMode closestDisplayMode;
-		string title = "New window";
+		std::string title = "New window";
 		int width = 640;
 		int height = 480;
 		bool resizing = false;
@@ -35,13 +41,6 @@ namespace Framework
 		bool hasResized = false;
 		int resizedWidth;
 		int resizedHeight;
-
-		Window();
-		bool create();
-		bool activateOpenGL();
-		void update();
-		void resizedEventHandler(int width, int height);
-		void applySize();
 
 		friend class Graphics;
 	};

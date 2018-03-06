@@ -1,10 +1,9 @@
 #pragma once
 
-#include "System\Globals.h"
-
-#include "SDL_events.h"
-
 #include <unordered_map>
+
+#include <SDL_events.h>
+#include "System\Globals.h"
 
 namespace Framework
 {
@@ -35,11 +34,23 @@ namespace Framework
 		bool right() const;
 
 	private:
+		static constexpr int MAX_AXIS_VALUE = 1 << 15;
+		static constexpr int DEAD_ZONE = 1 << 12;
+
+		Controller();
+		void addedEventHandler(const SDL_ControllerDeviceEvent& event);
+		void removedEventHandler(const SDL_ControllerDeviceEvent& event);
+		void update();
+		Int16 getAxis(SDL_GameControllerAxis axis) const;
+		bool getButton(SDL_GameControllerButton button) const;
+
+		static float getNormalizedAxis(float axis, float otherAxis);
+
 		SDL_GameController* controller = nullptr;
-		int16 axisLeftX;
-		int16 axisLeftY;
-		int16 axisRightX;
-		int16 axisRightY;
+		Int16 axisLeftX;
+		Int16 axisLeftY;
+		Int16 axisRightX;
+		Int16 axisRightY;
 		float normalizedAxisLeftX;
 		float normalizedAxisLeftY;
 		float normalizedAxisRightX;
@@ -61,17 +72,6 @@ namespace Framework
 		bool buttonDown;
 		bool buttonLeft;
 		bool buttonRight;
-
-		static const int MAX_AXIS_VALUE = 1 << 15;
-		static const int DEAD_ZONE = 1 << 12;
-
-		Controller();
-		void addedEventHandler(const SDL_ControllerDeviceEvent& event);
-		void removedEventHandler(const SDL_ControllerDeviceEvent& event);
-		void update();
-		static float getNormalizedAxis(float axis, float otherAxis);
-		int16 getAxis(SDL_GameControllerAxis axis) const;
-		bool getButton(SDL_GameControllerButton button) const;
 
 		friend class Input;
 	};

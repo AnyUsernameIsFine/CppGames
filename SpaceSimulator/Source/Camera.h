@@ -17,27 +17,27 @@ namespace SpaceSimulator
 		};
 
 		void setCoordinateSystem(CoordinateSystem* coordinateSystem);
-		CoordinateSystem* getCoordinateSystem() const;
 		void setPosition(const Vector3& position);
 		void setPosition(Coordinate x, Coordinate y, Coordinate z);
+		CoordinateSystem* getCoordinateSystem() const;
+		const std::vector<CameraHierarchyLevel>& getHierarchy() const;
+		float getSpeed() const;
+		std::string getSpeedString() const;
 		void move(const glm::vec3& vector);
 		void move(float x, float y, float z);
 		void moveX(float distance);
 		void moveY(float distance);
 		void moveZ(float distance);
 		void update(float deltaSeconds);
-		const vector<CameraHierarchyLevel>& getHierarchy() const;
-		float getSpeed() const;
-		string getSpeedString() const;
 
 	private:
+		void setCorrectCoordinateSystem();
+		void createHierarchy();
+
 		CoordinateSystem* coordinateSystem;
 		glm::vec3 velocity;
 		glm::vec3 maxVelocity;
 		glm::vec3 acceleration;
-		vector<CameraHierarchyLevel> hierarchy;
-
-		void setCorrectCoordinateSystem();
-		void createHierarchy();
+		std::vector<CameraHierarchyLevel> hierarchy;
 	};
 }

@@ -4,16 +4,16 @@ namespace SpaceSimulator
 {
 #ifdef UNIVERSE_SCALE
 #	if UNIVERSE_SCALE == 0
-	const float Universe::SCALE = (int64)1 << 40;
+	const float Universe::SCALE = Int64{ 1 } << 40;
 #	elif UNIVERSE_SCALE == 1
-	const float Universe::SCALE = (int64)1 << 59;
+	const float Universe::SCALE = Int64{ 1 } << 59;
 #	endif
 	const int Universe::GALAXIES_PER_SIDE = 4;
 #else
 	// About 1.9 light-years per unit.
 	// Gives a universe with a radius of almost 9 million million million light-years
 	// when using 64 bit integers. One light-year is 9,460,730,472,580,800 meters.
-	const float Universe::SCALE = (int64)1 << 53;
+	const float Universe::SCALE = Int64{ 1 } << 53;
 	const int Universe::GALAXIES_PER_SIDE = 16;
 #endif
 	const glm::vec4 Universe::COLOR = { 1, 1, 1, 1 };
@@ -24,7 +24,7 @@ namespace SpaceSimulator
 		radius = 1;
 		name = "Universe";
 
-		children = vector<std::shared_ptr<CoordinateSystem>>
+		children = std::vector<std::shared_ptr<CoordinateSystem>>
 			(GALAXIES_PER_SIDE * GALAXIES_PER_SIDE * GALAXIES_PER_SIDE);
 	}
 
@@ -48,9 +48,9 @@ namespace SpaceSimulator
 		Vector3 positionInUniverse(0);
 
 		updateCameraPosition = Vector3(
-			(Coordinate)floor(positionInUniverse.x / PERIOD),
-			(Coordinate)floor(positionInUniverse.y / PERIOD),
-			(Coordinate)floor(positionInUniverse.z / PERIOD)
+			static_cast<Coordinate>(floor(positionInUniverse.x / PERIOD)),
+			static_cast<Coordinate>(floor(positionInUniverse.y / PERIOD)),
+			static_cast<Coordinate>(floor(positionInUniverse.z / PERIOD))
 		);
 
 		updateIndex = glm::vec3(0);
@@ -63,9 +63,9 @@ namespace SpaceSimulator
 		Vector3 positionInUniverse = camera.getHierarchy()[0].position;
 
 		Vector3 offset = Vector3(
-			(Coordinate)floor(positionInUniverse.x / PERIOD),
-			(Coordinate)floor(positionInUniverse.y / PERIOD),
-			(Coordinate)floor(positionInUniverse.z / PERIOD)
+			static_cast<Coordinate>(floor(positionInUniverse.x / PERIOD)),
+			static_cast<Coordinate>(floor(positionInUniverse.y / PERIOD)),
+			static_cast<Coordinate>(floor(positionInUniverse.z / PERIOD))
 		) - updateCameraPosition;
 
 		if (offset != Vector3(0)) {
@@ -77,7 +77,7 @@ namespace SpaceSimulator
 	{
 		auto hierarchy = camera.getHierarchy();
 
-		vector<vector<vector<DrawConfiguration>>> toDrawList(hierarchy.size(), vector<vector<DrawConfiguration>>(3));
+		std::vector<std::vector<std::vector<DrawConfiguration>>> toDrawList(hierarchy.size(), std::vector<std::vector<DrawConfiguration>>(3));
 
 		drawWithChildren(toDrawList, hierarchy);
 
@@ -124,42 +124,46 @@ namespace SpaceSimulator
 						offset.x != 0 && wrapX == (x < minX || x >= maxX) ||
 						offset.y != 0 && wrapY == (y < minY || y >= maxY) ||
 						offset.z != 0 && wrapZ == (z < minZ || z >= maxZ)) {
-
-						Vector3 p(
-							(x + GALAXIES_PER_SIDE - updateIndex.x) % GALAXIES_PER_SIDE,
-							(y + GALAXIES_PER_SIDE - updateIndex.y) % GALAXIES_PER_SIDE,
-							(z + GALAXIES_PER_SIDE - updateIndex.z) % GALAXIES_PER_SIDE
-						);
-
-						Random::setRandSeed(Random::uInt32FromByteArray(&(updateCameraPosition + p), 24));
-
-						float r = Random::randFloat();
-						float maxRadius = Galaxy::MAX_RADIUS * Galaxy::SCALE / SCALE;
-						float galaxyRadius = maxRadius * (0.5f + 0.5f * r * r);
-
-						auto galaxy = std::make_shared<Galaxy>(this, galaxyRadius);
-
-						glm::vec3 v = {
-							updateCameraPosition.toVec3() +
-							glm::vec3(1 - 0.5f * GALAXIES_PER_SIDE) +
-							glm::vec3(
-								Random::randFloat(-0.4f, 0.4f),
-								Random::randFloat(-0.4f, 0.4f),
-								Random::randFloat(-0.4f, 0.4f)
-							)
-						};
-
-						galaxy->transform().setPosition(p * PERIOD + Vector3::fromVec3(v * PERIOD));
-
-						r = Random::randFloat();
-						galaxy->transform().rotate(360 * r, glm::sphericalRand(1.0f));
-
-						galaxy->create();
-
-						children[x + (y + z * GALAXIES_PER_SIDE) * GALAXIES_PER_SIDE] = galaxy;
+						addGalaxy(x, y, z);
 					}
 				}
 			}
 		}
+	}
+
+	void Universe::addGalaxy(int x, int y, int z)
+	{
+		Vector3 p(
+			(x + GALAXIES_PER_SIDE - updateIndex.x) % GALAXIES_PER_SIDE,
+			(y + GALAXIES_PER_SIDE - updateIndex.y) % GALAXIES_PER_SIDE,
+			(z + GALAXIES_PER_SIDE - updateIndex.z) % GALAXIES_PER_SIDE
+		);
+
+		Random::setRandSeed(Random::UInt32FromByteArray(&(updateCameraPosition + p), 24));
+
+		float r = Random::randFloat();
+		float maxRadius = Galaxy::MAX_RADIUS * Galaxy::SCALE / SCALE;
+		float galaxyRadius = maxRadius * (0.5f + 0.5f * r * r);
+
+		auto galaxy = std::make_shared<Galaxy>(this, galaxyRadius);
+
+		glm::vec3 v = {
+			updateCameraPosition.toVec3() +
+			glm::vec3(1 - 0.5f * GALAXIES_PER_SIDE) +
+			glm::vec3(
+				Random::randFloat(-0.4f, 0.4f),
+				Random::randFloat(-0.4f, 0.4f),
+				Random::randFloat(-0.4f, 0.4f)
+			)
+		};
+
+		galaxy->transform().setPosition(p * PERIOD + Vector3::fromVec3(v * PERIOD));
+
+		r = Random::randFloat();
+		galaxy->transform().rotate(360 * r, glm::sphericalRand(1.0f));
+
+		galaxy->create();
+
+		children[x + (y + z * GALAXIES_PER_SIDE) * GALAXIES_PER_SIDE] = galaxy;
 	}
 }

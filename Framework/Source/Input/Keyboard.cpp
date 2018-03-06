@@ -2,6 +2,11 @@
 
 namespace Framework
 {
+	Keyboard::~Keyboard()
+	{
+		delete[] fixedKeyboardState;
+	}
+
 	bool Keyboard::key(SDL_Keycode key) const
 	{
 		return fixedKeyboardState[checkSDLValue(SDL_GetScancodeFromKey(key))];
@@ -9,18 +14,13 @@ namespace Framework
 
 	Keyboard::Keyboard()
 	{
-		keyboardState = checkSDLValue(SDL_GetKeyboardState(&numberOfKeys));
+		keyboardState = checkSDLValue(SDL_GetKeyboardState(&numKeys));
 
-		fixedKeyboardState = new Uint8[numberOfKeys];
-	}
-
-	Keyboard::~Keyboard()
-	{
-		delete[] fixedKeyboardState;
+		fixedKeyboardState = new UInt8[numKeys];
 	}
 
 	void Keyboard::update()
 	{
-		memcpy(fixedKeyboardState, keyboardState, numberOfKeys * sizeof(keyboardState[0]));
+		memcpy(fixedKeyboardState, keyboardState, numKeys * sizeof(keyboardState[0]));
 	}
 }
