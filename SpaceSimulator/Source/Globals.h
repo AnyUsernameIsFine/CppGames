@@ -2,11 +2,11 @@
 
 #define GLM_FORCE_INLINE
 
-#include <Framework.h>
+#include <GLEngine.h>
 
 namespace SpaceSimulator
 {
-	using namespace Framework;
+	using namespace GLEngine;
 
 	using Coordinate = Int64;
 	using Vector3 = Vector3Type<Coordinate>;

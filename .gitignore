@@ -260,5 +260,5 @@ paket-files/
 __pycache__/
 *.pyc
 
-## Do include everything in the Framework/Dependencies folder
-!Framework/Dependencies/**
+## Do include everything in the GLEngine/Dependencies folder
+!GLEngine/Dependencies/**

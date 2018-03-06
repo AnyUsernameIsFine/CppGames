@@ -18,34 +18,95 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Input\Controller.h" />
+    <ClInclude Include="Source\Input\Mouse.h" />
+    <ClInclude Include="Source\Input\Keyboard.h" />
+    <ClInclude Include="Source\3D\GameObject.h" />
+    <ClInclude Include="Source\3D\Meshes\Tetrahedron.h" />
+    <ClInclude Include="Source\Graphics\FontPacker.h" />
+    <ClInclude Include="Source\3D\Camera.h" />
+    <ClInclude Include="Source\3D\Mesh.h" />
+    <ClInclude Include="Source\3D\Meshes\Cube.h" />
+    <ClInclude Include="Source\3D\Meshes\Dodecahedron.h" />
+    <ClInclude Include="Source\3D\Meshes\Icosahedron.h" />
+    <ClInclude Include="Source\3D\Meshes\Octahedron.h" />
+    <ClInclude Include="Source\3D\Meshes\PlatonicSolidMesh.h" />
+    <ClInclude Include="Source\3D\Transform.h" />
+    <ClInclude Include="Source\3D\Vector3.h" />
+    <ClInclude Include="Source\GLEngine.h" />
+    <ClInclude Include="Source\Graphics\Font.h" />
+    <ClInclude Include="Source\Graphics\FontSize.h" />
+    <ClInclude Include="Source\Graphics\Graphics.h" />
+    <ClInclude Include="Source\Graphics\Text.h" />
+    <ClInclude Include="Source\Graphics\Window.h" />
+    <ClInclude Include="Source\Input\Input.h" />
+    <ClInclude Include="Source\OpenGL\OpenGLObject.h" />
+    <ClInclude Include="Source\OpenGL\Shader.h" />
+    <ClInclude Include="Source\OpenGL\Texture2D.h" />
+    <ClInclude Include="Source\System\Game.h" />
+    <ClInclude Include="Source\System\Globals.h" />
+    <ClInclude Include="Source\System\Random.h" />
+    <ClInclude Include="Source\System\TimePoint.h" />
+    <ClInclude Include="Source\System\StringStream.h" />
+    <ClInclude Include="Source\OpenGL\VertexArray.h" />
+    <ClInclude Include="Source\System\Utility.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Input\Controller.cpp" />
+    <ClCompile Include="Source\Input\Mouse.cpp" />
+    <ClCompile Include="Source\Input\Keyboard.cpp" />
+    <ClCompile Include="Source\3D\Meshes\Tetrahedron.cpp" />
+    <ClCompile Include="Source\Graphics\FontPacker.cpp" />
+    <ClCompile Include="Source\3D\Meshes\Cube.cpp" />
+    <ClCompile Include="Source\3D\Meshes\Dodecahedron.cpp" />
+    <ClCompile Include="Source\3D\Meshes\Icosahedron.cpp" />
+    <ClCompile Include="Source\3D\Meshes\Octahedron.cpp" />
+    <ClCompile Include="Source\3D\Meshes\PlatonicSolidMesh.cpp" />
+    <ClCompile Include="Source\Graphics\Font.cpp" />
+    <ClCompile Include="Source\Graphics\FontSize.cpp" />
+    <ClCompile Include="Source\Graphics\Graphics.cpp" />
+    <ClCompile Include="Source\Graphics\Text.cpp" />
+    <ClCompile Include="Source\Graphics\Window.cpp" />
+    <ClCompile Include="Source\Input\Input.cpp" />
+    <ClCompile Include="Source\OpenGL\OpenGLObject.cpp" />
+    <ClCompile Include="Source\OpenGL\Shader.cpp" />
+    <ClCompile Include="Source\OpenGL\Texture2D.cpp" />
+    <ClCompile Include="Source\System\Game.cpp" />
+    <ClCompile Include="Source\System\Random.cpp" />
+    <ClCompile Include="Source\System\TimePoint.cpp" />
+    <ClCompile Include="Source\System\StringStream.cpp" />
+    <ClCompile Include="Source\OpenGL\VertexArray.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{04D38BBA-C3CB-4617-A64E-66E746A13FD4}</ProjectGuid>
-    <RootNamespace>SpaceSimulator</RootNamespace>
+    <ProjectGuid>{833D7DF2-0746-4DA6-87D3-8A5C6953103A}</ProjectGuid>
+    <RootNamespace>GLEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <ProjectName>GLEngine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -80,7 +141,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>Dependencies\freetype-2.8\lib;Dependencies\glew-2.1.0\lib\Release\Win32;Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;opengl32.lib;glew32s.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -88,7 +154,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>Dependencies\freetype-2.8\lib;Dependencies\glew-2.1.0\lib\Release\Win32;Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;opengl32.lib;glew32s.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -98,11 +169,16 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>Dependencies\freetype-2.8\lib;Dependencies\glew-2.1.0\lib\Release\Win32;Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;opengl32.lib;glew32s.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -112,45 +188,17 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>Dependencies\freetype-2.8\lib;Dependencies\glew-2.1.0\lib\Release\Win32;Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;opengl32.lib;glew32s.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <None Include="Resources\coordinateSystem.frag" />
-    <None Include="Resources\coordinateSystem.vert" />
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="Resources\consola.ttf" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GLEngine\GLEngine.vcxproj">
-      <Project>{833d7df2-0746-4da6-87d3-8a5c6953103a}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Source\Globals.h" />
-    <ClInclude Include="Source\Camera.h" />
-    <ClInclude Include="Source\CoordinateSystem.h" />
-    <ClInclude Include="Source\Galaxy.h" />
-    <ClInclude Include="Source\Main.h" />
-    <ClInclude Include="Source\Moon.h" />
-    <ClInclude Include="Source\Planet.h" />
-    <ClInclude Include="Source\Star.h" />
-    <ClInclude Include="Source\Universe.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Source\Camera.cpp" />
-    <ClCompile Include="Source\CoordinateSystem.cpp" />
-    <ClCompile Include="Source\Galaxy.cpp" />
-    <ClCompile Include="Source\Main.cpp" />
-    <ClCompile Include="Source\Moon.cpp" />
-    <ClCompile Include="Source\Planet.cpp" />
-    <ClCompile Include="Source\Star.cpp" />
-    <ClCompile Include="Source\Universe.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

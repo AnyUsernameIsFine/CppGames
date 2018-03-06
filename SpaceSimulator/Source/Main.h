@@ -5,7 +5,7 @@
 
 namespace SpaceSimulator
 {
-	class Game : public Framework::Game
+	class Game : public GLEngine::Game
 	{
 	public:
 		Universe universe;
@@ -18,7 +18,7 @@ namespace SpaceSimulator
 			graphics.window.setSize(960, 540);
 			//graphics.window.enableFullscreen();
 			//graphics.window.enableResizing();
-			graphics.window.enableCursor(false);
+			//graphics.window.enableCursor();
 			//graphics.window.enableVSync(false);
 			graphics.window.enableAntiAliasing();
 		}
@@ -31,7 +31,7 @@ namespace SpaceSimulator
 
 			CoordinateSystem::initialize();
 
-			camera.setAspectRatio(static_cast<float>(graphics.window.getWidth()) / graphics.window.getHeight());
+			camera.setAspectRatio(graphics.window.getWidth(), graphics.window.getHeight());
 
 			generateUniverse();
 		}

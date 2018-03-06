@@ -7,7 +7,7 @@
 
 namespace LearnOpenGL
 {
-	class Game : public Framework::Game
+	class Game : public GLEngine::Game
 	{
 	public:
 		Camera camera;
@@ -25,10 +25,10 @@ namespace LearnOpenGL
 		Game()
 		{
 			graphics.window.setTitle("Learn OpenGL");
-			graphics.window.setSize(800, 600);
+			//graphics.window.setSize(1920, 1080);
 			//graphics.window.enableFullscreen();
 			//graphics.window.enableResizing();
-			graphics.window.enableCursor(false);
+			//graphics.window.enableCursor();
 			//graphics.window.enableVSync(false);
 			graphics.window.enableAntiAliasing();
 		}
@@ -56,7 +56,7 @@ namespace LearnOpenGL
 			light.transform().scale(0.25f);
 
 			struct Vertex { float x, y, u, v; };
-			Vertex fontVertices[] = {
+			std::vector<Vertex> fontVertices = {
 				{ -1, -1,	0, 1 },
 				{  1, -1,	1, 1 },
 				{ -1,  1,	0, 0 },
@@ -66,7 +66,7 @@ namespace LearnOpenGL
 			fontShader.createFromFiles("Resources/font.vert", "Resources/font.frag");
 			fontShader.use();
 			fontShader.setUniform("fontTexture", 0);
-			fontVertexArray.setVertexBuffer({ 2, 2 }, 4, fontVertices);
+			fontVertexArray.setVertexBuffer({ 2, 2 }, fontVertices);
 
 			texture1.createFromFile("Resources/journey.jpg");
 			texture2.createFromFile("Resources/flow.jpg");
@@ -79,13 +79,13 @@ namespace LearnOpenGL
 			shapeVertexArray.setIndexBuffer(108 + 1); // why one more???
 
 			lightShader.createFromFiles("Resources/light.vert", "Resources/light.frag");
-			lightVertexArray.setVertexBuffer({ 3, 3, 2 }, light.mesh().getVertices().size(), light.mesh().getVertices().data());
-			lightVertexArray.setIndexBuffer(light.mesh().getIndices().size(), light.mesh().getIndices().data());
+			lightVertexArray.setVertexBuffer({ 3, 3, 2 }, light.mesh().getVertices());
+			lightVertexArray.setIndexBuffer(light.mesh().getIndices());
 		}
 
 		void update(float deltaSeconds)
 		{
-			camera.setAspectRatio(static_cast<float>(graphics.window.getWidth()) / graphics.window.getHeight());
+			camera.setAspectRatio(graphics.window.getWidth(), graphics.window.getHeight());
 
 			if (input.keyboard.key(SDLK_p)) {
 				camera.usePerspective(!camera.usesPerspective());
@@ -158,10 +158,8 @@ namespace LearnOpenGL
 			for (auto& shape : shapes) {
 				glm::mat4 model = shape.transform().getModelMatrix();
 				shapeShader.setUniform("model", model);
-				auto vertices = shape.mesh().getVertices();
-				auto indices = shape.mesh().getIndices();
-				shapeVertexArray.updateVertexBuffer(vertices.size(), vertices.data());
-				shapeVertexArray.updateIndexBuffer(indices.size(), indices.data());
+				shapeVertexArray.updateVertexBuffer(shape.mesh().getVertices());
+				shapeVertexArray.updateIndexBuffer(shape.mesh().getIndices());
 				shapeVertexArray.draw(GL_TRIANGLES);
 			}
 

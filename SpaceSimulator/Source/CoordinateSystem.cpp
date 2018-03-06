@@ -181,12 +181,9 @@ namespace SpaceSimulator
 
 			for (const auto& list : toDrawList[i]) {
 				if (!list.empty() && list[0].cs->hasMesh()) {
-					auto vertices = list[0].cs->mesh().getVertices();
-					auto indices = list[0].cs->mesh().getIndices();
-
-					vertexArray.updateVertexBuffer(vertices.size(), vertices.data());
-					vertexArray.updateIndexBuffer(indices.size(), indices.data());
-					vertexArray.updateInstanceBuffer(list.size(), list.data());
+					vertexArray.updateVertexBuffer(list[0].cs->mesh().getVertices());
+					vertexArray.updateIndexBuffer(list[0].cs->mesh().getIndices());
+					vertexArray.updateInstanceBuffer(list);
 					vertexArray.draw(GL_TRIANGLES);
 				}
 			}
