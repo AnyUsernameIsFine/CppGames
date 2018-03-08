@@ -139,32 +139,35 @@ namespace GLEngine
 
 	void Controller::update()
 	{
-		axisLeftX = getAxis(SDL_CONTROLLER_AXIS_LEFTX);
-		axisLeftY = getAxis(SDL_CONTROLLER_AXIS_LEFTY);
-		axisRightX = getAxis(SDL_CONTROLLER_AXIS_RIGHTX);
-		axisRightY = getAxis(SDL_CONTROLLER_AXIS_RIGHTY);
+		// TODO: optimize; these function calls seem to be somewhat expensive
+		if (controller) {
+			axisLeftX = getAxis(SDL_CONTROLLER_AXIS_LEFTX);
+			axisLeftY = getAxis(SDL_CONTROLLER_AXIS_LEFTY);
+			axisRightX = getAxis(SDL_CONTROLLER_AXIS_RIGHTX);
+			axisRightY = getAxis(SDL_CONTROLLER_AXIS_RIGHTY);
 
-		normalizedAxisLeftX = getNormalizedAxis(axisLeftX, axisLeftY);
-		normalizedAxisLeftY = getNormalizedAxis(axisLeftY, axisLeftX);
-		normalizedAxisRightX = getNormalizedAxis(axisRightX, axisRightY);
-		normalizedAxisRightY = getNormalizedAxis(axisRightY, axisRightX);
-		axisTriggerLeft = static_cast<float>(getAxis(SDL_CONTROLLER_AXIS_TRIGGERLEFT)) / MAX_AXIS_VALUE;
-		axisTriggerLeft = static_cast<float>(getAxis(SDL_CONTROLLER_AXIS_TRIGGERRIGHT)) / MAX_AXIS_VALUE;
-		buttonA = getButton(SDL_CONTROLLER_BUTTON_A);
-		buttonB = getButton(SDL_CONTROLLER_BUTTON_B);
-		buttonX = getButton(SDL_CONTROLLER_BUTTON_X);
-		buttonY = getButton(SDL_CONTROLLER_BUTTON_Y);
-		buttonBack = getButton(SDL_CONTROLLER_BUTTON_BACK);
-		buttonGuide = getButton(SDL_CONTROLLER_BUTTON_GUIDE);
-		buttonStart = getButton(SDL_CONTROLLER_BUTTON_START);
-		buttonLeftStick = getButton(SDL_CONTROLLER_BUTTON_LEFTSTICK);
-		buttonRightStick = getButton(SDL_CONTROLLER_BUTTON_RIGHTSTICK);
-		buttonLeftShoulder = getButton(SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
-		buttonRightShoulder = getButton(SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
-		buttonUp = getButton(SDL_CONTROLLER_BUTTON_DPAD_UP);
-		buttonDown = getButton(SDL_CONTROLLER_BUTTON_DPAD_DOWN);
-		buttonLeft = getButton(SDL_CONTROLLER_BUTTON_DPAD_LEFT);
-		buttonRight = getButton(SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+			normalizedAxisLeftX = getNormalizedAxis(axisLeftX, axisLeftY);
+			normalizedAxisLeftY = getNormalizedAxis(axisLeftY, axisLeftX);
+			normalizedAxisRightX = getNormalizedAxis(axisRightX, axisRightY);
+			normalizedAxisRightY = getNormalizedAxis(axisRightY, axisRightX);
+			axisTriggerLeft = static_cast<float>(getAxis(SDL_CONTROLLER_AXIS_TRIGGERLEFT)) / MAX_AXIS_VALUE;
+			axisTriggerLeft = static_cast<float>(getAxis(SDL_CONTROLLER_AXIS_TRIGGERRIGHT)) / MAX_AXIS_VALUE;
+			buttonA = getButton(SDL_CONTROLLER_BUTTON_A);
+			buttonB = getButton(SDL_CONTROLLER_BUTTON_B);
+			buttonX = getButton(SDL_CONTROLLER_BUTTON_X);
+			buttonY = getButton(SDL_CONTROLLER_BUTTON_Y);
+			buttonBack = getButton(SDL_CONTROLLER_BUTTON_BACK);
+			buttonGuide = getButton(SDL_CONTROLLER_BUTTON_GUIDE);
+			buttonStart = getButton(SDL_CONTROLLER_BUTTON_START);
+			buttonLeftStick = getButton(SDL_CONTROLLER_BUTTON_LEFTSTICK);
+			buttonRightStick = getButton(SDL_CONTROLLER_BUTTON_RIGHTSTICK);
+			buttonLeftShoulder = getButton(SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
+			buttonRightShoulder = getButton(SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
+			buttonUp = getButton(SDL_CONTROLLER_BUTTON_DPAD_UP);
+			buttonDown = getButton(SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+			buttonLeft = getButton(SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+			buttonRight = getButton(SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+		}
 	}
 
 	Int16 Controller::getAxis(SDL_GameControllerAxis axis) const

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <unordered_map>
 
 #include "OpenGLObject.h"
@@ -33,6 +34,7 @@ namespace GLEngine
 	private:
 		struct VertexBuffer
 		{
+			GLuint id;
 			GLsizei numVertices;
 			std::vector<GLint> attributes;
 			GLsizei attributesSize;
@@ -41,12 +43,14 @@ namespace GLEngine
 
 		struct IndexBuffer
 		{
+			GLuint id;
 			GLsizei numIndices;
 			int numReferences = 1;
 		};
 
 		struct InstanceBuffer
 		{
+			GLuint id;
 			GLsizei numInstances;
 			std::vector<GLint> attributes;
 			GLsizei attributesSize;
@@ -57,17 +61,19 @@ namespace GLEngine
 		void enableVertexAttributes();
 		void enableInstanceAttributes();
 		void enableAttributes(const std::vector<GLint>& attributes, GLsizei size, GLuint divisor = 0);
+		void bind() const;
 
 		static GLsizei getAttributesSize(const std::vector<GLint>& attributes);
 
-		GLuint vertexBufferId = 0;
-		GLuint indexBufferId = 0;
-		GLuint instanceBufferId = 0;
+		std::shared_ptr<VertexBuffer> vertexBuffer = nullptr;
+		std::shared_ptr<IndexBuffer> indexBuffer = nullptr;
+		std::shared_ptr<InstanceBuffer> instanceBuffer = nullptr;
 		GLuint attributeIndex = 0;
 
-		static std::unordered_map<GLuint, VertexBuffer> vertexBuffers;
-		static std::unordered_map<GLuint, IndexBuffer> indexBuffers;
-		static std::unordered_map<GLuint, InstanceBuffer> instanceBuffers;
+		static GLuint boundId;
+		static std::unordered_map<GLuint, std::shared_ptr<VertexBuffer>> vertexBuffers;
+		static std::unordered_map<GLuint, std::shared_ptr<IndexBuffer>> indexBuffers;
+		static std::unordered_map<GLuint, std::shared_ptr<InstanceBuffer>> instanceBuffers;
 	};
 
 	template<typename T>

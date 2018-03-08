@@ -74,22 +74,22 @@ namespace SpaceSimulator
 			}
 
 			camera.move(
-				static_cast<float>((input.keyboard.key(SDLK_d) - input.keyboard.key(SDLK_a) + input.controller.leftXAxis())),
-				static_cast<float>((input.keyboard.key(SDLK_r) - input.keyboard.key(SDLK_f) + input.controller.rightShoulder() - input.controller.leftShoulder())),
-				static_cast<float>((input.keyboard.key(SDLK_s) - input.keyboard.key(SDLK_w) + input.controller.leftYAxis()))
+				static_cast<float>((input.keyboard.key(SDLK_d) - input.keyboard.key(SDLK_a)/* + input.controller.leftXAxis()*/)),
+				static_cast<float>((input.keyboard.key(SDLK_r) - input.keyboard.key(SDLK_f)/* + input.controller.rightShoulder() - input.controller.leftShoulder()*/)),
+				static_cast<float>((input.keyboard.key(SDLK_s) - input.keyboard.key(SDLK_w)/* + input.controller.leftYAxis()*/))
 			);
 
 			float rollSpeed = 90 * deltaSeconds;
 			camera.transform().roll(rollSpeed * (
-				input.keyboard.key(SDLK_e) - input.keyboard.key(SDLK_q) +
+				input.keyboard.key(SDLK_e) - input.keyboard.key(SDLK_q)/* +
 				input.controller.rightTrigger() - input.controller.leftTrigger() +
-				input.mouse.right() - input.mouse.left())
+				input.mouse.right() - input.mouse.left()*/)
 			);
 
 			float mouseSensitivity = 0.05f;
 			float controllerSensitivity = 90 * deltaSeconds;
-			camera.transform().yaw(mouseSensitivity * input.mouse.deltaX() + controllerSensitivity * input.controller.rightXAxis());
-			camera.transform().pitch(mouseSensitivity * input.mouse.deltaY() + controllerSensitivity * input.controller.rightYAxis());
+			camera.transform().yaw(mouseSensitivity * input.mouse.deltaX()/* + controllerSensitivity * input.controller.rightXAxis()*/);
+			camera.transform().pitch(mouseSensitivity * input.mouse.deltaY()/* + controllerSensitivity * input.controller.rightYAxis()*/);
 
 			camera.update(deltaSeconds);
 

@@ -140,7 +140,7 @@ namespace GLEngine
 			"in vec2 vertTexCoords;"
 			"out vec4 fragColor;"
 			"uniform sampler2D fontSizeTexture;"
-			"uniform vec4 color;"
+			"uniform vec4 color = vec4(0.5, 0.5, 0.5, 1);"
 			"void main()"
 			"{"
 			"	fragColor = color * vec4(1, 1, 1, texture(fontSizeTexture, vertTexCoords).r);"
@@ -149,8 +149,6 @@ namespace GLEngine
 		shader.createFromSource(vertexShaderSource, fragmentShaderSource);
 
 		applyWindowSize();
-
-		setColor(0.5f, 0.5f, 0.5f);
 
 		vertexArray.setVertexBuffer({ 4 }, MAX_STRING_LENGTH * sizeof(Font::GlyphQuad) / sizeof(GLfloat));
 	}
