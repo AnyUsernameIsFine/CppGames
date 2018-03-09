@@ -11,7 +11,10 @@ namespace GLEngine
 		~Shader();
 		void createFromFiles(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename);
 		void createFromSource(const std::string& vertexShaderSource, const std::string& fragmentShaderSource);
+		void createComputeFromFile(const std::string& computeShaderFilename);
+		void createComputeFromSource(const std::string& computeShaderSource);
 		void use() const;
+		void compute(int x, int y, int z) const;
 		void setUniform(const std::string& name, float value) const;
 		void setUniform(const std::string& name, const glm::vec2& value) const;
 		void setUniform(const std::string& name, const glm::vec3& value) const;
@@ -29,8 +32,10 @@ namespace GLEngine
 		void setUniform(const std::string& name, const glm::mat4& value, bool transpose = false) const;
 
 	private:
+		bool isCreatable() const;
 		std::string shaderSourceFromFile(const std::string& filename) const;
 		GLuint shaderFromSource(GLenum type, const std::string& source) const;
+		void create(const std::initializer_list<GLuint>& shaderIds);
 		GLint getUniformLocation(const std::string& name) const;
 	};
 }

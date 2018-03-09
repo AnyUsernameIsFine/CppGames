@@ -1,6 +1,6 @@
-#version 330 core
+#version 430 core
 
-layout (location = 0) in vec4 vertPosition;
+layout(location = 0) in vec4 vertPosition;
 
 uniform mat4 model;
 uniform mat4 view;

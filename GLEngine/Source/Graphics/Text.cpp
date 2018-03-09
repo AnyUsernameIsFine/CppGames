@@ -125,7 +125,7 @@ namespace GLEngine
 		this->windowHeight = windowHeight;
 
 		std::string vertexShaderSource =
-			"#version 330 core\n"
+			"#version 430 core\n"
 			"layout(location = 0) in vec4 attributes;"
 			"out vec2 vertTexCoords;"
 			"uniform mat4 projection;"
@@ -136,7 +136,7 @@ namespace GLEngine
 			"}";
 
 		std::string fragmentShaderSource =
-			"#version 330 core\n"
+			"#version 430 core\n"
 			"in vec2 vertTexCoords;"
 			"out vec4 fragColor;"
 			"uniform sampler2D fontSizeTexture;"

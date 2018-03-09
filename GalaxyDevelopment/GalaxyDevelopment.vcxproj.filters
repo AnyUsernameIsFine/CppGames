@@ -26,6 +26,15 @@
     <None Include="Resources\cube.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Resources\ray-trace.comp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\ray-trace.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\ray-trace.frag">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\texture.png">

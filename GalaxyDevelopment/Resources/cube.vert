@@ -1,8 +1,8 @@
-#version 330 core
+#version 430 core
 
-layout (location = 0) in vec4 vertPosition;
-layout (location = 1) in vec3 vertNormal;
-layout (location = 2) in vec2 vertTexCoords;
+layout(location = 0) in vec4 vertPosition;
+layout(location = 1) in vec3 vertNormal;
+layout(location = 2) in vec2 vertTexCoords;
 
 out vec3 fragPosition;
 out vec3 fragNormal;

@@ -1,12 +1,12 @@
-#version 330 core
+#version 430 core
 
-layout (location = 0) in vec3 vertPosition;
-layout (location = 1) in vec3 vertNormal;
+layout(location = 0) in vec3 vertPosition;
+layout(location = 1) in vec3 vertNormal;
 
-layout (location = 3) in mat4 instMatrix1;
-layout (location = 7) in mat4 instMatrix2;
-layout (location = 11) in vec4 instColor;
-layout (location = 12) in float scale;
+layout(location = 3) in mat4 instMatrix1;
+layout(location = 7) in mat4 instMatrix2;
+layout(location = 11) in vec4 instColor;
+layout(location = 12) in float scale;
 
 out vec3 fragPosition;
 out vec3 fragNormal;

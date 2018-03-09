@@ -15,8 +15,7 @@ namespace GLEngine
 
 	void Shader::createFromFiles(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename)
 	{
-		if (id) {
-			error("Shader has already been created");
+		if (!isCreatable()) {
 			return;
 		}
 
@@ -26,87 +25,49 @@ namespace GLEngine
 		createFromSource(vertexShaderSource, fragmentShaderSource);
 	}
 
+	void Shader::createComputeFromFile(const std::string& computeShaderFilename)
+	{
+		if (!isCreatable()) {
+			return;
+		}
+
+		std::string computeShaderSource = shaderSourceFromFile(computeShaderFilename);
+
+		createComputeFromSource(computeShaderSource);
+	}
+
 	void Shader::createFromSource(const std::string& vertexShaderSource, const std::string& fragmentShaderSource)
 	{
-		if (id) {
-			error("Shader has already been created");
+		if (!isCreatable()) {
 			return;
 		}
-
-		if (!hasContext("Could not create shader")) {
-			return;
-		}
-
-		id = checkGLValue(glCreateProgram());
 
 		GLuint vertexShaderId = shaderFromSource(GL_VERTEX_SHADER, vertexShaderSource);
 		GLuint fragmentShaderId = shaderFromSource(GL_FRAGMENT_SHADER, fragmentShaderSource);
 
-		checkGL(glAttachShader(id, vertexShaderId));
-		checkGL(glAttachShader(id, fragmentShaderId));
-		checkGL(glLinkProgram(id));
-
-		GLint linkStatus;
-		checkGL(glGetProgramiv(id, GL_LINK_STATUS, &linkStatus));
-
-		if (linkStatus == GL_FALSE) {
-			GLint infoLogLength;
-			checkGL(glGetProgramiv(id, GL_INFO_LOG_LENGTH, &infoLogLength));
-			infoLogLength -= 2;
-
-			std::vector<GLchar> infoLog(infoLogLength);
-			checkGL(glGetProgramInfoLog(id, infoLogLength, nullptr, &infoLog[0]));
-				
-			error(&infoLog[0]);
-		}
-
-		checkGL(glDetachShader(id, vertexShaderId));
-		checkGL(glDetachShader(id, fragmentShaderId));
-
-		checkGL(glDeleteShader(vertexShaderId));
-		checkGL(glDeleteShader(fragmentShaderId));
+		create({ vertexShaderId, fragmentShaderId });
 	}
 
-	std::string Shader::shaderSourceFromFile(const std::string& filename) const
+	void Shader::createComputeFromSource(const std::string& computeShaderSource)
 	{
-		std::ifstream ifs(filename);
-
-		if (!ifs) {
-			error("File \"" + filename + "\" could not be opened");
-			return "";
+		if (!isCreatable()) {
+			return;
 		}
 
-		return std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
-	}
+		GLuint computeShaderId = shaderFromSource(GL_COMPUTE_SHADER, computeShaderSource);
 
-	GLuint Shader::shaderFromSource(GLenum type, const std::string& source) const
-	{
-		GLuint shaderId = checkGLValue(glCreateShader(type));
-
-		const char* sourceCstr = source.c_str();
-		checkGL(glShaderSource(shaderId, 1, &sourceCstr, nullptr));
-		checkGL(glCompileShader(shaderId));
-
-		GLint compileStatus;
-		checkGL(glGetShaderiv(shaderId, GL_COMPILE_STATUS, &compileStatus));
-
-		if (compileStatus == GL_FALSE) {
-			GLint infoLogLength;
-			checkGL(glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &infoLogLength));
-			infoLogLength -= 2;
-
-			std::vector<GLchar> infoLog(infoLogLength);
-			checkGL(glGetShaderInfoLog(shaderId, infoLogLength, nullptr, &infoLog[0]));
-
-			error(&infoLog[0]);
-		}
-
-		return shaderId;
+		create({ computeShaderId });
 	}
 
 	void Shader::use() const
 	{
 		checkGL(glUseProgram(id));
+	}
+
+	void Shader::compute(int x, int y, int z) const
+	{
+		checkGL(glUseProgram(id));
+		checkGL(glDispatchCompute(x, y, z));
 	}
 
 	void Shader::setUniform(const std::string& name, float value) const
@@ -187,5 +148,90 @@ namespace GLEngine
 	GLint Shader::getUniformLocation(const std::string& name) const
 	{
 		return glGetUniformLocation(id, name.c_str());
+	}
+
+	bool Shader::isCreatable() const
+	{
+		if (id) {
+			error("Shader has already been created");
+			return false;
+		}
+
+		if (!hasContext("Could not create shader")) {
+			return false;
+		}
+
+		return true;
+	}
+
+	std::string Shader::shaderSourceFromFile(const std::string& filename) const
+	{
+		std::ifstream ifs(filename);
+
+		if (!ifs) {
+			error("File \"" + filename + "\" could not be opened");
+			return "";
+		}
+
+		return std::string(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+	}
+
+	GLuint Shader::shaderFromSource(GLenum type, const std::string& source) const
+	{
+		GLuint shaderId = checkGLValue(glCreateShader(type));
+
+		const char* sourceCstr = source.c_str();
+		checkGL(glShaderSource(shaderId, 1, &sourceCstr, nullptr));
+		checkGL(glCompileShader(shaderId));
+
+		GLint compileStatus;
+		checkGL(glGetShaderiv(shaderId, GL_COMPILE_STATUS, &compileStatus));
+
+		if (compileStatus == GL_FALSE) {
+			GLint infoLogLength;
+			checkGL(glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &infoLogLength));
+			infoLogLength -= 2;
+
+			std::vector<GLchar> infoLog(infoLogLength);
+			checkGL(glGetShaderInfoLog(shaderId, infoLogLength, nullptr, &infoLog[0]));
+
+			error(&infoLog[0]);
+		}
+
+		return shaderId;
+	}
+
+	void Shader::create(const std::initializer_list<GLuint>& shaderIds)
+	{
+		if (!isCreatable()) {
+			return;
+		}
+
+		id = checkGLValue(glCreateProgram());
+
+		for (const auto& shaderId : shaderIds) {
+			checkGL(glAttachShader(id, shaderId));
+		}
+
+		checkGL(glLinkProgram(id));
+
+		GLint linkStatus;
+		checkGL(glGetProgramiv(id, GL_LINK_STATUS, &linkStatus));
+
+		if (linkStatus == GL_FALSE) {
+			GLint infoLogLength;
+			checkGL(glGetProgramiv(id, GL_INFO_LOG_LENGTH, &infoLogLength));
+			infoLogLength -= 2;
+
+			std::vector<GLchar> infoLog(infoLogLength);
+			checkGL(glGetProgramInfoLog(id, infoLogLength, nullptr, &infoLog[0]));
+
+			error(&infoLog[0]);
+		}
+
+		for (const auto& shaderId : shaderIds) {
+			checkGL(glDetachShader(id, shaderId));
+			checkGL(glDeleteShader(shaderId));
+		}
 	}
 }

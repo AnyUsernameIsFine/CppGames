@@ -144,7 +144,8 @@ namespace GLEngine
 
 		vertexBuffer->numVertices = numVertices;
 		if (numVertices) {
-			checkGL(glNamedBufferSubData(vertexBuffer->id, 0, numVertices * vertexBuffer->attributesSize, vertices));
+			checkGL(glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer->id));
+			checkGL(glBufferSubData(GL_ARRAY_BUFFER, 0, numVertices * vertexBuffer->attributesSize, vertices));
 		}
 	}
 
@@ -157,7 +158,8 @@ namespace GLEngine
 
 		indexBuffer->numIndices = numIndices;
 		if (numIndices) {
-			checkGL(glNamedBufferSubData(indexBuffer->id, 0, numIndices * sizeof(GLushort), indices));
+			checkGL(glBindBuffer(GL_ARRAY_BUFFER, indexBuffer->id));
+			checkGL(glBufferSubData(GL_ARRAY_BUFFER, 0, numIndices * sizeof(GLushort), indices));
 		}
 	}
 
@@ -175,7 +177,8 @@ namespace GLEngine
 
 		instanceBuffer->numInstances = numInstances;
 		if (numInstances) {
-			checkGL(glNamedBufferSubData(instanceBuffer->id, 0, numInstances * instanceBuffer->attributesSize, instances));
+			checkGL(glBindBuffer(GL_ARRAY_BUFFER, instanceBuffer->id));
+			checkGL(glBufferSubData(GL_ARRAY_BUFFER, 0, numInstances * instanceBuffer->attributesSize, instances));
 		}
 	}
 

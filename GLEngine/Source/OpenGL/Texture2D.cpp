@@ -65,7 +65,8 @@ namespace GLEngine
 		}
 
 		checkGL(glPixelStorei(GL_UNPACK_ALIGNMENT, unpackAlignment));
-		checkGL(glTextureSubImage2D(id, 0, x, y, width, height, format, GL_UNSIGNED_BYTE, pixels));
+		checkGL(glBindTexture(GL_TEXTURE_2D, id));
+		checkGL(glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, width, height, format, GL_UNSIGNED_BYTE, pixels));
 	}
 
 	void Texture2D::resize(int width, int height)
@@ -91,7 +92,7 @@ namespace GLEngine
 		checkGL(glBindTexture(GL_TEXTURE_2D, id));
 		checkGL(glGetTexImage(GL_TEXTURE_2D, 0, format, GL_UNSIGNED_BYTE, data));
 		checkGL(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr));
-		checkGL(glTextureSubImage2D(id, 0, 0, 0, std::min(width, this->width), std::min(height, this->height), format, GL_UNSIGNED_BYTE, data));
+		checkGL(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, std::min(width, this->width), std::min(height, this->height), format, GL_UNSIGNED_BYTE, data));
 		checkGL(glBindTexture(GL_TEXTURE_2D, 0));
 
 		if (width < this->width) {
