@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include <GL\glew.h>
+#include <glad\glad.h>
 #include <SDL_error.h>
 
 #include "Globals.h"

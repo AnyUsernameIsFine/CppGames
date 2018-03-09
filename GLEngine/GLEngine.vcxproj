@@ -53,6 +53,7 @@
     <ClInclude Include="Source\System\Utility.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Dependencies\glad\src\glad.c" />
     <ClCompile Include="Source\Input\Controller.cpp" />
     <ClCompile Include="Source\Input\Mouse.cpp" />
     <ClCompile Include="Source\Input\Keyboard.cpp" />
@@ -141,11 +142,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
-      <AdditionalLibraryDirectories>Dependencies\freetype-2.8\lib;Dependencies\glew-2.1.0\lib\Release\Win32;Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freetype.lib;opengl32.lib;glew32s.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Dependencies\freetype-2.8\lib;Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -154,11 +155,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Lib>
-      <AdditionalLibraryDirectories>Dependencies\freetype-2.8\lib;Dependencies\glew-2.1.0\lib\Release\Win32;Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freetype.lib;opengl32.lib;glew32s.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Dependencies\freetype-2.8\lib;Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -169,15 +170,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>Dependencies\freetype-2.8\lib;Dependencies\glew-2.1.0\lib\Release\Win32;Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freetype.lib;opengl32.lib;glew32s.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Dependencies\freetype-2.8\lib;Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -188,15 +189,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>Dependencies\freetype-2.8\lib;Dependencies\glew-2.1.0\lib\Release\Win32;Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freetype.lib;opengl32.lib;glew32s.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Dependencies\freetype-2.8\lib;Dependencies\SDL2-2.0.7\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;SDL2.lib;SDL2main.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

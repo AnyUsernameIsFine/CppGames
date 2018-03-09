@@ -108,8 +108,8 @@ namespace GLEngine
 	Window::Window()
 	{
 		checkSDL(SDL_InitSubSystem(SDL_INIT_VIDEO));
-		checkSDL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3));
-		checkSDL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3));
+		checkSDL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4));
+		checkSDL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5));
 		checkSDL(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
 	}
 
@@ -159,9 +159,8 @@ namespace GLEngine
 			return false;
 		}
 
-		GLenum glewError;
-		if ((glewError = glewInit()) != GLEW_OK) {
-			error("Could not initialize GLEW: " + std::string(reinterpret_cast<const char*>(glewGetErrorString(glewError))));
+		if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
+			error("Could not initialize Glad");
 			return false;
 		}
 

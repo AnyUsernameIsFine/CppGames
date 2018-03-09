@@ -3,8 +3,6 @@
 #include <iostream>
 #include <sstream>
 #include <thread>
-#define NOMINMAX
-#include <windows.h>
 
 #include <SDL.h>
 

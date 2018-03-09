@@ -175,9 +175,9 @@ namespace SpaceSimulator
 		for (int i = 0; i < static_cast<int>(toDrawList.size()); i++) {
 			glClear(GL_DEPTH_BUFFER_BIT);
 
-			float near = 0.1f * hierarchy[i].coordinateSystem->getCameraNearPlane();
-			float far = near * 100000.0f;
-			shader.setUniform("projection", glm::perspective(fov, ratio, near, far));
+			float nearPlane = 0.1f * hierarchy[i].coordinateSystem->getCameraNearPlane();
+			float farPlane = nearPlane * 100000.0f;
+			shader.setUniform("projection", glm::perspective(fov, ratio, nearPlane, farPlane));
 
 			for (const auto& list : toDrawList[i]) {
 				if (!list.empty() && list[0].cs->hasMesh()) {
