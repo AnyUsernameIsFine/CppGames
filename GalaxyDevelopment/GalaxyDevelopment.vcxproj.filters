@@ -26,13 +26,16 @@
     <None Include="Resources\cube.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\ray-trace.comp">
+    <None Include="Resources\galaxy.comp">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\ray-trace.vert">
+    <None Include="Resources\galaxy.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\ray-trace.frag">
+    <None Include="Resources\galaxy.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\galaxy.geom">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

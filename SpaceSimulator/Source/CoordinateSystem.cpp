@@ -27,7 +27,7 @@ namespace SpaceSimulator
 		vertexArray.setVertexBuffer({ 3, 3, 2 }, 60);
 		vertexArray.setIndexBuffer(108 + 1); // why one more???
 		vertexArray.setInstanceBuffer({ 16, 16, 4, 1, 1 }, MAX_IN_DRAW_LIST);
-		shader.createFromFiles("Resources/coordinateSystem.vert", "Resources/coordinateSystem.frag");
+		shader.createVertexFragmentFromFiles("Resources/coordinateSystem.vert", "Resources/coordinateSystem.frag");
 	}
 
 	void CoordinateSystem::drawWithChildren(

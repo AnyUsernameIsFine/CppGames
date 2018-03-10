@@ -53,10 +53,10 @@ namespace GLEngine
 	}
 
 	template<typename T>
-	void CameraType<T>::setClippingPlanes(float near, float far)
+	void CameraType<T>::setClippingPlanes(float nearPlane, float farPlane)
 	{
-		nearClippingPlane = near;
-		farClippingPlane = far;
+		nearClippingPlane = nearPlane;
+		farClippingPlane = farPlane;
 	}
 
 	template<typename T>

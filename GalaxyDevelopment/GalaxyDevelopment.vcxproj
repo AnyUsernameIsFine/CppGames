@@ -127,11 +127,12 @@
     <Font Include="Resources\consola.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ray-trace.comp" />
+    <None Include="Resources\galaxy.geom" />
     <None Include="Resources\cube.frag" />
     <None Include="Resources\cube.vert" />
-    <None Include="Resources\ray-trace.frag" />
-    <None Include="Resources\ray-trace.vert" />
+    <None Include="Resources\galaxy.comp" />
+    <None Include="Resources\galaxy.frag" />
+    <None Include="Resources\galaxy.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\texture.png" />

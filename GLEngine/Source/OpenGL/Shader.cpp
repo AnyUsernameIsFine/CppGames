@@ -13,48 +13,74 @@ namespace GLEngine
 		};
 	}
 
-	void Shader::createFromFiles(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename)
+	void Shader::createVertexFragmentFromFiles(const std::string& vertex, const std::string& fragment)
 	{
 		if (!isCreatable()) {
 			return;
 		}
 
-		std::string vertexShaderSource = shaderSourceFromFile(vertexShaderFilename);
-		std::string fragmentShaderSource = shaderSourceFromFile(fragmentShaderFilename);
-
-		createFromSource(vertexShaderSource, fragmentShaderSource);
+		createVertexFragmentFromSource(
+			shaderSourceFromFile(vertex),
+			shaderSourceFromFile(fragment)
+		);
 	}
 
-	void Shader::createComputeFromFile(const std::string& computeShaderFilename)
+	void Shader::createVertexGeometryFragmentFromFiles(const std::string& vertex, const std::string& geometry, const std::string& fragment)
 	{
 		if (!isCreatable()) {
 			return;
 		}
 
-		std::string computeShaderSource = shaderSourceFromFile(computeShaderFilename);
-
-		createComputeFromSource(computeShaderSource);
+		createVertexGeometryFragmentFromSource(
+			shaderSourceFromFile(vertex),
+			shaderSourceFromFile(geometry),
+			shaderSourceFromFile(fragment)
+		);
 	}
 
-	void Shader::createFromSource(const std::string& vertexShaderSource, const std::string& fragmentShaderSource)
+	void Shader::createComputeFromFile(const std::string& compute)
 	{
 		if (!isCreatable()) {
 			return;
 		}
 
-		GLuint vertexShaderId = shaderFromSource(GL_VERTEX_SHADER, vertexShaderSource);
-		GLuint fragmentShaderId = shaderFromSource(GL_FRAGMENT_SHADER, fragmentShaderSource);
+		createComputeFromSource(
+			shaderSourceFromFile(compute)
+		);
+	}
+
+	void Shader::createVertexFragmentFromSource(const std::string& vertex, const std::string& fragment)
+	{
+		if (!isCreatable()) {
+			return;
+		}
+
+		GLuint vertexShaderId = shaderFromSource(GL_VERTEX_SHADER, vertex);
+		GLuint fragmentShaderId = shaderFromSource(GL_FRAGMENT_SHADER, fragment);
 
 		create({ vertexShaderId, fragmentShaderId });
 	}
 
-	void Shader::createComputeFromSource(const std::string& computeShaderSource)
+	void Shader::createVertexGeometryFragmentFromSource(const std::string& vertex, const std::string& geometry, const std::string& fragment)
 	{
 		if (!isCreatable()) {
 			return;
 		}
 
-		GLuint computeShaderId = shaderFromSource(GL_COMPUTE_SHADER, computeShaderSource);
+		GLuint vertexShaderId = shaderFromSource(GL_VERTEX_SHADER, vertex);
+		GLuint geometryShaderId = shaderFromSource(GL_GEOMETRY_SHADER, geometry);
+		GLuint fragmentShaderId = shaderFromSource(GL_FRAGMENT_SHADER, fragment);
+
+		create({ vertexShaderId, geometryShaderId, fragmentShaderId });
+	}
+
+	void Shader::createComputeFromSource(const std::string& compute)
+	{
+		if (!isCreatable()) {
+			return;
+		}
+
+		GLuint computeShaderId = shaderFromSource(GL_COMPUTE_SHADER, compute);
 
 		create({ computeShaderId });
 	}

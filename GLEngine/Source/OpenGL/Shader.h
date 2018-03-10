@@ -9,10 +9,12 @@ namespace GLEngine
 	{
 	public:
 		~Shader();
-		void createFromFiles(const std::string& vertexShaderFilename, const std::string& fragmentShaderFilename);
-		void createFromSource(const std::string& vertexShaderSource, const std::string& fragmentShaderSource);
-		void createComputeFromFile(const std::string& computeShaderFilename);
-		void createComputeFromSource(const std::string& computeShaderSource);
+		void createVertexFragmentFromFiles(const std::string& vertex, const std::string& fragment);
+		void createVertexFragmentFromSource(const std::string& vertex, const std::string& fragment);
+		void createVertexGeometryFragmentFromFiles(const std::string& vertex, const std::string& geometry, const std::string& fragment);
+		void createVertexGeometryFragmentFromSource(const std::string& vertex, const std::string& geometry, const std::string& fragment);
+		void createComputeFromFile(const std::string& compute);
+		void createComputeFromSource(const std::string& compute);
 		void use() const;
 		void compute(int x, int y, int z) const;
 		void setUniform(const std::string& name, float value) const;

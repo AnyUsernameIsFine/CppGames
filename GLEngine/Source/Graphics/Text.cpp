@@ -124,7 +124,7 @@ namespace GLEngine
 		this->windowWidth = windowWidth;
 		this->windowHeight = windowHeight;
 
-		std::string vertexShaderSource =
+		shader.createVertexFragmentFromSource(
 			"#version 430 core\n"
 			"layout(location = 0) in vec4 attributes;"
 			"out vec2 vertTexCoords;"
@@ -133,9 +133,8 @@ namespace GLEngine
 			"{"
 			"	gl_Position = projection * vec4(attributes.xy, 0, 1);"
 			"	vertTexCoords = attributes.zw;"
-			"}";
+			"}",
 
-		std::string fragmentShaderSource =
 			"#version 430 core\n"
 			"in vec2 vertTexCoords;"
 			"out vec4 fragColor;"
@@ -145,8 +144,7 @@ namespace GLEngine
 			"{"
 			"	fragColor = color * vec4(1, 1, 1, texture(fontSizeTexture, vertTexCoords).r);"
 			"}";
-
-		shader.createFromSource(vertexShaderSource, fragmentShaderSource);
+		);
 
 		applyWindowSize();
 

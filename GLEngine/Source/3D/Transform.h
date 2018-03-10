@@ -26,7 +26,7 @@ namespace GLEngine
 		void setPosition(T x, T y, T z);
 		void setOrientation(const glm::quat& orientation);
 		void setEulerAngles(const glm::vec3& eulerAngles);
-		void setEulerAngles(float yaw, float pitch, float roll);
+		void setEulerAngles(float pitch, float yaw, float roll);
 		void setScale(const glm::vec3& scale);
 		void setScale(float x, float y, float z);
 		void setScale(float scale);
@@ -110,9 +110,9 @@ namespace GLEngine
 	}
 
 	template<typename T>
-	void TransformType<T>::setEulerAngles(float yaw, float pitch, float roll)
+	void TransformType<T>::setEulerAngles(float pitch, float yaw, float roll)
 	{
-		setEulerAngles({ yaw, pitch, roll });
+		setEulerAngles({ pitch, yaw, roll });
 	}
 
 	template<typename T>

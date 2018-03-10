@@ -63,7 +63,7 @@ namespace LearnOpenGL
 				{  1,  1,	1, 0 },
 			};
 
-			fontShader.createFromFiles("Resources/font.vert", "Resources/font.frag");
+			fontShader.createVertexFragmentFromFiles("Resources/font.vert", "Resources/font.frag");
 			fontShader.use();
 			fontShader.setUniform("fontTexture", 0);
 			fontVertexArray.setVertexBuffer({ 2, 2 }, fontVertices);
@@ -71,14 +71,14 @@ namespace LearnOpenGL
 			texture1.createFromFile("Resources/journey.jpg");
 			texture2.createFromFile("Resources/flow.jpg");
 
-			shapeShader.createFromFiles("Resources/shape.vert", "Resources/shape.frag");
+			shapeShader.createVertexFragmentFromFiles("Resources/shape.vert", "Resources/shape.frag");
 			shapeShader.use();
 			shapeShader.setUniform("texture1", 0);
 			shapeShader.setUniform("texture2", 1);
 			shapeVertexArray.setVertexBuffer({ 3, 3, 2 }, 60);
 			shapeVertexArray.setIndexBuffer(108 + 1); // why one more???
 
-			lightShader.createFromFiles("Resources/light.vert", "Resources/light.frag");
+			lightShader.createVertexFragmentFromFiles("Resources/light.vert", "Resources/light.frag");
 			lightVertexArray.setVertexBuffer({ 3, 3, 2 }, light.mesh().getVertices());
 			lightVertexArray.setIndexBuffer(light.mesh().getIndices());
 		}
