@@ -8,6 +8,7 @@ namespace GLEngine
 	class Shader : OpenGLObject
 	{
 	public:
+		Shader() {}
 		~Shader();
 		void createVertexFragmentFromFiles(const std::string& vertex, const std::string& fragment);
 		void createVertexFragmentFromSource(const std::string& vertex, const std::string& fragment);
@@ -32,6 +33,10 @@ namespace GLEngine
 		void setUniform(const std::string& name, const glm::mat2& value, bool transpose = false) const;
 		void setUniform(const std::string& name, const glm::mat3& value, bool transpose = false) const;
 		void setUniform(const std::string& name, const glm::mat4& value, bool transpose = false) const;
+		Shader(const Shader&) = delete;
+		Shader(Shader&& other) = delete;
+		Shader &operator=(const Shader&) = delete;
+		Shader &operator=(Shader&& other) = delete;
 
 	private:
 		bool isCreatable() const;

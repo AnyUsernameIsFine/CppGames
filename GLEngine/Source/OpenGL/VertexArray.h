@@ -10,6 +10,7 @@ namespace GLEngine
 	class VertexArray : public OpenGLObject
 	{
 	public:
+		VertexArray() {}
 		~VertexArray();
 		void setVertexBuffer(const std::vector<int>& attributes, int numVertices, const void* vertices = nullptr);
 		template<typename T> void setVertexBuffer(const std::vector<int>& attributes, const std::vector<T>& vertices);
@@ -30,6 +31,10 @@ namespace GLEngine
 		GLuint getIndexBufferId() const;
 		GLuint getInstanceBufferId() const;
 		void draw(GLenum mode) const;
+		VertexArray(const VertexArray&) = delete;
+		VertexArray(VertexArray&& other) = delete;
+		VertexArray &operator=(const VertexArray&) = delete;
+		VertexArray &operator=(VertexArray&& other) = delete;
 
 	private:
 		struct VertexBuffer
