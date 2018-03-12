@@ -12,8 +12,14 @@ namespace GLEngine
 		static void setRandSeed(UInt seed);
 		static void setHashSeed(UInt32 seed);
 		static int randInt();
+		static int randInt(int max);
 		static int randInt(int min, int max);
-		static float randFloat(float min = 0.0f, float max = 1.0f);
+		static float randFloat();
+		static float randFloat(float max);
+		static float randFloat(float min, float max);
+		static float randFloatNormal();
+		static float randFloatNormal(float standardDeviation);
+		static float randFloatNormal(float mean, float standardDeviation);
 		static UInt32 UInt32FromByteArray(const void* byteArray, int length);
 
 	private:

@@ -60,7 +60,7 @@ namespace GLEngine
 				break;
 
 			case GL_RGB:
-				unpackAlignment = 3;
+				unpackAlignment = 4;
 				break;
 		}
 
@@ -79,7 +79,7 @@ namespace GLEngine
 				break;
 
 			case GL_RGB:
-				pixelSize = 3;
+				pixelSize = 4;
 				break;
 		}
 
@@ -124,11 +124,11 @@ namespace GLEngine
 		checkGL(glGenTextures(1, &id));
 		checkGL(glBindTexture(GL_TEXTURE_2D, id));
 
+		checkGL(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, pixels));
+
 		checkGL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 		checkGL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 		checkGL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 		checkGL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-
-		checkGL(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, pixels));
 	}
 }

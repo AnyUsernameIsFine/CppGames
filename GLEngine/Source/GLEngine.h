@@ -6,5 +6,6 @@
 #include "3D\Meshes\Icosahedron.h"
 #include "3D\Meshes\Octahedron.h"
 #include "3D\Meshes\Tetrahedron.h"
+#include "OpenGL\Framebuffer.h"
 #include "System\Game.h"
 #include "System\Random.h"

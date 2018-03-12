@@ -29,15 +29,13 @@
     <None Include="Resources\galaxy.comp">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Resources\galaxy.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\galaxy.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Resources\galaxy.geom">
-      <Filter>Resource Files</Filter>
-    </None>
+    <None Include="Resources\framebuffer.frag" />
+    <None Include="Resources\framebuffer.vert" />
+    <None Include="Resources\star.frag" />
+    <None Include="Resources\particle.vert" />
+    <None Include="Resources\particle.geom" />
+    <None Include="Resources\h2-region.frag" />
+    <None Include="Resources\dust-cloud.frag" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\texture.png">
@@ -48,9 +46,27 @@
     <ClInclude Include="Source\Main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Galaxy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\OrbitCalculator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\specrend.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Galaxy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\OrbitCalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\specrend.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

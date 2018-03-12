@@ -3,12 +3,12 @@
 layout(points) in;
 layout(triangle_strip, max_vertices = 4) out;
 
-in vec4 geomColor[];
+in vec3 geomColor[];
 
 uniform mat4 projection;
 
-out vec4 fragColor;
-out vec4 fragPosition;
+out vec3 fragColor;
+out vec3 fragPosition;
 
 mat4 lookAtCamera(vec3 eye)
 {
@@ -34,9 +34,9 @@ void main()
 
 	for (int i = -1; i <= 1; i += 2) {
 		for (int j = -1; j <= 1; j += 2) {
-			fragPosition = vec4(j, i, 0, 0);
+			fragPosition = vec3(j, i, 0);
 
-			gl_Position = fragPosition * gl_in[0].gl_PointSize;
+			gl_Position = vec4(fragPosition * gl_in[0].gl_PointSize, 0);
 			if (false) {
 				gl_Position *= lookAtCamera(gl_in[0].gl_Position.xyz);
 			}

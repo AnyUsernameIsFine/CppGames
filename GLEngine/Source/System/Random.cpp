@@ -18,15 +18,46 @@ namespace GLEngine
 		return rng();
 	}
 
+	int Random::randInt(int max)
+	{
+		return randInt(0, max);
+	}
+
 	int Random::randInt(int min, int max)
 	{
 		std::uniform_int_distribution<int> distribution(min, max);
 		return distribution(rng);
 	}
 
+	float Random::randFloat()
+	{
+		return randFloat(1.0f);
+	}
+
+	float Random::randFloat(float max)
+	{
+		return randFloat(0.0f, max);
+	}
+
 	float Random::randFloat(float min, float max)
 	{
 		std::uniform_real_distribution<float> distribution(min, max);
+		return distribution(rng);
+	}
+
+	float Random::randFloatNormal()
+	{
+		return randFloatNormal(1.0f);
+	}
+
+	float Random::randFloatNormal(float standardDeviation)
+	{
+		return randFloatNormal(0.0f, standardDeviation);
+	}
+
+	float Random::randFloatNormal(float mean, float standardDeviation)
+	{
+		std::normal_distribution<float> distribution(mean, standardDeviation);
 		return distribution(rng);
 	}
 

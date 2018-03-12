@@ -1,7 +1,7 @@
 #version 430 core
 
-in vec4 fragPosition;
-in vec4 fragColor;
+in vec3 fragPosition;
+in vec3 fragColor;
 
 out vec4 color;
 
@@ -13,6 +13,5 @@ void main()
 		discard;
 	}
 
-	color = fragColor * distanceFromCenter * distanceFromCenter;
-	color.a *= clamp(fragPosition.z, 0, 1);
+	color = vec4(fragColor, clamp(fragPosition.z, 0, 1)) * distanceFromCenter * distanceFromCenter;
 }

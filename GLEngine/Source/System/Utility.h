@@ -60,6 +60,7 @@ namespace GLEngine
 				"GL_STACK_UNDERFLOW",
 				"GL_OUT_OF_MEMORY",
 				"GL_INVALID_FRAMEBUFFER_OPERATION",
+				"GL_CONTEXT_LOST"
 			};
 
 			GLenum error;

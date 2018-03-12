@@ -143,7 +143,7 @@ namespace GLEngine
 			"void main()"
 			"{"
 			"	fragColor = color * vec4(1, 1, 1, texture(fontSizeTexture, vertTexCoords).r);"
-			"}";
+			"}"
 		);
 
 		applyWindowSize();

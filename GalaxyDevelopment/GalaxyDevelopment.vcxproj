@@ -127,21 +127,31 @@
     <Font Include="Resources\consola.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\galaxy.geom" />
+    <None Include="Resources\dust-cloud.frag" />
+    <None Include="Resources\framebuffer.frag" />
+    <None Include="Resources\framebuffer.vert" />
     <None Include="Resources\cube.frag" />
     <None Include="Resources\cube.vert" />
     <None Include="Resources\galaxy.comp" />
-    <None Include="Resources\galaxy.frag" />
-    <None Include="Resources\galaxy.vert" />
+    <None Include="Resources\h2-region.frag" />
+    <None Include="Resources\star.frag" />
+    <None Include="Resources\particle.geom" />
+    <None Include="Resources\particle.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\texture.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Galaxy.cpp" />
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\OrbitCalculator.cpp" />
+    <ClCompile Include="Source\specrend.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Galaxy.h" />
     <ClInclude Include="Source\Main.h" />
+    <ClInclude Include="Source\OrbitCalculator.h" />
+    <ClInclude Include="Source\specrend.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -41,6 +41,7 @@
     <ClInclude Include="Source\Graphics\Text.h" />
     <ClInclude Include="Source\Graphics\Window.h" />
     <ClInclude Include="Source\Input\Input.h" />
+    <ClInclude Include="Source\OpenGL\Framebuffer.h" />
     <ClInclude Include="Source\OpenGL\OpenGLObject.h" />
     <ClInclude Include="Source\OpenGL\Shader.h" />
     <ClInclude Include="Source\OpenGL\Texture2D.h" />
@@ -70,6 +71,7 @@
     <ClCompile Include="Source\Graphics\Text.cpp" />
     <ClCompile Include="Source\Graphics\Window.cpp" />
     <ClCompile Include="Source\Input\Input.cpp" />
+    <ClCompile Include="Source\OpenGL\Framebuffer.cpp" />
     <ClCompile Include="Source\OpenGL\OpenGLObject.cpp" />
     <ClCompile Include="Source\OpenGL\Shader.cpp" />
     <ClCompile Include="Source\OpenGL\Texture2D.cpp" />
